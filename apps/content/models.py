@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from parler.managers import TranslatableManager, TranslatableQuerySet
 from parler.models import TranslatableModel, TranslatedFields
 
+from apps.seo.models import SeoFieldsMixin
+
 from .utils import sanitize_html, unique_slugify
 
 
@@ -98,13 +100,18 @@ class PublishableQuerySet(TranslatableQuerySet):
 PublishableManager = TranslatableManager.from_queryset(PublishableQuerySet)
 
 
-class Post(TranslatableModel, TimeStampedModel):
+class Post(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
     translations = TranslatedFields(
         title=models.CharField(_("title"), max_length=200),
         excerpt=models.TextField(_("excerpt"), blank=True),
         body=models.TextField(_("body"), blank=True),
+        meta_title=models.CharField(_("meta title"), max_length=70, blank=True),
+        meta_description=models.CharField(_("meta description"), max_length=200, blank=True),
     )
     slug = models.SlugField(_("slug"), max_length=200, unique=True, blank=True)
+    canonical_url = models.URLField(_("canonical URL"), blank=True)
+    noindex = models.BooleanField(_("hide from search engines"), default=False)
+    og_image = models.ImageField(_("share image"), upload_to="seo/", blank=True, null=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("author"),
@@ -174,14 +181,19 @@ class Post(TranslatableModel, TimeStampedModel):
         return user == self.author or user.has_perm("content.delete_post")
 
 
-class Page(TranslatableModel, TimeStampedModel):
+class Page(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
     """A standalone, optionally hierarchical page (About, Contact, ...)."""
 
     translations = TranslatedFields(
         title=models.CharField(_("title"), max_length=200),
         body=models.TextField(_("body"), blank=True),
+        meta_title=models.CharField(_("meta title"), max_length=70, blank=True),
+        meta_description=models.CharField(_("meta description"), max_length=200, blank=True),
     )
     slug = models.SlugField(_("slug"), max_length=200, unique=True, blank=True)
+    canonical_url = models.URLField(_("canonical URL"), blank=True)
+    noindex = models.BooleanField(_("hide from search engines"), default=False)
+    og_image = models.ImageField(_("share image"), upload_to="seo/", blank=True, null=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("author"),

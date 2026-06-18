@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "apps.dashboard",
     "apps.themes",
     "apps.plugins",
+    "apps.seo",
     "apps.core",
     # Plugins (live in the top-level plugins/ directory)
     "plugins.reading_time",
@@ -99,6 +100,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.site_settings",
                 "apps.core.context_processors.i18n_alternates",
+                "apps.seo.context_processors.seo_settings",
             ],
             "loaders": [
                 "apps.themes.loaders.ThemeLoader",
@@ -217,6 +219,9 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+# Opt into Django 6.0's behaviour now: bare-domain URLField input defaults to https.
+FORMS_URLFIELD_ASSUME_HTTPS = True
 
 # django-parler: one translation row per language, falling back to the default
 # language when a translation is missing so a half-translated site still renders.

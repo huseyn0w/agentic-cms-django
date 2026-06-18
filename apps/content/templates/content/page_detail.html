@@ -1,6 +1,9 @@
 {% extends "public_base.html" %}
+{% load seo_tags %}
 
-{% block title %}{{ page.title }} · DjangoPress{% endblock %}
+{% block title %}{{ page.seo_title }} · {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ page.seo_description }}{% endblock %}
+{% block seo_head %}{% seo_head page "website" %}{% endblock %}
 
 {% block main %}
 <article>

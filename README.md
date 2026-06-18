@@ -4,7 +4,8 @@ An open-source, WordPress-style CMS built on Python/Django — lighter, faster, 
 and easy to read, understand, and extend.
 
 > **Status:** Phases 1–7 complete (Foundation, Accounts, Content, Media, Admin, Themes, Plugins).
-> Phase 8 (SEO/GEO) in progress — slice 8.1 (multilingual content + hreflang) shipped. See the roadmap below.
+> Phase 8 (SEO/GEO) in progress — slices 8.1 (multilingual + hreflang) and 8.2 (SEO core: meta/OG/Twitter,
+> canonical, robots, per-content SEO fields, SEO settings) shipped. See the roadmap below.
 
 ## Stack
 
@@ -242,6 +243,27 @@ selects the language.
 To add a language, add it to `LANGUAGES` in the settings and translate content from the
 dashboard — no migration needed (parler stores languages as rows, not columns).
 
+## SEO (on-site)
+
+The `seo` app renders a complete, server-side `<head>` for every public page and lets you
+control it per page and site-wide:
+
+- **Per-content SEO** — each post and page has a meta title and meta description (translated
+  per language), a canonical URL, a “hide from search engines” (noindex) toggle, and a social
+  share image, edited in a collapsible **SEO & sharing** panel in the editor. Title/description
+  fall back to the content's own title/excerpt when left blank.
+- **`<head>` output** — `<title>`, meta description, canonical link, robots directive,
+  Open Graph and Twitter Card tags, `og:locale`, plus site verification and Google
+  Analytics/Tag Manager snippets — all from one `{% seo_head %}` tag. The admin and login
+  pages opt out, so analytics and indexing only apply to the public site.
+- **Site-wide SEO settings** (Dashboard → SEO) — Open Graph defaults and share image, default
+  meta description, Twitter handle, GA/GTM IDs (format-validated), Google/Bing verification
+  tokens, and a **Discourage search engines** switch that applies a site-wide `noindex`
+  (handy for staging).
+
+Structured data (JSON-LD), `sitemap.xml`, an AI-crawler `robots.txt`, `llms.txt`, and a
+GEO-optimized Service page type follow in the remaining Phase 8 slices.
+
 ## Configuration
 
 All configuration is via environment variables (see [.env.example](.env.example)); no
@@ -261,7 +283,8 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
 8. **SEO/GEO** *(in progress)* — Open Graph, JSON-LD entity/service schema, sitemap,
    robots.txt with AI-crawler policy, `llms.txt`, hreflang, multilingual, GEO-optimized
    page type (see [SEO & GEO](#seo--geo-generative-engine-optimization)).
-   ✅ 8.1 multilingual content (django-parler) + hreflang + language switcher
+   ✅ 8.1 multilingual content (django-parler) + hreflang + language switcher ·
+   ✅ 8.2 SEO core (per-content meta/OG/Twitter, canonical, robots, SEO settings)
 9. Comments, search, recaptcha spam protection
 10. Public site rendering + the luxury frontend
 11. AI integration — MCP server (FastMCP)

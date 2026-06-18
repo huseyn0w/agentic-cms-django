@@ -2,7 +2,7 @@
 
 {% block content %}
 {% include "dashboard/_language_tabs.html" %}
-<form method="post" class="dp-form">
+<form method="post" enctype="multipart/form-data" class="dp-form">
   {% csrf_token %}
   {% if form.non_field_errors %}
     <div class="mb-4 rounded-lg bg-accent/5 px-4 py-3 text-sm text-accent">{{ form.non_field_errors }}</div>
@@ -17,6 +17,17 @@
         {{ form.body }}
         <trix-editor input="{{ form.body.id_for_label }}"></trix-editor>
       </div>
+
+      <details class="rounded-2xl border border-ink/10 bg-white p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
+        <summary class="cursor-pointer text-sm font-semibold text-ink">SEO &amp; sharing</summary>
+        <div class="mt-4 space-y-5">
+          {% include "dashboard/_field.html" with field=form.meta_title %}
+          {% include "dashboard/_field.html" with field=form.meta_description %}
+          {% include "dashboard/_field.html" with field=form.canonical_url %}
+          {% include "dashboard/_field.html" with field=form.og_image %}
+          {% include "dashboard/_field.html" with field=form.noindex %}
+        </div>
+      </details>
     </div>
     <aside class="space-y-5 rounded-2xl border border-ink/10 bg-white p-5">
       {% include "dashboard/_field.html" with field=form.status %}

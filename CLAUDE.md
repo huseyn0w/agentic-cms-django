@@ -107,6 +107,22 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     (Django apps in `INSTALLED_APPS`); `plugins/reading_time` is the example.
     The `post_content` filter is applied in `content/post_detail.html` via the
     `{% post_content post %}` tag; plugin filter output is trusted (operator code).
+  - `apps.seo` — the SEO/GEO app (Phase 8). `SeoSettings` is a cached singleton
+    (mirrors `SiteSettings`, pk=1) holding OG defaults, GA/GTM IDs, verification
+    tags and a site-wide `discourage_search` (noindex) toggle; exposed to templates
+    as `seo` via a context processor, editable at Dashboard → SEO (`manage_settings`).
+    `SeoFieldsMixin` (plain Python, no DB fields — composes with parler) gives
+    Post/Page `seo_title`/`seo_description`/`seo_robots`/`og_image_url` with
+    fallbacks. Per-content SEO fields live on the content models: translatable
+    `meta_title`/`meta_description` (parler) + shared `canonical_url`/`noindex`/
+    `og_image`. The `{% seo_head obj og_type %}` tag (`seo_tags`) computes every
+    `<head>` value (title/desc/canonical/robots/OG/Twitter/verification/GA-GTM) and
+    renders `templates/seo/head.html`. It's wired through `base.html`'s
+    `{% block seo_head %}`: detail templates override it with their object; the
+    dashboard base and allauth layout override it to opt OUT (no public meta or
+    analytics on private/auth pages). All meta values are operator-supplied and
+    autoescaped; GA/GTM IDs are format-validated in `SeoSettingsForm`.
+    (8.3 JSON-LD, 8.4 sitemap/robots.txt/llms.txt, 8.5 Service page type land here.)
 
 Frontend assets: changing anything under `frontend/` and rebuilding requires
 `docker compose up -d --build --renew-anon-volumes` (the dev container surfaces the

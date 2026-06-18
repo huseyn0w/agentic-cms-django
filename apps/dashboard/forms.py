@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -7,6 +9,7 @@ from parler.forms import TranslatableModelForm
 
 from apps.content.models import Category, Page, Post, Tag
 from apps.core.models import SiteSettings
+from apps.seo.models import SeoSettings
 
 User = get_user_model()
 
@@ -23,12 +26,23 @@ class PostForm(TranslatableModelForm):
             "status",
             "categories",
             "tags",
+            # SEO (per language for meta_title/description; shared otherwise)
+            "meta_title",
+            "meta_description",
+            "canonical_url",
+            "og_image",
+            "noindex",
         ]
         widgets = {
             "body": forms.HiddenInput(),  # driven by the Trix editor in the template
             "excerpt": forms.Textarea(attrs={"rows": 3}),
+            "meta_description": forms.Textarea(attrs={"rows": 2}),
         }
-        help_texts = {"slug": "Leave blank to generate from the title."}
+        help_texts = {
+            "slug": "Leave blank to generate from the title.",
+            "meta_title": "Overrides the page title in search results (≤70 chars).",
+            "meta_description": "Shown in search results; falls back to the excerpt.",
+        }
 
     def __init__(self, *args, can_publish: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,8 +57,23 @@ class PostForm(TranslatableModelForm):
 class PageForm(TranslatableModelForm):
     class Meta:
         model = Page
-        fields = ["title", "slug", "body", "template", "status", "parent"]
-        widgets = {"body": forms.HiddenInput()}
+        fields = [
+            "title",
+            "slug",
+            "body",
+            "template",
+            "status",
+            "parent",
+            "meta_title",
+            "meta_description",
+            "canonical_url",
+            "og_image",
+            "noindex",
+        ]
+        widgets = {
+            "body": forms.HiddenInput(),
+            "meta_description": forms.Textarea(attrs={"rows": 2}),
+        }
         help_texts = {"slug": "Leave blank to generate from the title."}
 
     def __init__(self, *args, **kwargs):
@@ -93,3 +122,32 @@ class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         fields = ["site_name", "tagline", "posts_per_page"]
+
+
+class SeoSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SeoSettings
+        fields = [
+            "og_site_name",
+            "default_og_image",
+            "default_meta_description",
+            "twitter_handle",
+            "google_analytics_id",
+            "google_tag_manager_id",
+            "google_site_verification",
+            "bing_site_verification",
+            "discourage_search",
+        ]
+        widgets = {"default_meta_description": forms.Textarea(attrs={"rows": 2})}
+
+    def clean_google_analytics_id(self) -> str:
+        value = self.cleaned_data["google_analytics_id"].strip()
+        if value and not re.fullmatch(r"G-[A-Z0-9]+", value):
+            raise forms.ValidationError("Expected a Measurement ID like G-XXXXXXXXXX.")
+        return value
+
+    def clean_google_tag_manager_id(self) -> str:
+        value = self.cleaned_data["google_tag_manager_id"].strip()
+        if value and not re.fullmatch(r"GTM-[A-Z0-9]+", value):
+            raise forms.ValidationError("Expected a container ID like GTM-XXXXXXX.")
+        return value

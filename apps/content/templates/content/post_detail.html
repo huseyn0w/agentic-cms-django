@@ -1,8 +1,9 @@
 {% extends "public_base.html" %}
-{% load plugin_hooks %}
+{% load plugin_hooks seo_tags %}
 
-{% block title %}{{ post.title }} · DjangoPress{% endblock %}
-{% block meta_description %}{{ post.excerpt|default:post.title }}{% endblock %}
+{% block title %}{{ post.seo_title }} · {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ post.seo_description }}{% endblock %}
+{% block seo_head %}{% seo_head post "article" %}{% endblock %}
 
 {% block main %}
 <article class="prose-dp">

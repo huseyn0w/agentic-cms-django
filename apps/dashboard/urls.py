@@ -39,4 +39,5 @@ urlpatterns = [
     path("plugins/<slug:slug>/toggle/", views.PluginToggleView.as_view(), name="plugin_toggle"),
     # Settings
     path("settings/", views.SettingsView.as_view(), name="settings"),
+    path("settings/seo/", views.SeoSettingsView.as_view(), name="seo_settings"),
 ]

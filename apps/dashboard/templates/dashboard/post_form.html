@@ -21,6 +21,17 @@
         <trix-editor input="{{ form.body.id_for_label }}"></trix-editor>
         {% for error in form.body.errors %}<p class="mt-1 text-sm text-accent">{{ error }}</p>{% endfor %}
       </div>
+
+      <details class="rounded-2xl border border-ink/10 bg-white p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
+        <summary class="cursor-pointer text-sm font-semibold text-ink">SEO &amp; sharing</summary>
+        <div class="mt-4 space-y-5">
+          {% include "dashboard/_field.html" with field=form.meta_title %}
+          {% include "dashboard/_field.html" with field=form.meta_description %}
+          {% include "dashboard/_field.html" with field=form.canonical_url %}
+          {% include "dashboard/_field.html" with field=form.og_image %}
+          {% include "dashboard/_field.html" with field=form.noindex %}
+        </div>
+      </details>
     </div>
 
     <!-- Meta sidebar -->

@@ -2,6 +2,8 @@
 
 {% block title %}{{ heading|default:"Dashboard" }} · {{ site.site_name }} admin{% endblock %}
 
+{# The admin is private: no public SEO meta or analytics here. #}
+{% block seo_head %}{% endblock %}
 {% block extra_head %}{% load django_vite %}{% vite_asset 'src/admin.js' %}{% endblock %}
 
 {% block body %}
@@ -26,6 +28,7 @@
       {% if perms.accounts.manage_users %}{% include "dashboard/_navlink.html" with key="users" url="dashboard:user_list" label="Users" %}{% endif %}
       {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="appearance" url="dashboard:themes" label="Appearance" %}{% endif %}
       {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="plugins" url="dashboard:plugins" label="Plugins" %}{% endif %}
+      {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="seo" url="dashboard:seo_settings" label="SEO" %}{% endif %}
       {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="settings" url="dashboard:settings" label="Settings" %}{% endif %}
     </nav>
   </aside>

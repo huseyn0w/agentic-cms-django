@@ -1,5 +1,5 @@
 {% load django_vite %}<!doctype html>
-<html lang="en" class="h-full">
+<html lang="{{ i18n_current_language|default:'en' }}" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,6 +10,8 @@
     />
     {% vite_hmr_client %}
     {% vite_asset 'src/main.js' %}
+    {# SEO/GEO head meta. The dashboard overrides this block to stay out of analytics. #}
+    {% block seo_head %}{% load seo_tags %}{% seo_head %}{% endblock %}
     {% block extra_head %}{% endblock %}
   </head>
   <body class="h-full bg-paper text-ink antialiased">

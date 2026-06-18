@@ -20,9 +20,18 @@ from apps.content.models import Category, Page, Post, Status, Tag
 from apps.core.models import SiteSettings
 from apps.media.models import MediaAsset
 from apps.plugins import registry as plugins
+from apps.seo.models import SeoSettings
 from apps.themes import registry as themes
 
-from .forms import CategoryForm, PageForm, PostForm, SiteSettingsForm, TagForm, UserRoleForm
+from .forms import (
+    CategoryForm,
+    PageForm,
+    PostForm,
+    SeoSettingsForm,
+    SiteSettingsForm,
+    TagForm,
+    UserRoleForm,
+)
 from .mixins import AdminAccessMixin
 
 User = get_user_model()
@@ -432,4 +441,20 @@ class SettingsView(AdminAccessMixin, SectionMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Settings saved.")
+        return super().form_valid(form)
+
+
+class SeoSettingsView(AdminAccessMixin, SectionMixin, UpdateView):
+    permission_required = ("accounts.access_admin", "accounts.manage_settings")
+    form_class = SeoSettingsForm
+    template_name = "dashboard/seo_settings.html"
+    success_url = reverse_lazy("dashboard:seo_settings")
+    section = "seo"
+    heading = "SEO"
+
+    def get_object(self, queryset=None) -> SeoSettings:
+        return SeoSettings.load()
+
+    def form_valid(self, form):
+        messages.success(self.request, "SEO settings saved.")
         return super().form_valid(form)
