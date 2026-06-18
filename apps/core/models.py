@@ -14,6 +14,9 @@ class SiteSettings(models.Model):
     tagline = models.CharField(_("tagline"), max_length=200, blank=True)
     posts_per_page = models.PositiveIntegerField(_("posts per page"), default=10)
     active_theme = models.SlugField(_("active theme"), max_length=50, default="default")
+    # Comments (Phase 9)
+    allow_comments = models.BooleanField(_("allow comments"), default=True)
+    comments_require_login = models.BooleanField(_("require login to comment"), default=False)
 
     class Meta:
         verbose_name = _("site settings")

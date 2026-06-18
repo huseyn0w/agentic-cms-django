@@ -57,11 +57,13 @@ config/            # Django project: settings split (base/dev/prod/test), urls, 
   settings/
 apps/              # Django apps, one per bounded concern
   accounts/        # custom User, roles (Groups), permissions, allauth + Google
-  content/         # posts, pages, categories, tags, revisions, sanitization
+  content/         # posts, pages, services, categories, tags, revisions, sanitization
   media/           # media library: uploads, validation, thumbnails
   dashboard/       # custom WordPress-style admin panel (own UI)
   themes/          # theme registry + runtime template loader
   plugins/         # hook registry + plugin enable/disable
+  seo/             # SEO/GEO: settings, meta/JSON-LD, sitemap, robots, llms.txt
+  comments/        # threaded, moderated comments on posts
   core/            # landing page, SiteSettings, shared bits
 themes/            # the themes themselves (default, midnight), each a template set
 plugins/           # the plugins themselves (e.g. reading_time), each a Django app
@@ -285,6 +287,22 @@ control it per page and site-wide:
   `FAQPage` JSON-LD so assistants can extract what you offer, where, and answer common questions.
   Managed in Dashboard → Services (multilingual, with its own SEO fields).
 
+## Comments
+
+Posts support **threaded, moderated comments** (`comments` app):
+
+- Visitors comment from the post page; logged-in users comment under their account name,
+  guests provide a name (email optional). Replies thread under their parent.
+- Every comment starts **pending** and only appears publicly once **approved** — moderated
+  in Dashboard → Comments (approve / mark spam / delete), gated by the
+  `comments.moderate_comment` permission (Administrators and Editors by default).
+- Comment bodies are plain text, always rendered escaped (no HTML is interpreted), so
+  comments can't inject markup.
+- Two switches in Dashboard → Settings: **Allow comments** (site-wide) and **Require login
+  to comment**.
+
+reCAPTCHA spam protection for the comment form lands in the next Phase 9 slice.
+
 ## Configuration
 
 All configuration is via environment variables (see [.env.example](.env.example)); no
@@ -309,7 +327,7 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
    ✅ 8.3 JSON-LD (Organization, WebSite, Article, Person, BreadcrumbList) ·
    ✅ 8.4 sitemap.xml (hreflang), AI-crawler robots.txt, llms.txt / llms-full.txt ·
    ✅ 8.5 GEO Service page type (Service + FAQPage schema, Q&A, area/pricing facts)
-9. Comments, search, recaptcha spam protection
+9. Comments, search, recaptcha spam protection — ✅ 9.1 threaded moderated comments
 10. Public site rendering + the luxury frontend
 11. AI integration — MCP server (FastMCP)
 12. Production deployment (VPS + shared hosting) + demo seed data

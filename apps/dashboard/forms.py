@@ -156,7 +156,13 @@ class UserRoleForm(forms.ModelForm):
 class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
-        fields = ["site_name", "tagline", "posts_per_page"]
+        fields = [
+            "site_name",
+            "tagline",
+            "posts_per_page",
+            "allow_comments",
+            "comments_require_login",
+        ]
 
 
 class SeoSettingsForm(forms.ModelForm):

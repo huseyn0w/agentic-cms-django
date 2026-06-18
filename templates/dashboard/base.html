@@ -27,6 +27,7 @@
       {% if perms.content.view_category %}{% include "dashboard/_navlink.html" with key="categories" url="dashboard:category_list" label="Categories" %}{% endif %}
       {% if perms.content.view_tag %}{% include "dashboard/_navlink.html" with key="tags" url="dashboard:tag_list" label="Tags" %}{% endif %}
       {% if perms.media.view_mediaasset %}{% include "dashboard/_navlink.html" with key="media" url="media:library" label="Media" %}{% endif %}
+      {% if perms.comments.moderate_comment %}{% include "dashboard/_navlink.html" with key="comments" url="dashboard:comment_list" label="Comments" %}{% endif %}
       {% if perms.accounts.manage_users %}{% include "dashboard/_navlink.html" with key="users" url="dashboard:user_list" label="Users" %}{% endif %}
       {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="appearance" url="dashboard:themes" label="Appearance" %}{% endif %}
       {% if perms.accounts.manage_settings %}{% include "dashboard/_navlink.html" with key="plugins" url="dashboard:plugins" label="Plugins" %}{% endif %}

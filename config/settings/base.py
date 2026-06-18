@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "apps.themes",
     "apps.plugins",
     "apps.seo",
+    "apps.comments",
     "apps.core",
     # Plugins (live in the top-level plugins/ directory)
     "plugins.reading_time",

@@ -51,4 +51,46 @@
     </footer>
   {% endif %}
 </article>
+
+{% if comments_enabled %}
+  <section id="comments" class="mx-auto mt-16 max-w-3xl" x-data="{ replyTo: '', replyToName: '' }">
+    <h2 class="text-2xl font-semibold tracking-tight">Comments</h2>
+
+    {% if comments %}
+      <ul class="mt-6 space-y-6">
+        {% for comment in comments %}
+          {% include "content/_comment.html" with comment=comment %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="mt-6 text-ink/50">Be the first to comment.</p>
+    {% endif %}
+
+    {% if comments_require_login and not user.is_authenticated %}
+      <p class="mt-8 text-sm text-ink/60">
+        Please <a class="text-accent hover:underline" href="{% url 'account_login' %}?next={{ request.path }}">sign in</a> to comment.
+      </p>
+    {% else %}
+      <form method="post" action="{{ post.get_absolute_url }}#comments" class="dp-form mt-8 space-y-4">
+        {% csrf_token %}
+        <h3 class="text-lg font-medium">Leave a comment</h3>
+        <p x-show="replyTo" class="text-sm text-ink/60" x-cloak>
+          Replying to <span x-text="replyToName" class="font-medium"></span> —
+          <button type="button" class="text-accent hover:underline" @click="replyTo=''; replyToName=''">cancel</button>
+        </p>
+        <input type="hidden" name="parent" :value="replyTo" />
+        {% if comment_form.name %}
+          <div class="grid gap-4 sm:grid-cols-2">
+            {% include "dashboard/_field.html" with field=comment_form.name %}
+            {% include "dashboard/_field.html" with field=comment_form.email %}
+          </div>
+        {% endif %}
+        {% include "dashboard/_field.html" with field=comment_form.body %}
+        <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
+          Post comment
+        </button>
+      </form>
+    {% endif %}
+  </section>
+{% endif %}
 {% endblock %}

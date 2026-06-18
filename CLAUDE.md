@@ -151,6 +151,20 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     `seo_jsonld` tag's `"service"` branch emits Service+FAQPage+BreadcrumbList. A
     freeform `price` is deliberately NOT emitted as a schema.org `Offer` (invalid
     without numeric price/currency) — it stays a visible on-page fact.
+  - `apps.comments` — threaded, moderated comments on posts (Phase 9). `Comment`
+    (post FK, self-FK `parent`, nullable `user`, `name`/`email` for guests, plain-text
+    `body`, `status` pending/approved/spam — default pending). Bodies are ALWAYS
+    rendered autoescaped (`{{ comment.body }}`, never `|safe`) — markup shows as text,
+    so no HTML sanitisation. `moderate_comment` is a custom perm (roles.py already
+    grants Admin/Editor the comment perms). Public submission is handled by
+    `PostDetailView.post()` (posts to the post's own URL, so the language prefix is
+    kept): guests/logged-in both go to `pending`; logged-in identity comes from the
+    account (name/email fields are dropped). `CommentForm.parent` queryset is scoped
+    to APPROVED comments on the same post, so a reply can't target another post or an
+    unmoderated comment. Gated by `SiteSettings.allow_comments` /
+    `comments_require_login`. Moderation UI at Dashboard → Comments
+    (`CommentListView` + `CommentModerateView`, approve/spam/delete, gated by
+    `comments.moderate_comment`). (9.2 search, 9.3 reCAPTCHA land next.)
 
 Frontend assets: changing anything under `frontend/` and rebuilding requires
 `docker compose up -d --build --renew-anon-volumes` (the dev container surfaces the

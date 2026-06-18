@@ -42,6 +42,13 @@ urlpatterns = [
     # Plugins
     path("plugins/", views.PluginListView.as_view(), name="plugins"),
     path("plugins/<slug:slug>/toggle/", views.PluginToggleView.as_view(), name="plugin_toggle"),
+    # Comments (moderation)
+    path("comments/", views.CommentListView.as_view(), name="comment_list"),
+    path(
+        "comments/<int:pk>/<str:action>/",
+        views.CommentModerateView.as_view(),
+        name="comment_moderate",
+    ),
     # Settings
     path("settings/", views.SettingsView.as_view(), name="settings"),
     path("settings/seo/", views.SeoSettingsView.as_view(), name="seo_settings"),

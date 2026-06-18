@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db.models import Count, QuerySet
-from django.shortcuts import redirect
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -16,6 +17,7 @@ from django.views.generic import (
 )
 from parler.views import TranslatableModelFormMixin
 
+from apps.comments.models import Comment, CommentStatus
 from apps.content.models import Category, Page, Post, Service, Status, Tag
 from apps.core.models import SiteSettings
 from apps.media.models import MediaAsset
@@ -508,3 +510,53 @@ class SeoSettingsView(AdminAccessMixin, SectionMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "SEO settings saved.")
         return super().form_valid(form)
+
+
+# --------------------------------------------------------------------------- #
+# Comment moderation
+# --------------------------------------------------------------------------- #
+class CommentListView(AdminAccessMixin, SectionMixin, ListView):
+    permission_required = ("accounts.access_admin", "comments.moderate_comment")
+    template_name = "dashboard/comment_list.html"
+    context_object_name = "comments"
+    paginate_by = 30
+    section = "comments"
+    heading = "Comments"
+
+    def get_queryset(self) -> QuerySet:
+        qs = Comment.objects.select_related("post", "user").order_by("-created_at")
+        self.status = self.request.GET.get("status")
+        if self.status in CommentStatus.values:
+            qs = qs.filter(status=self.status)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["status"] = self.status
+        ctx["statuses"] = CommentStatus.choices
+        ctx["pending_count"] = Comment.objects.pending().count()
+        return ctx
+
+
+class CommentModerateView(AdminAccessMixin, View):
+    permission_required = ("accounts.access_admin", "comments.moderate_comment")
+    http_method_names = ["post"]
+
+    _ACTIONS = {
+        "approve": (CommentStatus.APPROVED, "Comment approved."),
+        "spam": (CommentStatus.SPAM, "Comment marked as spam."),
+    }
+
+    def post(self, request, pk: int, action: str):
+        comment = get_object_or_404(Comment, pk=pk)
+        if action == "delete":
+            comment.delete()
+            messages.success(request, "Comment deleted.")
+        elif action in self._ACTIONS:
+            status, message = self._ACTIONS[action]
+            comment.status = status
+            comment.save(update_fields=["status"])
+            messages.success(request, message)
+        else:
+            raise Http404
+        return redirect("dashboard:comment_list")
