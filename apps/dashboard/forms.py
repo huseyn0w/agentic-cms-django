@@ -151,3 +151,12 @@ class SeoSettingsForm(forms.ModelForm):
         if value and not re.fullmatch(r"GTM-[A-Z0-9]+", value):
             raise forms.ValidationError("Expected a container ID like GTM-XXXXXXX.")
         return value
+
+    def clean_social_profiles(self) -> str:
+        # These become schema.org sameAs URLs; only allow real http(s) links.
+        lines = [ln.strip() for ln in self.cleaned_data["social_profiles"].splitlines()]
+        cleaned = [ln for ln in lines if ln]
+        for url in cleaned:
+            if not url.startswith(("http://", "https://")):
+                raise forms.ValidationError(f"“{url}” must be a full http(s) URL.")
+        return "\n".join(cleaned)

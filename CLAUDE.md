@@ -122,7 +122,16 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     dashboard base and allauth layout override it to opt OUT (no public meta or
     analytics on private/auth pages). All meta values are operator-supplied and
     autoescaped; GA/GTM IDs are format-validated in `SeoSettingsForm`.
-    (8.3 JSON-LD, 8.4 sitemap/robots.txt/llms.txt, 8.5 Service page type land here.)
+    **JSON-LD (8.3):** `jsonld.py` has pure dict builders (Organization, WebSite,
+    Person, Article, BreadcrumbList); the `{% seo_jsonld obj og_type %}` tag
+    assembles them (Organization+WebSite everywhere; +Article+BreadcrumbList on
+    posts) and serialises each with `_dump_ld` — `json.dumps` then escaping
+    `< > &` to `<>&` so a value can't break out of the
+    `<script type="application/ld+json">` block (mark_safe is only applied AFTER
+    that escaping — keep it). Rendered via a separate `{% block seo_jsonld %}` with
+    the same dashboard/allauth opt-out. Organization data comes from `SeoSettings`
+    (`organization_logo`, `social_profiles` → `sameAs`, validated http(s) in the form).
+    (8.4 sitemap/robots.txt/llms.txt, 8.5 Service page type land here.)
 
 Frontend assets: changing anything under `frontend/` and rebuilding requires
 `docker compose up -d --build --renew-anon-volumes` (the dev container surfaces the

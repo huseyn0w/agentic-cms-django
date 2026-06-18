@@ -4,6 +4,7 @@
 {% block title %}{{ page.seo_title }} · {{ site.site_name }}{% endblock %}
 {% block meta_description %}{{ page.seo_description }}{% endblock %}
 {% block seo_head %}{% seo_head page "website" %}{% endblock %}
+{% block seo_jsonld %}{% seo_jsonld page "website" %}{% endblock %}
 
 {% block main %}
 <article>

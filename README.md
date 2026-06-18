@@ -4,8 +4,9 @@ An open-source, WordPress-style CMS built on Python/Django — lighter, faster, 
 and easy to read, understand, and extend.
 
 > **Status:** Phases 1–7 complete (Foundation, Accounts, Content, Media, Admin, Themes, Plugins).
-> Phase 8 (SEO/GEO) in progress — slices 8.1 (multilingual + hreflang) and 8.2 (SEO core: meta/OG/Twitter,
-> canonical, robots, per-content SEO fields, SEO settings) shipped. See the roadmap below.
+> Phase 8 (SEO/GEO) in progress — slices 8.1 (multilingual + hreflang), 8.2 (SEO core: meta/OG/Twitter,
+> canonical, robots, per-content SEO fields, SEO settings) and 8.3 (JSON-LD structured data) shipped.
+> See the roadmap below.
 
 ## Stack
 
@@ -261,8 +262,15 @@ control it per page and site-wide:
   tokens, and a **Discourage search engines** switch that applies a site-wide `noindex`
   (handy for staging).
 
-Structured data (JSON-LD), `sitemap.xml`, an AI-crawler `robots.txt`, `llms.txt`, and a
-GEO-optimized Service page type follow in the remaining Phase 8 slices.
+- **Structured data (JSON-LD)** — every public page carries `Organization` and `WebSite`
+  schema; posts add `Article` (with `Person` author and `Organization` publisher) and a
+  `BreadcrumbList`. This is how answer engines (ChatGPT, Perplexity, Google AI Overviews)
+  extract who you are and what a page is about. Organization identity (logo + social
+  profiles → `sameAs`) is set in Dashboard → SEO. Values are escaped so structured data
+  can't be used to inject markup.
+
+`sitemap.xml`, an AI-crawler `robots.txt`, `llms.txt`, and a GEO-optimized Service page
+type follow in the remaining Phase 8 slices.
 
 ## Configuration
 
@@ -284,7 +292,8 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
    robots.txt with AI-crawler policy, `llms.txt`, hreflang, multilingual, GEO-optimized
    page type (see [SEO & GEO](#seo--geo-generative-engine-optimization)).
    ✅ 8.1 multilingual content (django-parler) + hreflang + language switcher ·
-   ✅ 8.2 SEO core (per-content meta/OG/Twitter, canonical, robots, SEO settings)
+   ✅ 8.2 SEO core (per-content meta/OG/Twitter, canonical, robots, SEO settings) ·
+   ✅ 8.3 JSON-LD (Organization, WebSite, Article, Person, BreadcrumbList)
 9. Comments, search, recaptcha spam protection
 10. Public site rendering + the luxury frontend
 11. AI integration — MCP server (FastMCP)

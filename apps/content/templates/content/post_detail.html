@@ -4,6 +4,7 @@
 {% block title %}{{ post.seo_title }} · {{ site.site_name }}{% endblock %}
 {% block meta_description %}{{ post.seo_description }}{% endblock %}
 {% block seo_head %}{% seo_head post "article" %}{% endblock %}
+{% block seo_jsonld %}{% seo_jsonld post "article" %}{% endblock %}
 
 {% block main %}
 <article class="prose-dp">

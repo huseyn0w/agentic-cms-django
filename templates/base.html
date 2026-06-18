@@ -12,6 +12,8 @@
     {% vite_asset 'src/main.js' %}
     {# SEO/GEO head meta. The dashboard overrides this block to stay out of analytics. #}
     {% block seo_head %}{% load seo_tags %}{% seo_head %}{% endblock %}
+    {# schema.org JSON-LD. Same opt-out as seo_head on private/auth pages. #}
+    {% block seo_jsonld %}{% load seo_tags %}{% seo_jsonld %}{% endblock %}
     {% block extra_head %}{% endblock %}
   </head>
   <body class="h-full bg-paper text-ink antialiased">

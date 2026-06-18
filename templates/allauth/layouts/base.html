@@ -3,8 +3,9 @@
 
 {% block title %}{% block head_title %}{% endblock head_title %} · DjangoPress{% endblock %}
 
-{# Auth pages aren't marketing content: no public SEO meta or analytics. #}
+{# Auth pages aren't marketing content: no public SEO meta, structured data or analytics. #}
 {% block seo_head %}<meta name="robots" content="noindex,nofollow" />{% endblock %}
+{% block seo_jsonld %}{% endblock %}
 
 {% block body %}
 <main class="relative flex min-h-full items-center justify-center px-6 py-16">

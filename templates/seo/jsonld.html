@@ -1,0 +1,3 @@
+{% comment %}schema.org structured data. Each block is pre-serialised and escaped in the seo_jsonld tag.{% endcomment %}
+{% for block in jsonld_blocks %}<script type="application/ld+json">{{ block }}</script>
+{% endfor %}

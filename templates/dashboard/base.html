@@ -2,8 +2,9 @@
 
 {% block title %}{{ heading|default:"Dashboard" }} · {{ site.site_name }} admin{% endblock %}
 
-{# The admin is private: no public SEO meta or analytics here. #}
+{# The admin is private: no public SEO meta, structured data or analytics here. #}
 {% block seo_head %}{% endblock %}
+{% block seo_jsonld %}{% endblock %}
 {% block extra_head %}{% load django_vite %}{% vite_asset 'src/admin.js' %}{% endblock %}
 
 {% block body %}

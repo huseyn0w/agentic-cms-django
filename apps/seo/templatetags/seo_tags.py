@@ -8,9 +8,15 @@ with arguments) and handed to seo/head.html.
 
 from __future__ import annotations
 
+import json
+
 from django import template
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import get_language
 
 from apps.core.models import SiteSettings
+from apps.seo import jsonld
 from apps.seo.models import SeoSettings
 
 register = template.Library()
@@ -20,6 +26,48 @@ def _abs(request, url: str) -> str:
     if not url:
         return ""
     return request.build_absolute_uri(url) if request is not None else url
+
+
+def _dump_ld(data: dict) -> str:
+    """Serialise a JSON-LD node, escaping the characters that could break out of
+    the surrounding <script> tag (same approach as Django's json_script)."""
+    text = json.dumps(data, ensure_ascii=False)
+    text = text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+    return mark_safe(text)  # noqa: S308 - escaped above; safe inside <script type=ld+json>
+
+
+@register.inclusion_tag("seo/jsonld.html", takes_context=True)
+def seo_jsonld(context, obj=None, og_type: str = "website"):
+    request = context.get("request")
+    seo = SeoSettings.load()
+    site = SiteSettings.load()
+    language = get_language() or ""
+
+    def abs_url(url: str) -> str:
+        return _abs(request, url)
+
+    # Organization + WebSite identify the brand entity on every public page.
+    nodes = [
+        jsonld.organization_schema(seo, site, abs_url),
+        jsonld.website_schema(seo, site, abs_url),
+    ]
+
+    if obj is not None and og_type == "article":
+        nodes.append(jsonld.article_schema(obj, seo, site, abs_url, language))
+        crumbs = [
+            ("Home", abs_url("/")),
+            ("Blog", abs_url(reverse("content:post_list"))),
+            (obj.seo_title(), obj.canonical_url or abs_url(obj.get_absolute_url())),
+        ]
+        nodes.append(jsonld.breadcrumb_schema(crumbs))
+    elif obj is not None:
+        crumbs = [
+            ("Home", abs_url("/")),
+            (obj.seo_title(), obj.canonical_url or abs_url(obj.get_absolute_url())),
+        ]
+        nodes.append(jsonld.breadcrumb_schema(crumbs))
+
+    return {"jsonld_blocks": [_dump_ld(node) for node in nodes]}
 
 
 @register.inclusion_tag("seo/head.html", takes_context=True)

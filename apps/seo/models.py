@@ -46,6 +46,20 @@ class SeoSettings(models.Model):
         help_text=_("e.g. @yourbrand — used for twitter:site."),
     )
 
+    # Organization (JSON-LD) — the brand entity answer engines attach facts to.
+    organization_logo = models.ImageField(
+        _("organization logo"),
+        upload_to="seo/",
+        blank=True,
+        null=True,
+        help_text=_("Square-ish logo used in Organization structured data."),
+    )
+    social_profiles = models.TextField(
+        _("social profile URLs"),
+        blank=True,
+        help_text=_("One URL per line (Twitter, LinkedIn, …) — emitted as schema.org sameAs."),
+    )
+
     # Analytics / verification
     google_analytics_id = models.CharField(
         _("Google Analytics ID"), max_length=20, blank=True, help_text=_("e.g. G-XXXXXXXXXX")
@@ -87,6 +101,10 @@ class SeoSettings(models.Model):
             settings_obj, _created = cls.objects.get_or_create(pk=1)
             cache.set(_CACHE_KEY, settings_obj)
         return settings_obj
+
+    def social_profile_list(self) -> list[str]:
+        """The social_profiles textarea split into a clean list of URLs (sameAs)."""
+        return [line.strip() for line in self.social_profiles.splitlines() if line.strip()]
 
 
 class SeoFieldsMixin:
