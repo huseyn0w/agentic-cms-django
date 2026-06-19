@@ -21,6 +21,17 @@
     <nav class="flex items-center gap-6 text-sm text-ink/60">
       <a class="transition-colors hover:text-ink" href="{% url 'content:service_list' %}">Services</a>
       <a class="transition-colors hover:text-ink" href="{% url 'content:post_list' %}">Blog</a>
+      <form method="get" action="{% url 'search:results' %}" role="search" class="hidden sm:block">
+        <label for="header-search" class="sr-only">Search</label>
+        <input
+          id="header-search"
+          type="search"
+          name="q"
+          value="{{ request.GET.q }}"
+          placeholder="Search…"
+          class="w-32 rounded-full border border-ink/15 bg-paper px-3 py-1 text-sm text-ink placeholder:text-ink/40 transition-[width] focus:w-44 focus:border-accent focus:outline-none"
+        />
+      </form>
       {% if i18n_alternates|length > 1 %}
         <div class="flex items-center gap-2" aria-label="Language">
           {% for alt in i18n_alternates %}

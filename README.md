@@ -64,6 +64,7 @@ apps/              # Django apps, one per bounded concern
   plugins/         # hook registry + plugin enable/disable
   seo/             # SEO/GEO: settings, meta/JSON-LD, sitemap, robots, llms.txt
   comments/        # threaded, moderated comments on posts
+  search/          # public full-text search over posts and pages
   core/            # landing page, SiteSettings, shared bits
 themes/            # the themes themselves (default, midnight), each a template set
 plugins/           # the plugins themselves (e.g. reading_time), each a Django app
@@ -303,6 +304,22 @@ Posts support **threaded, moderated comments** (`comments` app):
 
 reCAPTCHA spam protection for the comment form lands in the next Phase 9 slice.
 
+## Search
+
+Visitors search published **posts and pages** from the header search box or directly at
+`/search/?q=…` (the `search` app):
+
+- On **PostgreSQL** it uses native full-text search with relevance ranking
+  (`SearchVector` / `SearchQuery` / `SearchRank`); on any other database (MySQL on shared
+  hosting, SQLite) it falls back to a portable `icontains` match — the engine is chosen
+  automatically at query time.
+- Multilingual-aware: it searches the **current language's** translation only, so a German
+  term doesn't surface an English-only article. The results page is language-prefixed like
+  the rest of the public site (`/de/search/`).
+- Results exclude drafts and any content marked **hide from search engines** (`noindex`),
+  matching the sitemap/crawler surface. The list is paginated; the query is reflected
+  safely (autoescaped) and capped in length.
+
 ## Configuration
 
 All configuration is via environment variables (see [.env.example](.env.example)); no
@@ -327,7 +344,8 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
    ✅ 8.3 JSON-LD (Organization, WebSite, Article, Person, BreadcrumbList) ·
    ✅ 8.4 sitemap.xml (hreflang), AI-crawler robots.txt, llms.txt / llms-full.txt ·
    ✅ 8.5 GEO Service page type (Service + FAQPage schema, Q&A, area/pricing facts)
-9. Comments, search, recaptcha spam protection — ✅ 9.1 threaded moderated comments
+9. Comments, search, recaptcha spam protection — ✅ 9.1 threaded moderated comments ·
+   ✅ 9.2 site search (Postgres full-text + `icontains` fallback, multilingual, `/search/`)
 10. Public site rendering + the luxury frontend
 11. AI integration — MCP server (FastMCP)
 12. Production deployment (VPS + shared hosting) + demo seed data

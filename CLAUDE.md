@@ -164,7 +164,23 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     unmoderated comment. Gated by `SiteSettings.allow_comments` /
     `comments_require_login`. Moderation UI at Dashboard → Comments
     (`CommentListView` + `CommentModerateView`, approve/spam/delete, gated by
-    `comments.moderate_comment`). (9.2 search, 9.3 reCAPTCHA land next.)
+    `comments.moderate_comment`). (9.3 reCAPTCHA lands next.)
+  - `apps.search` — public site search over published Posts and Pages (Phase 9.2).
+    `services.search_content(query, language_code)` is the single entry point: it
+    searches the translated title/body (+ Post excerpt) of the **active language's**
+    translation row only (`translations__language_code=code`), returns a flat,
+    relevance-sorted list of mixed Post/Page instances each carrying `search_rank`,
+    `search_type` and a normalised `search_excerpt`. Backend chosen at query time on
+    `connection.vendor`: PostgreSQL uses `SearchVector`/`SearchQuery`/`SearchRank`
+    (ranked); every other engine (incl. the SQLite test DB — so the fallback is what
+    tests exercise) uses a DB-agnostic `icontains` OR-match. Always excludes drafts
+    AND `noindex` items (consistent with the sitemap/crawler surface); query capped at
+    200 chars (cheap DoS guard). `django.contrib.postgres` is deliberately NOT in
+    `INSTALLED_APPS` — the search expressions are plain ORM and work without it
+    (verified on Postgres), and adding it would impose postgres-only checks on the
+    SQLite test env. Public results page (paginated, `paginate_by=10`) at `/search/?q=`
+    (inside `i18n_patterns`, so `/de/search/` works); a search box lives in the
+    `public_base.html` header.
 
 Frontend assets: changing anything under `frontend/` and rebuilding requires
 `docker compose up -d --build --renew-anon-volumes` (the dev container surfaces the

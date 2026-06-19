@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "apps.plugins",
     "apps.seo",
     "apps.comments",
+    "apps.search",
     "apps.core",
     # Plugins (live in the top-level plugins/ directory)
     "plugins.reading_time",

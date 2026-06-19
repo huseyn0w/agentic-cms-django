@@ -1,0 +1,60 @@
+{% extends "public_base.html" %}
+
+{% block title %}
+  {% if query %}Search · {{ query }}{% else %}Search{% endif %} · DjangoPress
+{% endblock %}
+
+{% block main %}
+<header class="mb-10">
+  <h1 class="text-4xl font-semibold tracking-tight text-ink">Search</h1>
+  <form method="get" action="{% url 'search:results' %}" role="search" class="mt-6">
+    <label for="search-q" class="sr-only">Search the site</label>
+    <input
+      id="search-q"
+      type="search"
+      name="q"
+      value="{{ query }}"
+      placeholder="Search posts and pages…"
+      autofocus
+      class="w-full rounded-lg border border-ink/15 bg-paper px-4 py-3 text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+    />
+  </form>
+</header>
+
+{% if query %}
+  <p class="mb-8 text-sm text-ink/50">
+    {{ paginator.count }} result{{ paginator.count|pluralize }} for “{{ query }}”
+  </p>
+  <div class="space-y-10">
+    {% for result in results %}
+      <article class="group">
+        <p class="mb-1 text-xs font-medium uppercase tracking-wide text-accent">{{ result.search_type }}</p>
+        <h2 class="text-2xl font-semibold tracking-tight">
+          <a class="transition-colors hover:text-accent" href="{{ result.get_absolute_url }}">{{ result.title }}</a>
+        </h2>
+        {% if result.search_excerpt %}
+          <p class="mt-2 text-pretty leading-relaxed text-ink/70">{{ result.search_excerpt }}</p>
+        {% endif %}
+        <a class="mt-2 inline-block text-sm font-medium text-accent underline-offset-4 hover:underline"
+           href="{{ result.get_absolute_url }}">View →</a>
+      </article>
+    {% empty %}
+      <p class="text-ink/60">No results for “{{ query }}”. Try a different search.</p>
+    {% endfor %}
+  </div>
+
+  {% if is_paginated %}
+    <nav class="mt-12 flex items-center justify-between text-sm text-ink/60">
+      {% if page_obj.has_previous %}
+        <a class="hover:text-ink" href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}">← Previous</a>
+      {% else %}<span></span>{% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="hover:text-ink" href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}">Next →</a>
+      {% else %}<span></span>{% endif %}
+    </nav>
+  {% endif %}
+{% else %}
+  <p class="text-ink/60">Enter a term above to search posts and pages.</p>
+{% endif %}
+{% endblock %}
