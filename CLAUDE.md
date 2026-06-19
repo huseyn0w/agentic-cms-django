@@ -223,9 +223,20 @@ rules, NOT `@layer`, unless they include their own `@tailwind` directives.
   IntersectionObserver fades it in once. Robust by construction: the hidden
   start-state is raw CSS (never purged) gated on BOTH `html.js` (set by main.js)
   AND `prefers-reduced-motion: no-preference`, so no-JS and reduced-motion visitors
-  always see fully-rendered content. No per-element directive needed.
-- `templates/` — project-level base templates (`base.html`, `public_base.html`,
-  `_theme_palette.html`).
+  always see fully-rendered content. No per-element directive needed. `.stagger`
+  gives direct children a short cascading delay. **Primitives in `styles.css`
+  (all raw CSS so dynamic/sanitized markup isn't purged):** `.dp-btn` +
+  `.dp-btn-primary`/`.dp-btn-ghost` (press `scale(0.97)`, hover lift gated to real
+  pointers, `--ease-out` curve); `.dp-prose` (Phase 10.3 long-form article
+  typography for nh3-sanitized post bodies); `.dp-form` (PUBLIC form styling —
+  the dashboard's `.dp-form` lives in the separate `admin.css` bundle that public
+  pages don't load, so the public comment form needs its own rules here);
+  `[x-cloak]` display:none (Alpine). `.dp-auth` styles the allauth screens.
+- `templates/` — project-level base templates. `base.html`; `public_base.html`
+  (content shell); the public landing extends `base.html` directly. The shell is
+  factored into partials shared by both so it can't drift: `_site_header.html`,
+  `_site_footer.html`, and `_public_head.html` (theme palette + hreflang). Themes
+  override `_theme_palette.html` only.
 - `docker/` — `entrypoint.sh` (waits for DB, migrates, then runs the CMD).
 - `requirements/` — `base.txt`, `dev.txt`, `prod.txt`.
 

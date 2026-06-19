@@ -79,3 +79,33 @@ def test_tag_archive(client, author):
     response = client.get(tag.get_absolute_url())
     assert response.status_code == 200
     assert b"Tagged" in response.content
+
+
+# --------------------------------------------------------------------------- #
+# Editorial reading experience (Phase 10.3)
+# --------------------------------------------------------------------------- #
+def test_post_detail_body_uses_prose_typography(client, author):
+    """The article body is wrapped in the dp-prose long-form type style."""
+    post = Post.objects.create(
+        title="Readable", body="<p>Hello.</p>", author=author, status=Status.PUBLISHED
+    )
+    html = client.get(post.get_absolute_url()).content
+    assert b"dp-prose" in html
+
+
+def test_post_detail_chrome_has_no_em_dash(client, author):
+    """No em-dash in the page chrome (the comment form 'Replying to' line)."""
+    post = Post.objects.create(
+        title="Clean", body="<p>x</p>", author=author, status=Status.PUBLISHED
+    )
+    html = client.get(post.get_absolute_url()).content.decode()
+    assert "—" not in html
+
+
+def test_comment_form_uses_button_primitive(client, author):
+    """The public comment form's submit uses the shared dp-btn primitive."""
+    post = Post.objects.create(
+        title="Talk", body="<p>x</p>", author=author, status=Status.PUBLISHED
+    )
+    html = client.get(post.get_absolute_url()).content
+    assert b"dp-btn-primary" in html

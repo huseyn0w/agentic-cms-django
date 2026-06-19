@@ -353,7 +353,9 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
 10. Public site rendering + the luxury frontend — 🚧 10.1 design foundation
     (self-hosted variable-font type system, scroll-reveal motion primitive,
     palette-only themes so the shell never drifts) · 🚧 10.2 editorial landing page
-    (hero, feature bento, real-content showcase, shared header/footer partials)
+    (hero, feature bento, real-content showcase, shared header/footer partials) ·
+    🚧 10.3 blog reading experience (long-form prose typography, editorial index,
+    polished comment thread)
 11. AI integration — MCP server (FastMCP)
 12. Production deployment (VPS + shared hosting) + demo seed data
 

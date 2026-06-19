@@ -1,49 +1,49 @@
 {% extends "public_base.html" %}
 
 {% block title %}
-  {% if taxonomy %}{{ taxonomy }} · {% endif %}Blog · DjangoPress
+  {% if taxonomy %}{{ taxonomy }} · {% endif %}Blog · {{ site.site_name }}
 {% endblock %}
 
 {% block main %}
-<header class="mb-12">
+<header class="mb-14 reveal">
   {% if taxonomy %}
-    <p class="mb-2 text-sm font-medium tracking-wide text-accent">Archive</p>
-    <h1 class="text-4xl font-semibold tracking-tight text-ink">{{ taxonomy }}</h1>
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">Archive</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{{ taxonomy }}</h1>
   {% else %}
-    <h1 class="text-4xl font-semibold tracking-tight text-ink">From the blog</h1>
-    <p class="mt-3 text-ink/60">Writing, notes, and updates.</p>
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">The blog</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">Writing, notes, and updates.</h1>
   {% endif %}
 </header>
 
-<div class="space-y-10">
+<div class="stagger divide-y divide-ink/10">
   {% for post in posts %}
-    <article class="group">
-      <h2 class="text-2xl font-semibold tracking-tight">
-        <a class="transition-colors hover:text-accent" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-      </h2>
-      <p class="mt-2 text-sm text-ink/50">
+    <article class="reveal group py-10 first:pt-0">
+      <p class="font-mono text-xs uppercase tracking-wide text-ink/40">
         {% if post.published_at %}{{ post.published_at|date:"M j, Y" }}{% endif %}
-        {% if post.author %}· {{ post.author.display_name }}{% endif %}
+        {% if post.author %}<span aria-hidden="true">·</span> {{ post.author.display_name }}{% endif %}
       </p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <a class="transition-colors group-hover:text-accent" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      </h2>
       {% if post.excerpt %}
-        <p class="mt-3 text-pretty leading-relaxed text-ink/70">{{ post.excerpt }}</p>
+        <p class="mt-3 max-w-2xl text-pretty leading-relaxed text-ink/65">{{ post.excerpt }}</p>
       {% endif %}
-      <a class="mt-3 inline-block text-sm font-medium text-accent underline-offset-4 hover:underline"
-         href="{{ post.get_absolute_url }}">Read more →</a>
+      <a class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent underline-offset-4 hover:underline"
+         href="{{ post.get_absolute_url }}">Read more<span class="sr-only"> about {{ post.title }}</span> <span aria-hidden="true">→</span></a>
     </article>
   {% empty %}
-    <p class="text-ink/60">No posts published yet.</p>
+    <p class="py-10 text-ink/60">No posts published yet.</p>
   {% endfor %}
 </div>
 
 {% if is_paginated %}
-  <nav class="mt-12 flex items-center justify-between text-sm text-ink/60">
+  <nav class="mt-14 flex items-center justify-between border-t border-ink/10 pt-6 font-mono text-xs uppercase tracking-wide text-ink/50">
     {% if page_obj.has_previous %}
-      <a class="hover:text-ink" href="?page={{ page_obj.previous_page_number }}">← Newer</a>
+      <a class="transition-colors hover:text-ink" href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Newer</a>
     {% else %}<span></span>{% endif %}
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-      <a class="hover:text-ink" href="?page={{ page_obj.next_page_number }}">Older →</a>
+      <a class="transition-colors hover:text-ink" href="?page={{ page_obj.next_page_number }}">Older <span aria-hidden="true">→</span></a>
     {% else %}<span></span>{% endif %}
   </nav>
 {% endif %}

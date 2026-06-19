@@ -13,6 +13,13 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* Alpine: hide x-cloak elements until Alpine initializes (and keep them hidden
+   for no-JS visitors, since they gate JS-only affordances). Raw CSS so the
+   attribute selector is never purged. */
+[x-cloak] {
+  display: none !important;
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
@@ -134,4 +141,78 @@
   .dp-auth ul {
     @apply list-none;
   }
+}
+
+/* Long-form article typography (raw CSS, never purged — the body is dynamic,
+   nh3-sanitized HTML whose tags Tailwind can't see at build time). Tuned for the
+   warm-paper palette and the Geist body / Space Grotesk heading pairing. */
+.dp-prose {
+  @apply text-lg leading-relaxed text-ink/80;
+}
+.dp-prose > * + * {
+  margin-top: 1.4em;
+}
+.dp-prose h2 {
+  @apply mb-0 mt-12 text-2xl font-semibold tracking-tight text-ink;
+}
+.dp-prose h3 {
+  @apply mb-0 mt-10 text-xl font-semibold tracking-tight text-ink;
+}
+.dp-prose h4 {
+  @apply mb-0 mt-8 text-lg font-semibold tracking-tight text-ink;
+}
+.dp-prose a {
+  @apply font-medium text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent;
+}
+.dp-prose strong {
+  @apply font-semibold text-ink;
+}
+.dp-prose ul {
+  @apply list-disc pl-6;
+}
+.dp-prose ol {
+  @apply list-decimal pl-6;
+}
+.dp-prose li + li {
+  margin-top: 0.5em;
+}
+.dp-prose blockquote {
+  @apply border-l-2 border-accent/40 pl-5 italic text-ink/70;
+}
+.dp-prose img {
+  @apply rounded-2xl;
+}
+.dp-prose code {
+  @apply rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[0.88em];
+}
+.dp-prose pre {
+  @apply overflow-x-auto rounded-2xl bg-ink/[0.04] p-5 text-sm leading-relaxed;
+}
+.dp-prose pre code {
+  @apply bg-transparent p-0;
+}
+.dp-prose hr {
+  @apply my-10 border-ink/10;
+}
+
+/* Public form styling (comment form). The dashboard's .dp-form lives in the
+   separate admin.css bundle, which public pages don't load — so the public
+   surfaces need their own, palette-aware rules here. */
+.dp-form label {
+  @apply mb-1.5 block text-sm font-medium text-ink/80;
+}
+.dp-form input[type="text"],
+.dp-form input[type="email"],
+.dp-form input[type="url"],
+.dp-form textarea {
+  @apply block w-full rounded-xl border border-ink/15 bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink/35;
+}
+.dp-form input[type="text"]:focus,
+.dp-form input[type="email"]:focus,
+.dp-form input[type="url"]:focus,
+.dp-form textarea:focus {
+  @apply border-accent ring-2 ring-accent/20;
+}
+.dp-form .helptext {
+  @apply mt-1 text-xs text-ink/45;
 }

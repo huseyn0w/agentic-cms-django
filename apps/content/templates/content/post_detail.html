@@ -7,76 +7,73 @@
 {% block seo_jsonld %}{% seo_jsonld post "article" %}{% endblock %}
 
 {% block main %}
-<article class="prose-dp">
+<article class="mx-auto max-w-2xl">
   {% if not post.is_published %}
-    <p class="mb-6 inline-block rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-      Draft preview
+    <p class="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> Draft preview
     </p>
   {% endif %}
 
   <header class="mb-10">
-    <h1 class="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{{ post.title }}</h1>
-    <p class="mt-4 text-sm text-ink/50">
-      {% if post.published_at %}{{ post.published_at|date:"F j, Y" }}{% endif %}
-      {% if post.author %}· {{ post.author.display_name }}{% endif %}
-    </p>
     {% if post.categories.all %}
-      <div class="mt-4 flex flex-wrap gap-2">
+      <div class="mb-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.18em] text-accent">
         {% for category in post.categories.all %}
-          <a href="{{ category.get_absolute_url }}"
-             class="rounded-full border border-ink/10 px-3 py-1 text-xs text-ink/60 transition-colors hover:text-ink">
-            {{ category.name }}
-          </a>
+          <a href="{{ category.get_absolute_url }}" class="transition-colors hover:text-ink">{{ category.name }}</a>
         {% endfor %}
       </div>
     {% endif %}
+    <h1 class="text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">{{ post.title }}</h1>
+    <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/50">
+      {% if post.author %}<span class="font-medium text-ink/70">{{ post.author.display_name }}</span>{% endif %}
+      {% if post.published_at %}<span aria-hidden="true">·</span><time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>{% endif %}
+    </p>
   </header>
 
   {% if post.featured_image %}
     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
-         class="mb-10 w-full rounded-2xl object-cover" loading="lazy" />
+         class="mb-10 aspect-[16/9] w-full rounded-2xl object-cover" loading="lazy" />
   {% endif %}
 
-  <div class="space-y-5 text-lg leading-relaxed text-ink/80">
+  <div class="dp-prose">
     {% post_content post %}
   </div>
 
   {% if post.tags.all %}
-    <footer class="mt-12 border-t border-ink/10 pt-6">
-      <div class="flex flex-wrap gap-2">
-        {% for tag in post.tags.all %}
-          <a href="{{ tag.get_absolute_url }}" class="text-sm text-ink/50 hover:text-accent">#{{ tag.name }}</a>
-        {% endfor %}
-      </div>
+    <footer class="mt-12 flex flex-wrap gap-x-4 gap-y-2 border-t border-ink/10 pt-6">
+      {% for tag in post.tags.all %}
+        <a href="{{ tag.get_absolute_url }}" class="text-sm text-ink/45 transition-colors hover:text-accent">#{{ tag.name }}</a>
+      {% endfor %}
     </footer>
   {% endif %}
 </article>
 
 {% if comments_enabled %}
-  <section id="comments" class="mx-auto mt-16 max-w-3xl" x-data="{ replyTo: '', replyToName: '' }">
-    <h2 class="text-2xl font-semibold tracking-tight">Comments</h2>
+  <section id="comments" class="reveal mx-auto mt-20 max-w-2xl" x-data="{ replyTo: '', replyToName: '' }">
+    <h2 class="text-2xl font-semibold tracking-tight">
+      Comments{% if comments %} <span class="text-ink/30">{{ comments|length }}</span>{% endif %}
+    </h2>
 
     {% if comments %}
-      <ul class="mt-6 space-y-6">
+      <ul class="mt-8 space-y-6">
         {% for comment in comments %}
           {% include "content/_comment.html" with comment=comment %}
         {% endfor %}
       </ul>
     {% else %}
-      <p class="mt-6 text-ink/50">Be the first to comment.</p>
+      <p class="mt-6 text-ink/50">No comments yet. Start the conversation.</p>
     {% endif %}
 
     {% if comments_require_login and not user.is_authenticated %}
-      <p class="mt-8 text-sm text-ink/60">
-        Please <a class="text-accent hover:underline" href="{% url 'account_login' %}?next={{ request.path }}">sign in</a> to comment.
+      <p class="mt-10 rounded-2xl border border-ink/10 bg-white/60 px-5 py-4 text-sm text-ink/60">
+        Please <a class="font-medium text-accent underline-offset-4 hover:underline" href="{% url 'account_login' %}?next={{ request.path }}">sign in</a> to join the discussion.
       </p>
     {% else %}
-      <form method="post" action="{{ post.get_absolute_url }}#comments" class="dp-form mt-8 space-y-4">
+      <form method="post" action="{{ post.get_absolute_url }}#comments" class="dp-form mt-10 space-y-4">
         {% csrf_token %}
-        <h3 class="text-lg font-medium">Leave a comment</h3>
-        <p x-show="replyTo" class="text-sm text-ink/60" x-cloak>
-          Replying to <span x-text="replyToName" class="font-medium"></span> —
-          <button type="button" class="text-accent hover:underline" @click="replyTo=''; replyToName=''">cancel</button>
+        <h3 class="text-lg font-semibold tracking-tight">Leave a comment</h3>
+        <p x-show="replyTo" x-cloak class="text-sm text-ink/60">
+          Replying to <span x-text="replyToName" class="font-medium text-ink"></span>.
+          <button type="button" class="font-medium text-accent hover:underline" @click="replyTo=''; replyToName=''">Cancel</button>
         </p>
         <input type="hidden" name="parent" :value="replyTo" />
         {% if comment_form.name %}
@@ -89,12 +86,10 @@
         {% if comment_form.captcha %}
           {{ comment_form.captcha }}
           {% if comment_form.captcha.errors %}
-            <p class="text-sm text-red-600">{{ comment_form.captcha.errors.0 }}</p>
+            <p class="text-sm text-accent">{{ comment_form.captcha.errors.0 }}</p>
           {% endif %}
         {% endif %}
-        <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-          Post comment
-        </button>
+        <button type="submit" class="dp-btn dp-btn-primary">Post comment</button>
       </form>
     {% endif %}
   </section>
