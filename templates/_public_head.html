@@ -1,0 +1,15 @@
+{% comment %}
+  Shared <head> extras for every public page (the content shell AND the landing,
+  which extends base.html directly). Kept in one place so neither can drift:
+    - the active theme's CSS-variable palette (default theme renders nothing);
+    - hreflang alternates for each language version + x-default, so search and
+      answer engines discover every translation. Emitted only when the per-language
+      URLs actually differ (the context processor returns none otherwise).
+{% endcomment %}
+{% include "_theme_palette.html" %}
+{% for alt in i18n_alternates %}
+  <link rel="alternate" hreflang="{{ alt.code }}" href="{{ alt.url }}" />
+{% endfor %}
+{% if i18n_x_default %}
+  <link rel="alternate" hreflang="x-default" href="{{ i18n_x_default }}" />
+{% endif %}

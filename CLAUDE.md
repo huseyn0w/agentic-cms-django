@@ -93,7 +93,17 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     sanitized by the content layer on save. Authors/Contributors are scoped to
     their own posts (`PostScopeMixin`); publishing is gated on `content.publish_post`.
   - `apps.core` also holds `SiteSettings` (a cached singleton) exposed to all
-    templates as `site` via a context processor.
+    templates as `site` via a context processor, and the public **landing page**
+    (`HomeView` → `core/home.html`, Phase 10.2): an editorial hero + feature bento +
+    a "From the blog" section that renders the CMS's OWN recent published posts
+    (`recent_posts`) + a theme-palette showcase + CTA. It extends `base.html`
+    directly (full-bleed sections) and shares the nav/footer with the content shell
+    via the `_site_header.html` / `_site_footer.html` partials; `<head>` extras
+    (theme palette + hreflang) come from `_public_head.html`. **The shell lives in
+    ONE place — header, footer, and public-head are partials included by BOTH
+    `public_base.html` and the landing, so the two can never drift** (the same
+    lesson as the theme refactor). Don't override `extra_head` on a public page
+    without re-including `_public_head.html`, or you drop the palette + hreflang.
   - `apps.themes` — swappable themes resolved at runtime. Themes live in the
     top-level `themes/<slug>/` (a `theme.json` + optional `templates/`). The
     `ThemeLoader` (in `OPTIONS.loaders`, ahead of filesystem/app loaders; note

@@ -9,6 +9,8 @@
   --color-paper: 246 244 239;
   --color-ink: 26 26 24;
   --color-accent: 192 73 43;
+  /* Strong ease-out: starts fast, feels responsive (vs the weak CSS default). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @layer base {
@@ -30,19 +32,71 @@
    used by the public marketing pages). Progressive enhancement: the hidden
    start-state only applies when JS is on (html.js) AND the user has not asked
    for reduced motion, so no-JS and reduced-motion visitors always see fully
-   rendered content. Alpine's x-intersect toggles .is-visible. */
+   rendered content. main.js's IntersectionObserver toggles .is-visible.
+   .stagger gives direct children a short cascading delay. */
 @media (prefers-reduced-motion: no-preference) {
   html.js .reveal {
     opacity: 0;
     transform: translateY(1.25rem);
     transition:
-      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 0.7s var(--ease-out),
+      transform 0.7s var(--ease-out);
   }
 
   html.js .reveal.is-visible {
     opacity: 1;
     transform: none;
+  }
+
+  html.js .stagger > *:nth-child(2) {
+    transition-delay: 60ms;
+  }
+  html.js .stagger > *:nth-child(3) {
+    transition-delay: 120ms;
+  }
+  html.js .stagger > *:nth-child(4) {
+    transition-delay: 180ms;
+  }
+  html.js .stagger > *:nth-child(5) {
+    transition-delay: 240ms;
+  }
+  html.js .stagger > *:nth-child(6) {
+    transition-delay: 300ms;
+  }
+}
+
+/* Button primitive (raw CSS so it is never purged; @apply pulls in Tailwind
+   utilities). Press feedback (scale 0.97) is instant and universal; the hover
+   lift is gated to real pointers so touch taps don't trigger it; the transition
+   is dropped under reduced motion. Compose as class="dp-btn dp-btn-primary". */
+.dp-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium;
+  transition:
+    transform 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+
+.dp-btn:active {
+  transform: scale(0.97);
+}
+
+.dp-btn-primary {
+  @apply bg-ink px-6 py-3 text-paper;
+}
+
+.dp-btn-ghost {
+  @apply px-5 py-3 text-ink/70;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dp-btn-primary:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp-btn {
+    transition: none;
   }
 }
 

@@ -1,72 +1,15 @@
 {% extends "base.html" %}
-{% load plugin_hooks %}
 
-{% block extra_head %}
-  {# Active theme's palette (CSS variables). Default theme renders nothing. #}
-  {% include "_theme_palette.html" %}
-  {% comment %}
-    Tell search and answer engines about every language version of this page.
-    x-default points crawlers at the default-language URL.
-  {% endcomment %}
-  {% for alt in i18n_alternates %}
-    <link rel="alternate" hreflang="{{ alt.code }}" href="{{ alt.url }}" />
-  {% endfor %}
-  {% if i18n_x_default %}
-    <link rel="alternate" hreflang="x-default" href="{{ i18n_x_default }}" />
-  {% endif %}
-{% endblock %}
+{% block extra_head %}{% include "_public_head.html" %}{% endblock %}
 
 {% block body %}
 <div class="flex min-h-full flex-col">
-  <header class="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-8">
-    <a href="/" class="font-display text-sm font-semibold tracking-[0.25em] text-ink transition-colors hover:text-accent">DJANGOPRESS</a>
-    <nav class="flex items-center gap-6 text-sm text-ink/60">
-      <a class="transition-colors hover:text-ink" href="{% url 'content:service_list' %}">Services</a>
-      <a class="transition-colors hover:text-ink" href="{% url 'content:post_list' %}">Blog</a>
-      <form method="get" action="{% url 'search:results' %}" role="search" class="hidden sm:block">
-        <label for="header-search" class="sr-only">Search</label>
-        <input
-          id="header-search"
-          type="search"
-          name="q"
-          value="{{ request.GET.q }}"
-          placeholder="Search…"
-          class="w-32 rounded-full border border-ink/15 bg-paper px-3 py-1 text-sm text-ink placeholder:text-ink/40 transition-[width] focus:w-44 focus:border-accent focus:outline-none"
-        />
-      </form>
-      {% if i18n_alternates|length > 1 %}
-        <div class="flex items-center gap-2" aria-label="Language">
-          {% for alt in i18n_alternates %}
-            <a
-              href="{{ alt.url }}"
-              hreflang="{{ alt.code }}"
-              class="uppercase tracking-wide transition-colors hover:text-ink{% if alt.is_current %} text-ink font-semibold{% endif %}"
-              title="{{ alt.name }}"
-            >{{ alt.code }}</a>
-          {% endfor %}
-        </div>
-      {% endif %}
-      {% if perms.accounts.access_admin %}
-        <a class="transition-colors hover:text-ink" href="{% url 'dashboard:home' %}">Dashboard</a>
-      {% endif %}
-      {% if user.is_authenticated %}
-        <form method="post" action="{% url 'account_logout' %}" class="inline">
-          {% csrf_token %}
-          <button type="submit" class="transition-colors hover:text-ink">Sign out</button>
-        </form>
-      {% else %}
-        <a class="transition-colors hover:text-ink" href="{% url 'account_login' %}">Sign in</a>
-      {% endif %}
-    </nav>
-  </header>
+  {% include "_site_header.html" %}
 
   <main class="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
     {% block main %}{% endblock %}
   </main>
 
-  <footer class="mx-auto w-full max-w-5xl px-6 py-12 text-xs text-ink/40">
-    {% hook "public_footer" %}
-    DjangoPress · Built with Django 5 · Tailwind · Alpine · Vite
-  </footer>
+  {% include "_site_footer.html" %}
 </div>
 {% endblock %}

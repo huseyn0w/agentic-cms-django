@@ -1,0 +1,45 @@
+{% comment %}
+  The one public site header. Shared by the content shell (public_base.html) and
+  the landing page (core/home.html) so the navigation can never drift between them.
+{% endcomment %}
+<header class="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6">
+  <a href="/" class="font-display text-sm font-semibold tracking-[0.25em] text-ink transition-colors hover:text-accent">{{ site.site_name|upper }}</a>
+  <nav class="flex items-center gap-5 text-sm text-ink/60 sm:gap-6">
+    <a class="hidden transition-colors hover:text-ink sm:inline" href="{% url 'content:service_list' %}">Services</a>
+    <a class="transition-colors hover:text-ink" href="{% url 'content:post_list' %}">Blog</a>
+    <form method="get" action="{% url 'search:results' %}" role="search" class="hidden sm:block">
+      <label for="header-search" class="sr-only">Search</label>
+      <input
+        id="header-search"
+        type="search"
+        name="q"
+        value="{{ request.GET.q }}"
+        placeholder="Search…"
+        class="w-32 rounded-full border border-ink/15 bg-paper px-3 py-1 text-sm text-ink placeholder:text-ink/40 transition-[width] duration-200 focus:w-44 focus:border-accent focus:outline-none"
+      />
+    </form>
+    {% if i18n_alternates|length > 1 %}
+      <div class="hidden items-center gap-2 sm:flex" aria-label="Language">
+        {% for alt in i18n_alternates %}
+          <a
+            href="{{ alt.url }}"
+            hreflang="{{ alt.code }}"
+            class="font-mono text-xs uppercase tracking-wide transition-colors hover:text-ink{% if alt.is_current %} font-semibold text-ink{% endif %}"
+            title="{{ alt.name }}"
+          >{{ alt.code }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if perms.accounts.access_admin %}
+      <a class="transition-colors hover:text-ink" href="{% url 'dashboard:home' %}">Dashboard</a>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'account_logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="transition-colors hover:text-ink">Sign out</button>
+      </form>
+    {% else %}
+      <a class="transition-colors hover:text-ink" href="{% url 'account_login' %}">Sign in</a>
+    {% endif %}
+  </nav>
+</header>
