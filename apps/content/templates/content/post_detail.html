@@ -8,6 +8,8 @@
 
 {% block main %}
 <article class="mx-auto max-w-2xl">
+  {% url 'content:post_list' as post_list_url %}
+  {% include "_breadcrumbs.html" with section_label="Blog" section_url=post_list_url current=post.title %}
   {% if not post.is_published %}
     <p class="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
       <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> Draft preview

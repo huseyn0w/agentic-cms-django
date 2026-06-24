@@ -8,6 +8,8 @@
 
 {% block main %}
 <article class="prose-dp">
+  {% url 'content:service_list' as service_list_url %}
+  {% include "_breadcrumbs.html" with section_label="Services" section_url=service_list_url current=service.title %}
   {% if not service.is_published %}
     <p class="mb-6 inline-block rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
       Draft preview

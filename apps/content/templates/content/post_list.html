@@ -37,13 +37,13 @@
 </div>
 
 {% if is_paginated %}
-  <nav class="mt-14 flex items-center justify-between border-t border-ink/10 pt-6 font-mono text-xs uppercase tracking-wide text-ink/50">
+  <nav class="mt-14 flex items-center justify-between border-t border-border pt-6 font-mono text-xs uppercase tracking-wide text-text-subtle" aria-label="Pagination">
     {% if page_obj.has_previous %}
-      <a class="transition-colors hover:text-ink" href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Newer</a>
+      <a class="transition-colors hover:text-text" href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Newer</a>
     {% else %}<span></span>{% endif %}
-    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    <span aria-current="page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-      <a class="transition-colors hover:text-ink" href="?page={{ page_obj.next_page_number }}">Older <span aria-hidden="true">→</span></a>
+      <a class="transition-colors hover:text-text" href="?page={{ page_obj.next_page_number }}">Older <span aria-hidden="true">→</span></a>
     {% else %}<span></span>{% endif %}
   </nav>
 {% endif %}

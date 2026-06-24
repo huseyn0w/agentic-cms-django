@@ -30,6 +30,16 @@ def test_published_post_detail_visible(client, author):
     assert b"Hello World" in response.content
 
 
+def test_post_detail_has_breadcrumbs(client, author):
+    """Detail pages carry an accessible breadcrumb trail (DESIGN_SYSTEM §5)."""
+    post = Post.objects.create(title="Breadcrumbed", author=author, status=Status.PUBLISHED)
+    html = client.get(post.get_absolute_url()).content.decode()
+    assert 'aria-label="Breadcrumb"' in html
+    assert ">Home<" in html
+    assert ">Blog<" in html
+    assert 'aria-current="page"' in html
+
+
 def test_draft_hidden_from_anonymous(client, author):
     post = Post.objects.create(title="Secret", author=author)
     response = client.get(post.get_absolute_url())

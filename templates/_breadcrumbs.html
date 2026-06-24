@@ -1,0 +1,17 @@
+{% comment %}
+  Breadcrumb trail (DESIGN_SYSTEM §5). Mirrors the BreadcrumbList JSON-LD on
+  detail pages. Params (via {% include with %}):
+    current      — required, the current page label (not a link)
+    section_label / section_url — optional middle crumb (e.g. "Blog")
+{% endcomment %}
+<nav aria-label="Breadcrumb" class="mb-6">
+  <ol class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-muted">
+    <li><a href="/" class="transition-colors hover:text-text">Home</a></li>
+    {% if section_label %}
+      <li aria-hidden="true" class="text-text-subtle">/</li>
+      <li><a href="{{ section_url }}" class="transition-colors hover:text-text">{{ section_label }}</a></li>
+    {% endif %}
+    <li aria-hidden="true" class="text-text-subtle">/</li>
+    <li class="truncate text-text" aria-current="page">{{ current|truncatechars:56 }}</li>
+  </ol>
+</nav>

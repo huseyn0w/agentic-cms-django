@@ -1,11 +1,11 @@
 {% if is_paginated %}
-  <nav class="mt-6 flex items-center justify-between text-sm text-ink/60">
+  <nav class="mt-6 flex items-center justify-between font-mono text-xs text-text-muted" aria-label="Pagination">
     {% if page_obj.has_previous %}
-      <a class="hover:text-ink" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
-    {% else %}<span></span>{% endif %}
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      <a class="rounded-md px-2 py-1 transition-colors hover:text-text" href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Previous</a>
+    {% else %}<span class="px-2 py-1 text-text-subtle"><span aria-hidden="true">←</span> Previous</span>{% endif %}
+    <span aria-current="page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-      <a class="hover:text-ink" href="?page={{ page_obj.next_page_number }}">Next →</a>
-    {% else %}<span></span>{% endif %}
+      <a class="rounded-md px-2 py-1 transition-colors hover:text-text" href="?page={{ page_obj.next_page_number }}">Next <span aria-hidden="true">→</span></a>
+    {% else %}<span class="px-2 py-1 text-text-subtle">Next <span aria-hidden="true">→</span></span>{% endif %}
   </nav>
 {% endif %}
