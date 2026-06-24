@@ -26,6 +26,17 @@ def test_home_renders_brand(client):
 
 
 @pytest.mark.django_db
+def test_home_has_a11y_shell_landmarks(client):
+    """Skip link + #content target + sticky header (DESIGN_SYSTEM §5/§8)."""
+    html = client.get(reverse("core:home")).content.decode()
+    assert "Skip to content" in html
+    assert 'href="#content"' in html
+    assert 'id="content"' in html
+    assert "sticky top-0 z-40" in html  # sticky public header
+    assert "x-trap.inert.noscroll" in html  # focus-trapped mobile drawer
+
+
+@pytest.mark.django_db
 def test_home_showcases_recent_published_posts(client):
     """The landing demonstrates the CMS by rendering its own real content."""
     author = User.objects.create_user(username="writer")

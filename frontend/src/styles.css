@@ -120,26 +120,44 @@
 }
 
 /* Button primitive (raw CSS so it is never purged; @apply pulls in Tailwind
-   utilities). Press feedback (scale 0.97) is instant and universal; the hover
-   lift is gated to real pointers so touch taps don't trigger it; the transition
-   is dropped under reduced motion. Compose as class="dp-btn dp-btn-primary". */
+   utilities). DESIGN_SYSTEM §5: md radius (not pills), 5 variants, focus-visible
+   ring, press scale(0.98), hover lift gated to real pointers, no motion under
+   reduced-motion. Compose as class="dp-btn dp-btn-primary" (+ dp-btn-sm/lg). */
 .dp-btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium;
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
   transition:
-    transform 160ms var(--ease-out),
-    color 160ms var(--ease-out);
+    transform 120ms var(--ease-out),
+    background-color 120ms var(--ease-out),
+    color 120ms var(--ease-out),
+    border-color 120ms var(--ease-out);
 }
 
 .dp-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.dp-btn-sm {
+  @apply px-3 py-1.5 text-sm;
+}
+.dp-btn-lg {
+  @apply px-6 py-3 text-base;
 }
 
 .dp-btn-primary {
-  @apply bg-ink px-6 py-3 text-paper;
+  @apply bg-primary text-primary-contrast hover:bg-primary-hover;
 }
-
+.dp-btn-secondary {
+  @apply bg-surface-2 text-text hover:bg-border;
+}
+.dp-btn-outline {
+  @apply border border-border-strong bg-transparent text-text hover:bg-surface-2;
+}
 .dp-btn-ghost {
-  @apply px-5 py-3 text-ink/70;
+  @apply bg-transparent text-text-muted hover:bg-surface-2 hover:text-text;
+}
+.dp-btn-destructive {
+  @apply bg-error text-white hover:opacity-90;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -151,6 +169,9 @@
 @media (prefers-reduced-motion: reduce) {
   .dp-btn {
     transition: none;
+  }
+  .dp-btn:active {
+    transform: none;
   }
 }
 

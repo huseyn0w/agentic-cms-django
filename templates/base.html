@@ -16,7 +16,9 @@
     {% block seo_jsonld %}{% load seo_tags %}{% seo_jsonld %}{% endblock %}
     {% block extra_head %}{% endblock %}
   </head>
-  <body class="h-full bg-paper text-ink antialiased">
+  <body class="h-full bg-bg text-text antialiased">
+    {# Skip link — first in tab order (WCAG 2.1 AA / DESIGN_SYSTEM §8). #}
+    <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-text focus:shadow-md focus:outline-none focus:ring-2 focus:ring-ring">Skip to content</a>
     {% block body %}{% endblock %}
   </body>
 </html>

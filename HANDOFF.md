@@ -55,8 +55,14 @@ Layering enforced everywhere: `view → service → repository → manager/Query
      theme palette updated to new tokens; radius tokens added.
    - ☑ U2 fonts DONE: Newsreader + Inter + Geist Mono (package.json/main.js/tailwind/.dp-prose).
      `cd frontend && npm run build` verified (main.css 6.7KB gz, main.js 16.7KB gz).
-   - ☐ **RESUME HERE → U3 public shell** (sticky 64px header + scroll-shadow + mobile drawer;
-     button variants md-radius not pills; skip-to-content), **U4 admin shell** (sidebar active
+   - ◐ U3 public shell IN PROGRESS: DONE — sticky 64px header + scroll-shadow + backdrop-blur,
+     focus-trapped mobile drawer (@alpinejs/focus `x-trap`), skip-to-content link, `#content`
+     landmark, footer + base + header migrated to semantic tokens, button primitives rebuilt
+     (md radius + 5 variants primary/secondary/outline/ghost/destructive + focus ring). Test
+     `test_home_has_a11y_shell_landmarks` guards it. REMAINING U3: migrate the public CONTENT
+     templates (post_list/post_detail/page_detail/service_*/search results/auth) off the
+     `paper/ink/accent` aliases to semantic tokens; audit button usages to the new variants.
+   - ☐ **U4 admin shell** (sidebar active
      style, topbar **dark/light toggle** wiring `darkMode:"class"` + localStorage, avatar
      dropdown, semantic alerts), **U5 components** (breadcrumbs, dropdown, avatar, dropzone,
      sortable, modals, toasts, table bulk-select, empty states, badges, rich-text toolbar),

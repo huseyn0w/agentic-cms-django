@@ -9,6 +9,10 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/geist-mono";
 
 import Alpine from "alpinejs";
+import focus from "@alpinejs/focus";
+
+// Focus plugin powers x-trap on the mobile nav drawer (WCAG 2.1 AA focus trap).
+Alpine.plugin(focus);
 
 // Mark that JS is active so CSS can enable progressive-enhancement effects
 // (e.g. .reveal scroll animations) without ever hiding content from no-JS users.
