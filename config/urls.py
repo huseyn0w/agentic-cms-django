@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 
+from apps.content.feeds import LatestPostsFeed
 from apps.seo import views as seo_views
 from apps.seo.sitemaps import sitemaps
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
     # Machine-readable surfaces, served at the root, unprefixed by language.
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
+    path("rss.xml", LatestPostsFeed(), name="rss"),
     path("robots.txt", seo_views.robots_txt, name="robots_txt"),
     path("llms.txt", seo_views.llms_txt, name="llms_txt"),
     path("llms-full.txt", seo_views.llms_full_txt, name="llms_full_txt"),

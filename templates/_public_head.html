@@ -7,6 +7,8 @@
       URLs actually differ (the context processor returns none otherwise).
 {% endcomment %}
 {% include "_theme_palette.html" %}
+{# RSS autodiscovery. #}
+<link rel="alternate" type="application/rss+xml" title="{{ site.site_name }} Blog" href="{% url 'rss' %}" />
 {% for alt in i18n_alternates %}
   <link rel="alternate" hreflang="{{ alt.code }}" href="{{ alt.url }}" />
 {% endfor %}

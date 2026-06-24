@@ -79,6 +79,15 @@ class PostRepository:
             .select_related("author")[:limit]
         )
 
+    @staticmethod
+    def for_feed(limit: int) -> QuerySet:
+        """Most-recent published posts for the RSS/Atom feed (translations prefetched)."""
+        return (
+            Post.objects.published()
+            .select_related("author")
+            .prefetch_related("translations")[:limit]
+        )
+
 
 class PageRepository:
     @staticmethod

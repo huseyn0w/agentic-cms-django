@@ -152,7 +152,7 @@ value/risk. Effort: S/M/L from audit.
 |---|---|---|---|---|
 | F1 | Search includes **services** | partial | S | `search_content` only does Post+Page; add Service. Quick win, pairs with §1. |
 | F2 | **Coverage** measured (pytest-cov + `fail_under`) | absent | S | Required to verify Task 4 targets at all. Do early. |
-| F3 | **RSS/Atom** feeds (`/rss.xml`, per-category) | absent | S | `django.contrib.syndication`. Net-new for all 3. |
+| F3 | **RSS feed** (`/rss.xml`) | ☑ DONE | S | `LatestPostsFeed` (`content/feeds.py`) via `PostRepository.for_feed`; wired at root + `<link rel=alternate>` autodiscovery in `_public_head`. 3 tests. (Per-category feeds: optional follow-up.) |
 | F4 | **Contact form** + email | absent | S–M | copy laravel; reCAPTCHA-graceful; settings-driven recipient. |
 | F5 | **Comment-notification email** | ☑ DONE | S | `comment_created` domain signal emitted by `submit_comment`; observer `notify_post_author` in `comments/signals.py` emails the post author (send_robust + fail_silently — never breaks submission). Demonstrates the service→signal→observer rule. 4 tests. |
 | F6 | **Soft-delete/trash/restore** (posts+pages) + **post likes** | absent | M | copy ts: `deleted_at`, manager scoping, trash/restore views; `Like` model + endpoint. |
