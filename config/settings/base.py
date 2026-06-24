@@ -200,6 +200,10 @@ SOCIALACCOUNT_LOGIN_ON_GET = False
 RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY", default="")
 RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY", default="")
 
+# Recipient for public contact-form submissions. Empty → the contact observer is a
+# no-op (the form still validates and thanks the visitor), so dev/CI need no inbox.
+CONTACT_EMAIL = env("CONTACT_EMAIL", default="")
+
 # --------------------------------------------------------------------------- #
 # Password validation
 # --------------------------------------------------------------------------- #
