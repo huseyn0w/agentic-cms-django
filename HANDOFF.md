@@ -109,19 +109,51 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 ---
 
 ## Ready-to-paste continuation prompt (new window)
-> You are a senior Django engineer continuing the autonomous `cmstack-django` refactor. Read
-> `cmstack-django/HANDOFF.md`, `cmstack-django/REFACTOR_PLAN.md`, `../FEATURE_MATRIX.md` and
-> `../DESIGN_SYSTEM.md` first (specs are read-only canon — do not edit them). Operating rules:
-> work autonomously inside `cmstack-django/` (no permission for read/edit/test/manage.py/git);
-> respond to me in **Russian**, keep all code/comments/docs in English; use the Superpowers
-> framework (writing-plans / TDD / subagent-driven-development / requesting-code-review /
-> verification-before-completion) and follow rigid skills exactly. Two NON-NEGOTIABLE
-> architecture rules are already in force and MUST be preserved: (1) views hold zero business
-> logic and zero ORM (HTTP boundary only); (2) services never touch the ORM directly — only via
-> the `repositories.py` layer — and side effects go through Django signals/observers. Layering:
-> view → service → repository → manager → model. The architecture refactor is DONE and verified
-> (250 tests pass, ruff clean, 95% coverage, zero ORM in views/services per grep). **Resume from
-> the first PENDING item in HANDOFF.md**: (1) adversarial verification of the refactor (retry
-> subagents — they were 529-throttled), then (2) close the two coverage gaps, then (3) Task 3 UI
-> convergence starting with U1 tokens + U2 fonts. Use `.venv/bin/python -m pytest` (not `source
-> activate`). Show real test/coverage output; never claim passing without the run.
+> You are a senior Django engineer continuing the autonomous `cmstack-django` refactor.
+>
+> **First, orient — do these before any work:**
+> 1. `cd` to the project; run `git checkout refactor/service-repository-layer` (all prior work
+>    lives on this LOCAL branch — 15 commits, NOT pushed, NOT on `main`).
+> 2. Read `cmstack-django/HANDOFF.md` and `cmstack-django/REFACTOR_PLAN.md` in full, then
+>    `../FEATURE_MATRIX.md` and `../DESIGN_SYSTEM.md` (read-only canon — never edit the two
+>    shared specs).
+> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **268 passed**) and
+>    `.venv/bin/ruff check apps config`. Use `.venv/bin/python` directly — `source .venv/bin/activate`
+>    does NOT expose Django in this shell. Frontend build: `cd frontend && npm run build`.
+>
+> **Operating rules (unchanged):** work autonomously inside `cmstack-django/` (no permission
+> needed for read/edit/test/manage.py/git); respond to me in **Russian**, keep all code,
+> comments, commit messages and docs in **English**; use the Superpowers framework
+> (writing-plans / TDD / subagent-driven-development / requesting-code-review /
+> verification-before-completion), follow rigid skills exactly. **Commit messages must NOT
+> contain any `Co-Authored-By` trailer** (the user had it stripped from history — do not
+> re-add it). Branch-first is already done; commit to `refactor/service-repository-layer`; only
+> push if asked.
+>
+> **Two NON-NEGOTIABLE architecture rules, already in force — preserve them in every new file:**
+> (1) views (`apps/*/views.py`) hold ZERO business logic and ZERO ORM — HTTP boundary only;
+> (2) services (`apps/*/services.py`) NEVER touch the ORM — all data access via
+> `apps/<app>/repositories.py`; side effects via Django signals → observers (see
+> `apps/comments/signals.py`, `apps/core/signals.py` for the pattern). Layering:
+> view → service → repository → manager → model, plus service → signal → receiver for effects.
+>
+> **DONE so far (don't redo):** the architecture refactor (all apps; independently
+> adversarially verified; zero ORM in views/services per grep); feature parity F1 (search incl.
+> services), F2 (coverage tooling), F3 (RSS /rss.xml), F4 (contact form), F5 (comment-notification
+> email) — all via the signal/observer pattern with tests; UI U1 (semantic tokens + `.dark`),
+> U2 (Newsreader/Inter/Geist Mono fonts), U3 (public shell: sticky header, focus-trap mobile
+> drawer, skip link, buttons, public surfaces on tokens/dark-ready), U4 (admin shell + working
+> dark-mode toggle, all dashboard templates tokenised), and U5/U6 start (breadcrumbs partial +
+> accessible pagination). 268 tests pass, ruff clean, ~95% coverage, Vite build within budget.
+>
+> **RESUME HERE (ordered):** Task 1 feature parity — **F6 soft-delete/trash+restore for
+> posts/pages + post likes**, then F7 revision-restore UI, F8 scheduled publishing, F9 menus,
+> F10 author pages + self-service profile, F11 media picker + swappable storage driver, F12 REST
+> API + MCP (largest), F13 CI, F14 E2E, F15 wire mypy `django-stubs` plugin. Also finish UI U5
+> (modals replacing `confirm()`, toasts, table bulk-select + backend bulk actions, empty-state
+> component, rich-text toolbar aria), U6 (remaining ARIA, locale tabs roles, form-error
+> aria-invalid/describedby), U7 (font `<link rel=preload>` + subset, REAL Lighthouse ≥95 run —
+> needs a running server + browser). Finally Task 5 (rewrite README) + a completeness-critic pass.
+> Build each feature through the view→service→repository (+signal) layering; TDD; show real
+> test/coverage output — never claim passing without the run. The remaining Postgres-FTS branch
+> in `search/repositories.py` is only coverable via a Postgres CI job (F13).
