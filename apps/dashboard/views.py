@@ -201,6 +201,32 @@ class PostDestroyView(AdminAccessMixin, View):
         return redirect("dashboard:post_trash")
 
 
+class PostRevisionListView(AdminAccessMixin, SectionMixin, TemplateView):
+    permission_required = ("accounts.access_admin", "content.change_post")
+    template_name = "dashboard/revisions.html"
+    section = "posts"
+    heading = "Revision history"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(
+            services.post_revisions_context(
+                self.request.user, self.kwargs["pk"], self.request.GET.get("revision")
+            )
+        )
+        return ctx
+
+
+class PostRevisionRestoreView(AdminAccessMixin, View):
+    permission_required = ("accounts.access_admin", "content.change_post")
+    http_method_names = ["post"]
+
+    def post(self, request, pk: int, revision_pk: int):
+        services.restore_post_revision(request.user, pk, revision_pk)
+        messages.success(request, "Revision restored.")
+        return redirect("dashboard:post_edit", pk=pk)
+
+
 # --------------------------------------------------------------------------- #
 # Pages
 # --------------------------------------------------------------------------- #
@@ -287,6 +313,32 @@ class PageDestroyView(AdminAccessMixin, View):
         services.permanently_delete_page(pk)
         messages.success(request, "Page permanently deleted.")
         return redirect("dashboard:page_trash")
+
+
+class PageRevisionListView(AdminAccessMixin, SectionMixin, TemplateView):
+    permission_required = ("accounts.access_admin", "content.change_page")
+    template_name = "dashboard/revisions.html"
+    section = "pages"
+    heading = "Revision history"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(
+            services.page_revisions_context(
+                self.kwargs["pk"], self.request.GET.get("revision")
+            )
+        )
+        return ctx
+
+
+class PageRevisionRestoreView(AdminAccessMixin, View):
+    permission_required = ("accounts.access_admin", "content.change_page")
+    http_method_names = ["post"]
+
+    def post(self, request, pk: int, revision_pk: int):
+        services.restore_page_revision(pk, revision_pk)
+        messages.success(request, "Revision restored.")
+        return redirect("dashboard:page_edit", pk=pk)
 
 
 # --------------------------------------------------------------------------- #

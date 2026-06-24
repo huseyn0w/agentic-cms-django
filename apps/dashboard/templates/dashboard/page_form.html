@@ -36,6 +36,10 @@
       <button type="submit" class="w-full rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
         Save page
       </button>
+      {% if form.instance.pk %}
+        <a href="{% url 'dashboard:page_revisions' form.instance.pk %}"
+           class="block text-center text-sm text-text-muted hover:text-text">Revision history</a>
+      {% endif %}
     </aside>
   </div>
 </form>

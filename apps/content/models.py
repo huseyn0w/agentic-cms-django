@@ -250,6 +250,17 @@ class Post(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel)
             return False
         return user == self.author or user.has_perm("content.delete_post")
 
+    def restore_revision(self, revision) -> None:
+        """Roll this post's content back to ``revision`` (in its language).
+
+        Saving re-sanitises and snapshots the restored state, so history is
+        preserved rather than rewritten.
+        """
+        self.set_current_language(revision.language_code)
+        self.title = revision.title
+        self.body = revision.body
+        self.save()
+
     def gate_publish_state(self, user) -> None:
         """Constrain this post's ``status`` to what ``user`` is allowed to set.
 
@@ -333,6 +344,13 @@ class Page(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel)
         if self.is_published:
             return True
         return user.is_authenticated and user.has_perm("content.change_page")
+
+    def restore_revision(self, revision) -> None:
+        """Roll this page's content back to ``revision`` (in its language)."""
+        self.set_current_language(revision.language_code)
+        self.title = revision.title
+        self.body = revision.body
+        self.save()
 
 
 class Service(SeoFieldsMixin, TranslatableModel, TimeStampedModel):

@@ -14,6 +14,16 @@ urlpatterns = [
     path("posts/<int:pk>/delete/", views.PostDeleteView.as_view(), name="post_delete"),
     path("posts/<int:pk>/restore/", views.PostRestoreView.as_view(), name="post_restore"),
     path("posts/<int:pk>/destroy/", views.PostDestroyView.as_view(), name="post_destroy"),
+    path(
+        "posts/<int:pk>/revisions/",
+        views.PostRevisionListView.as_view(),
+        name="post_revisions",
+    ),
+    path(
+        "posts/<int:pk>/revisions/<int:revision_pk>/restore/",
+        views.PostRevisionRestoreView.as_view(),
+        name="post_revision_restore",
+    ),
     # Pages
     path("pages/", views.PageListView.as_view(), name="page_list"),
     path("pages/trash/", views.PageTrashListView.as_view(), name="page_trash"),
@@ -22,6 +32,16 @@ urlpatterns = [
     path("pages/<int:pk>/delete/", views.PageDeleteView.as_view(), name="page_delete"),
     path("pages/<int:pk>/restore/", views.PageRestoreView.as_view(), name="page_restore"),
     path("pages/<int:pk>/destroy/", views.PageDestroyView.as_view(), name="page_destroy"),
+    path(
+        "pages/<int:pk>/revisions/",
+        views.PageRevisionListView.as_view(),
+        name="page_revisions",
+    ),
+    path(
+        "pages/<int:pk>/revisions/<int:revision_pk>/restore/",
+        views.PageRevisionRestoreView.as_view(),
+        name="page_revision_restore",
+    ),
     # Services (GEO)
     path("services/", views.ServiceListView.as_view(), name="service_list"),
     path("services/new/", views.ServiceCreateView.as_view(), name="service_create"),

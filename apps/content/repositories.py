@@ -198,6 +198,26 @@ class TagRepository:
         return Tag.objects.annotate(post_count=Count("posts")).order_by("slug")
 
 
+class RevisionRepository:
+    """Per-language history snapshots for posts and pages (read + lookup)."""
+
+    @staticmethod
+    def list_for_post(post: Post) -> QuerySet:
+        return post.revisions.select_related("author")
+
+    @staticmethod
+    def get_post_revision(post: Post, pk: int):
+        return get_object_or_404(post.revisions, pk=pk)
+
+    @staticmethod
+    def list_for_page(page: Page) -> QuerySet:
+        return page.revisions.select_related("author")
+
+    @staticmethod
+    def get_page_revision(page: Page, pk: int):
+        return get_object_or_404(page.revisions, pk=pk)
+
+
 class LikeRepository:
     @staticmethod
     def toggle(post: Post, user) -> bool:

@@ -75,6 +75,13 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     (post+user, unique together) is a toggle (create = like, delete = unlike) via
     `content:post_like` (login-required; guests redirect to login); the post-detail
     like button is `aria-pressed`-driven and degrades without JS (plain POST form).
+    **Revision restore (F7):** snapshots already accrue via `content/signals.py`;
+    the dashboard adds a shared revisions page (`dashboard/revisions.html`) with a
+    per-language history list, a `difflib` line diff (revision vs current) and a
+    restore action. Restore is a model transition (`Post/Page.restore_revision`,
+    keeping the service ORM-free); saving re-snapshots so history is preserved, not
+    rewritten. Owner-scoped (posts via `editable_by`), gated on `change_post`/
+    `change_page`; reachable from a "Revision history" link in each editor.
     **Multilingual (Phase 8.1, django-parler):** translated fields live on a
     per-model translation table — Post(title/excerpt/body), Page(title/body),
     Category(name/description), Tag(name). `slug`/`status`/`published_at`/`author`/
