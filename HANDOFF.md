@@ -70,7 +70,15 @@ Layering enforced everywhere: `view → service → repository → manager/Query
      templates off `bg-white`→`bg-surface`; status badges → `success-bg/success`/`surface-2`;
      `admin.css` `.dp-form`+Trix on tokens. Guard: `test_dashboard_shell_has_dark_toggle_and_landmarks`.
      Zero hardcoded `bg-white`/palette colours remain anywhere (grep CLEAN).
-   - ☐ **RESUME HERE → U5 components, U6 a11y, U7 perf.** **U4 admin shell** (sidebar
+   - ◐ U5/U6 STARTED: reusable `_breadcrumbs.html` (on post/service/page detail, mirrors
+     BreadcrumbList JSON-LD) + accessible pagination (`nav[aria-label=Pagination]` + aria-current
+     + tokens) across admin lists + public post_list + search. Guard tests added.
+   - ☐ **RESUME HERE → finish U5 components** (modals/dialogs to replace `confirm()`, toasts for
+     messages, table bulk-select + backend bulk actions, empty-state component, rich-text
+     toolbar aria, dropdown already done via avatar menu), **U6 a11y** (audit remaining ARIA,
+     locale tabs `role=tab`/`tabpanel`, form errors `aria-invalid`/`aria-describedby`), **U7
+     perf** (font `<link rel=preload>` + subset, real Lighthouse ≥95 run — needs server+browser).
+     **U4 admin shell** (sidebar
      style, topbar **dark/light toggle** wiring `darkMode:"class"` + localStorage, avatar
      dropdown, semantic alerts), **U5 components** (breadcrumbs, dropdown, avatar, dropzone,
      sortable, modals, toasts, table bulk-select, empty states, badges, rich-text toolbar),
