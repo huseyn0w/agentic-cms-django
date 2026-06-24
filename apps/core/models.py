@@ -10,7 +10,7 @@ _CACHE_KEY = "site_settings"
 class SiteSettings(models.Model):
     """Site-wide configuration, stored as a single row (singleton)."""
 
-    site_name = models.CharField(_("site name"), max_length=100, default="DjangoPress")
+    site_name = models.CharField(_("site name"), max_length=100, default="Cmstack-Django")
     tagline = models.CharField(_("tagline"), max_length=200, blank=True)
     posts_per_page = models.PositiveIntegerField(_("posts per page"), default=10)
     active_theme = models.SlugField(_("active theme"), max_length=50, default="default")

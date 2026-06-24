@@ -1,7 +1,7 @@
 """Interim Django admin for content.
 
-This is developer-facing CRUD so content is editable before the bespoke,
-WordPress-style admin panel lands in Phase 5. Kept deliberately minimal. Models
+This is developer-facing CRUD so content is editable before the bespoke
+admin panel lands in Phase 5. Kept deliberately minimal. Models
 are translated per language via django-parler, so the admin uses TranslatableAdmin
 (translated fields are edited for the language tab shown at the top of the form).
 """

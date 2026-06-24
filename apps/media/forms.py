@@ -18,7 +18,7 @@ class MediaUploadForm(forms.ModelForm):
     def clean_file(self):
         # Validation is by extension + size (and SVG is excluded in constants).
         # We intentionally do NOT do magic-byte sniffing here — matching how most
-        # CMSs (incl. WordPress core) operate. The real safety net is that uploads
+        # popular CMSs operate. The real safety net is that uploads
         # are served with X-Content-Type-Options: nosniff and never executed.
         uploaded = self.cleaned_data["file"]
         ext = os.path.splitext(uploaded.name)[1].lstrip(".").lower()

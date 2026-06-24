@@ -1,5 +1,5 @@
 """
-WordPress-style default roles for DjangoPress.
+Default roles for Cmstack-Django.
 
 Roles are plain Django ``Group`` objects; granular access is Django permissions.
 Each role lists permission codenames as ``"<app_label>.<codename>"``. The role

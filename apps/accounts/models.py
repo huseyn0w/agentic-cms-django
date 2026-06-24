@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 class User(AbstractUser):
     """
-    DjangoPress user.
+    Cmstack-Django user.
 
     Extends Django's ``AbstractUser`` (so username/email/password and the full
     auth/permission machinery come for free) with a small author profile.

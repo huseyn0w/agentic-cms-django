@@ -1,5 +1,5 @@
 """
-A small WordPress-style hook registry: **actions**, **filters**, and **region
+A small extensibility hook registry: **actions**, **filters**, and **region
 hooks**, the extension mechanism plugins use to change behavior without editing
 core. This complements Django's own signals (used for model lifecycle events).
 

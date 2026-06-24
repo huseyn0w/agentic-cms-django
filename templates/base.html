@@ -3,18 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}DjangoPress — a lighter, faster, SEO-first CMS{% endblock %}</title>
+    <title>
+      {% block title %}Cmstack-Django — a lighter, faster, SEO-first CMS{% endblock %}
+    </title>
     <meta
       name="description"
-      content="{% block meta_description %}DjangoPress is an open-source, WordPress-style CMS built on Django — lighter, faster, and SEO-first.{% endblock %}"
+      content="{% block meta_description %}Cmstack-Django is an open-source CMS built on Django — lighter, faster, and SEO-first.{% endblock %}"
     />
-    {% vite_hmr_client %}
-    {% vite_asset 'src/main.js' %}
-    {# SEO/GEO head meta. The dashboard overrides this block to stay out of analytics. #}
-    {% block seo_head %}{% load seo_tags %}{% seo_head %}{% endblock %}
-    {# schema.org JSON-LD. Same opt-out as seo_head on private/auth pages. #}
-    {% block seo_jsonld %}{% load seo_tags %}{% seo_jsonld %}{% endblock %}
-    {% block extra_head %}{% endblock %}
+    {% vite_hmr_client %} {% vite_asset 'src/main.js' %} {# SEO/GEO head meta.
+    The dashboard overrides this block to stay out of analytics. #} {% block
+    seo_head %}{% load seo_tags %}{% seo_head %}{% endblock %} {# schema.org
+    JSON-LD. Same opt-out as seo_head on private/auth pages. #} {% block
+    seo_jsonld %}{% load seo_tags %}{% seo_jsonld %}{% endblock %} {% block
+    extra_head %}{% endblock %}
   </head>
   <body class="h-full bg-paper text-ink antialiased">
     {% block body %}{% endblock %}

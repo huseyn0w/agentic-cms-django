@@ -1,8 +1,8 @@
 """Upload constraints for the media library.
 
 SVG is intentionally excluded: SVG files can carry embedded scripts and, when
-served inline, become a stored-XSS vector. WordPress restricts SVG by default for
-the same reason. Keep this list conservative.
+served inline, become a stored-XSS vector. Many popular CMSs restrict SVG by
+default for the same reason. Keep this list conservative.
 """
 
 # Lower-case extensions without the dot.

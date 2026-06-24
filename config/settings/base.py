@@ -128,9 +128,9 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB", default="djangopress"),
-            "USER": env("POSTGRES_USER", default="djangopress"),
-            "PASSWORD": env("POSTGRES_PASSWORD", default="djangopress"),
+            "NAME": env("POSTGRES_DB", default="cmstack_django"),
+            "USER": env("POSTGRES_USER", default="cmstack_django"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="cmstack_django"),
             "HOST": env("POSTGRES_HOST", default="db"),
             "PORT": env("POSTGRES_PORT", default="5432"),
         }

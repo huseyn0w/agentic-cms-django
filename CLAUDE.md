@@ -4,8 +4,8 @@ This file guides Claude Code (CLI / VSCode extension) when working in this repos
 
 ## Project
 
-DjangoPress is an open-source, WordPress-style CMS built on Python/Django. Goal: same
-core capabilities as WordPress, but lighter, faster, SEO-first, and easy to read,
+Cmstack-Django is an open-source CMS built on Python/Django. Goal: same
+core capabilities as a popular CMS, but lighter, faster, SEO-first, and easy to read,
 understand, and extend. It is a commercial/open project that will be demoed publicly,
 so code quality, security, and a clean demo matter.
 
@@ -86,7 +86,7 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     (allowed types in `constants.py`; SVG rejected as an XSS vector). Browse/upload/
     delete views are permission-gated (`media.*_mediaasset`). Files served at
     `/media/` (Django in dev, web server in prod).
-  - `apps.dashboard` — the custom WordPress-style admin panel (own UI, NOT the
+  - `apps.dashboard` — the custom admin panel (own UI, NOT the
     Django admin), mounted at `/dashboard/`. Every view extends `AdminAccessMixin`
     (login + `accounts.access_admin`) plus a per-view permission tuple. Posts use
     a Trix editor (`frontend/src/admin.js`, a separate Vite entry) whose HTML is
@@ -109,7 +109,7 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     `ThemeLoader` (in `OPTIONS.loaders`, ahead of filesystem/app loaders; note
     `APP_DIRS` is therefore `False`) resolves the active theme's templates first,
     dynamically per render (no restart to switch). Active theme = `SiteSettings.
-    active_theme`, changed under Dashboard → Appearance (`manage_settings`). The
+active_theme`, changed under Dashboard → Appearance (`manage_settings`). The
     palette is CSS variables (`--color-paper/ink/accent`; default values in
     `styles.css` `:root`). **A theme recolors the site by overriding ONLY those
     variables via a `_theme_palette.html` include — it does NOT fork the shell**
@@ -189,7 +189,7 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     NO captcha and the 9.1 flow is byte-for-byte unchanged. `django_recaptcha` is in
     `INSTALLED_APPS`; the public site key is rendered client-side, the private key stays
     server-side. Empty defaults are NOT the library's built-in test keys, so `manage.py
-    check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
+check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
   - `apps.search` — public site search over published Posts and Pages (Phase 9.2).
     `services.search_content(query, language_code)` is the single entry point: it
     searches the translated title/body (+ Post excerpt) of the **active language's**
@@ -212,6 +212,7 @@ Frontend assets: changing anything under `frontend/` and rebuilding requires
 image's `frontend/dist` through an anonymous volume that otherwise persists stale).
 NOTE: CSS files imported by a Vite entry (e.g. `admin.css`) must use plain `@apply`
 rules, NOT `@layer`, unless they include their own `@tailwind` directives.
+
 - `frontend/` — Vite + Tailwind + Alpine source; builds to `frontend/dist`
   (with `.vite/manifest.json`), wired into templates via `django-vite`.
   **Type system (Phase 10.1):** self-hosted variable fonts via Fontsource

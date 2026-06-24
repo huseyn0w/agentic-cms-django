@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 (
                     "site_name",
                     models.CharField(
-                        default="DjangoPress", max_length=100, verbose_name="site name"
+                        default="Cmstack-Django", max_length=100, verbose_name="site name"
                     ),
                 ),
                 ("tagline", models.CharField(blank=True, max_length=200, verbose_name="tagline")),

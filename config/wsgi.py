@@ -1,4 +1,4 @@
-"""WSGI entrypoint for DjangoPress."""
+"""WSGI entrypoint for Cmstack-Django."""
 
 import os
 

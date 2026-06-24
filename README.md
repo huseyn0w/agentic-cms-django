@@ -1,6 +1,6 @@
-# DjangoPress
+# Cmstack-Django
 
-An open-source, WordPress-style CMS built on Python/Django — lighter, faster, SEO-first,
+An open-source CMS built on Python/Django — lighter, faster, SEO-first,
 and easy to read, understand, and extend.
 
 > **Status:** Phases 1–7 complete (Foundation, Accounts, Content, Media, Admin, Themes, Plugins).
@@ -26,7 +26,7 @@ cp .env.example .env          # adjust if you like; defaults work out of the box
 docker compose up --build
 ```
 
-Then open <http://localhost:8000> — you should see the styled DjangoPress landing page.
+Then open <http://localhost:8000> — you should see the styled Cmstack-Django landing page.
 The web container waits for Postgres, runs migrations, and serves the app on port 8000.
 
 ## Local development (without Docker)
@@ -59,7 +59,7 @@ apps/              # Django apps, one per bounded concern
   accounts/        # custom User, roles (Groups), permissions, allauth + Google
   content/         # posts, pages, services, categories, tags, revisions, sanitization
   media/           # media library: uploads, validation, thumbnails
-  dashboard/       # custom WordPress-style admin panel (own UI)
+  dashboard/       # custom admin panel (own UI)
   themes/          # theme registry + runtime template loader
   plugins/         # hook registry + plugin enable/disable
   seo/             # SEO/GEO: settings, meta/JSON-LD, sitemap, robots, llms.txt
@@ -76,34 +76,34 @@ requirements/      # base / dev / prod dependency sets
 
 ## Common commands
 
-| Task | Command |
-| --- | --- |
-| Dev up | `docker compose up` |
-| Migrate | `docker compose exec web python manage.py migrate` |
-| Create admin user | `docker compose exec web python manage.py createsuperuser` |
-| Tests | `docker compose exec web pytest` (or `pytest` in a local venv) |
-| Single test | `pytest apps/core/tests/test_home.py::test_home_status_ok` |
-| Lint / format | `ruff check .` · `black .` |
-| Frontend build | `cd frontend && npm run build` (watch: `npm run dev`) |
+| Task              | Command                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| Dev up            | `docker compose up`                                            |
+| Migrate           | `docker compose exec web python manage.py migrate`             |
+| Create admin user | `docker compose exec web python manage.py createsuperuser`     |
+| Tests             | `docker compose exec web pytest` (or `pytest` in a local venv) |
+| Single test       | `pytest apps/core/tests/test_home.py::test_home_status_ok`     |
+| Lint / format     | `ruff check .` · `black .`                                     |
+| Frontend build    | `cd frontend && npm run build` (watch: `npm run dev`)          |
 
 ## Accounts, roles & permissions
 
 Authentication is handled by [django-allauth](https://docs.allauth.org): users sign in
 with username **or** email and password, or via Google (set `GOOGLE_CLIENT_ID` /
 `GOOGLE_CLIENT_SECRET`). Auth pages live under `/accounts/` (`/accounts/login/`,
-`/accounts/signup/`, …) and use a styled DjangoPress layout.
+`/accounts/signup/`, …) and use a styled Cmstack-Django layout.
 
-Roles are WordPress-style and implemented as Django **Groups**, kept in sync by a
+Roles are implemented as Django **Groups**, kept in sync by a
 `post_migrate` hook (`apps/accounts/signals.py`) from a single definition in
 `apps/accounts/roles.py`:
 
-| Role | Capabilities (grows as later phases add models) |
-| --- | --- |
-| Administrator | All content/media/comment permissions + manage users & settings |
-| Editor | All content/media + comment moderation; no user/settings management |
-| Author | Create / edit / publish own posts, upload media |
-| Contributor | Draft posts only (no publish, no media) |
-| Subscriber | Authenticated reader; default role for new signups |
+| Role          | Capabilities (grows as later phases add models)                     |
+| ------------- | ------------------------------------------------------------------- |
+| Administrator | All content/media/comment permissions + manage users & settings     |
+| Editor        | All content/media + comment moderation; no user/settings management |
+| Author        | Create / edit / publish own posts, upload media                     |
+| Contributor   | Draft posts only (no publish, no media)                             |
+| Subscriber    | Authenticated reader; default role for new signups                  |
 
 Permissions are standard Django permissions, so `user.has_perm(...)`,
 `@permission_required`, and `PermissionRequiredMixin` all work. The sync is idempotent
@@ -129,8 +129,8 @@ Public URLs: `/blog/` (list), `/blog/<slug>/` (post), `/blog/category/<slug>/`,
 `/blog/tag/<slug>/`, `/pages/<slug>/`. Drafts return 404 to anonymous visitors but are
 previewable by users with `content.change_post` / `content.change_page`.
 
-> Content is editable via the interim Django admin (`/admin/`) for now; the bespoke,
-> WordPress-style admin panel (dashboard, WYSIWYG editor, media picker, menus, settings)
+> Content is editable via the interim Django admin (`/admin/`) for now; the bespoke
+> admin panel (dashboard, WYSIWYG editor, media picker, menus, settings)
 > is **Phase 5**. The Django admin here is developer scaffolding, not the final admin UX.
 
 ## Media library
@@ -153,7 +153,7 @@ Django admin; the polished picker integrates with the post editor in Phase 5.
 
 ## Admin panel
 
-DjangoPress ships its own WordPress-style admin (the `dashboard` app) — not the bare
+Cmstack-Django ships its own admin (the `dashboard` app) — not the bare
 Django admin — at **`/dashboard/`**, gated by the `accounts.access_admin` capability:
 
 - **Dashboard** — at-a-glance counts and recent posts.
@@ -201,8 +201,8 @@ in **Dashboard → Appearance**.
 
 ## Plugins
 
-DjangoPress is extended through a small **hook registry** (`apps/plugins/hooks.py`) —
-WordPress-style actions and filters — plus Django's own signals, never arbitrary code
+Cmstack-Django is extended through a small **hook registry** (`apps/plugins/hooks.py`) —
+actions and filters — plus Django's own signals, never arbitrary code
 injection. A plugin is a Django app under `plugins/` that registers hooks in its
 `AppConfig.ready()`:
 
@@ -336,7 +336,7 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
 2. **Accounts** — custom user, roles (Groups), granular permissions, allauth + Google login ✅
 3. **Content** — posts, pages, categories, tags, revisions, server-side sanitized rich text ✅
 4. **Media** — media library, validated uploads, Pillow thumbnails, permission-gated ✅
-5. **Admin panel** — custom WordPress-style dashboard (own UI), Trix editor, ownership scoping ✅
+5. **Admin panel** — custom dashboard (own UI), Trix editor, ownership scoping ✅
 6. **Themes** — swappable template sets resolved at runtime, CSS-variable palette, admin switcher ✅
 7. **Plugins** — hook registry (actions/filters/regions) + signals, runtime enable/disable, example plugin ✅
 8. **SEO/GEO** ✅ — Open Graph, JSON-LD entity/service schema, sitemap,
@@ -363,15 +363,15 @@ secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
 
 > **Status: planned for Phase 8.** This section documents the target so it isn't lost.
 
-DjangoPress is **SEO-first and GEO-first**: the goal is not only to rank in Google but to
+Cmstack-Django is **SEO-first and GEO-first**: the goal is not only to rank in Google but to
 be **parsed, understood, and cited by AI answer engines** (ChatGPT, Claude, Gemini,
 Perplexity, Google AI Overviews) so that when someone asks an assistant for a service you
 offer, your site is surfaced as a recommendation.
 
-Getting recommended by an AI engine has two halves. DjangoPress owns the first; the second
+Getting recommended by an AI engine has two halves. Cmstack-Django owns the first; the second
 is strategy/off-site and is supported by tooling, not a single page:
 
-**1. On-site — what DjangoPress will build (Phase 8), so every page is AI-ingestible:**
+**1. On-site — what Cmstack-Django will build (Phase 8), so every page is AI-ingestible:**
 
 - **AI crawler access** — `robots.txt` that explicitly allows the answer-engine bots
   (`GPTBot`, `OAI-SearchBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `CCBot`),
@@ -380,7 +380,7 @@ is strategy/off-site and is supported by tooling, not a single page:
   key pages/services that LLMs can read directly (as the reference CMS already did).
 - **Structured data (JSON-LD)** — `Organization`, `LocalBusiness`, `Service`, `Product`,
   `FAQPage`, `Article`, `BreadcrumbList`, `Person` (author/E-E-A-T). This is how engines
-  extract *which services you provide* and attach them to your entity.
+  extract _which services you provide_ and attach them to your entity.
 - **A GEO-optimized "Service" page type** — a first-class template that pairs a service
   description with `Service` + `FAQPage` schema, crisp definitional sentences, Q&A blocks,
   pricing/area-served fields, and citable facts — the format answer engines quote verbatim.
@@ -394,7 +394,7 @@ is strategy/off-site and is supported by tooling, not a single page:
 
 AI engines recommend brands they encounter repeatedly on sources they trust (reviews,
 directories, comparison articles, Reddit/forums, reputable publications). On-site GEO makes
-you *eligible and quotable*; visibility comes from being cited across the open web for your
+you _eligible and quotable_; visibility comes from being cited across the open web for your
 service + location. This is a content-and-outreach program, measured by checking whether the
 assistants actually cite you — handled by a dedicated **SEO/GEO strategy** workflow that
 audits a specific live site, measures baseline AI visibility, and returns a prioritized plan.

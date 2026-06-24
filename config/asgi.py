@@ -1,4 +1,4 @@
-"""ASGI entrypoint for DjangoPress."""
+"""ASGI entrypoint for Cmstack-Django."""
 
 import os
 
