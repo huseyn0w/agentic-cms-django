@@ -55,14 +55,23 @@ Layering enforced everywhere: `view → service → repository → manager/Query
      theme palette updated to new tokens; radius tokens added.
    - ☑ U2 fonts DONE: Newsreader + Inter + Geist Mono (package.json/main.js/tailwind/.dp-prose).
      `cd frontend && npm run build` verified (main.css 6.7KB gz, main.js 16.7KB gz).
-   - ◐ U3 public shell IN PROGRESS: DONE — sticky 64px header + scroll-shadow + backdrop-blur,
-     focus-trapped mobile drawer (@alpinejs/focus `x-trap`), skip-to-content link, `#content`
-     landmark, footer + base + header migrated to semantic tokens, button primitives rebuilt
-     (md radius + 5 variants primary/secondary/outline/ghost/destructive + focus ring). Test
-     `test_home_has_a11y_shell_landmarks` guards it. REMAINING U3: migrate the public CONTENT
-     templates (post_list/post_detail/page_detail/service_*/search results/auth) off the
-     `paper/ink/accent` aliases to semantic tokens; audit button usages to the new variants.
-   - ☐ **U4 admin shell** (sidebar active
+   - ☑ U3 public side DONE: sticky 64px header + scroll-shadow + blur, focus-trapped mobile
+     drawer (@alpinejs/focus `x-trap`), skip link + `#content`, header/footer/base on semantic
+     tokens, button primitives rebuilt (md radius + 5 variants + focus ring), and CSS
+     primitives (.dp-auth/.dp-form/.dp-prose) + public cards (post_detail/_comment/allauth)
+     migrated off hardcoded `bg-white` → `bg-surface` so they adapt to themes / are dark-ready.
+     Guard test: `test_home_has_a11y_shell_landmarks`. (Public list/detail templates still use
+     `ink/accent/paper` aliases — they render correctly via the alias bridge; pure cosmetic
+     rename to semantic names is optional, deferrable.)
+   - ☐ **RESUME HERE → U4 admin shell + dark-mode toggle.** Tokens + `.dark` are ready; the
+     toggle is an ADMIN feature (DESIGN_SYSTEM §2/§5 topbar). Work: migrate the ~15
+     `apps/dashboard/templates/*` + `dashboard/base.html` off hardcoded `bg-white`/status
+     colours (`bg-green-100` in post_list/plugins) to tokens (`bg-surface`/`surface-2`,
+     semantic `success/warning/error` badges); sidebar active = `surface-2` + 2px `primary`
+     left bar + mono group labels; topbar: add dark/light toggle (Alpine + localStorage + a
+     no-FOUC inline `<script>` in dashboard base that sets `.dark` on <html> before paint) +
+     avatar dropdown; messages → semantic Alert banners. Also `admin.css` `.dp-form` + Trix
+     chrome. Then U5 components, U6 a11y, U7 perf/Lighthouse. **U4 admin shell** (sidebar
      style, topbar **dark/light toggle** wiring `darkMode:"class"` + localStorage, avatar
      dropdown, semantic alerts), **U5 components** (breadcrumbs, dropdown, avatar, dropzone,
      sortable, modals, toasts, table bulk-select, empty states, badges, rich-text toolbar),
