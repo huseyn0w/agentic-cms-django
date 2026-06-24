@@ -9,7 +9,7 @@ HTTP response — they hold no comment domain rules themselves.
 
 from __future__ import annotations
 
-from apps.core.models import SiteSettings
+from apps.core.repositories import SiteSettingsRepository
 
 from .forms import CommentForm
 from .models import Comment
@@ -43,7 +43,7 @@ def submit_comment(post, user, data) -> tuple[str, CommentForm | None]:
     Authenticated users' identity (user/name/email) comes from their account;
     guests supply name/email via the form.
     """
-    site = SiteSettings.load()
+    site = SiteSettingsRepository.get()
     if not site.allow_comments:
         return DISABLED, None
     if site.comments_require_login and not user.is_authenticated:

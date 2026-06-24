@@ -13,7 +13,7 @@ from django.http import Http404
 
 from apps.comments.forms import CommentForm
 from apps.comments.repositories import CommentRepository
-from apps.core.models import SiteSettings
+from apps.core.repositories import SiteSettingsRepository
 
 from .models import Category, Page, Post, Service, Tag
 from .repositories import (
@@ -86,7 +86,7 @@ def post_detail_context(post: Post, user, comment_form: CommentForm | None = Non
     top-level comment thread and a form (the caller may inject a bound form to
     re-render validation errors).
     """
-    site = SiteSettings.load()
+    site = SiteSettingsRepository.get()
     ctx: dict = {
         "comments_enabled": site.allow_comments,
         "comments_require_login": site.comments_require_login,
