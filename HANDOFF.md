@@ -123,8 +123,13 @@ Layering enforced everywhere: `view → service → repository → manager/Query
    FTS job via `config.settings.test_postgres` / Vite build; whole tree black-formatted),
    ☑ **F15 mypy django-stubs** (`mypy_django_plugin.main` wired; full run is 0 errors —
    real fixes in views/mixins/repos, with a documented file-level `disable-error-code` on
-   `apps/content/models.py` for parler's un-stubbed dynamic fields/managers). REMAINING order:
-   **F14 E2E (Playwright) — RESUME HERE.**
+   `apps/content/models.py` for parler's un-stubbed dynamic fields/managers), ☑ **F14 E2E**
+   (`tests/e2e/`: 7 headless-Chromium journeys — home/reader/search/SEO/login-gate/lang-
+   switch/dark-toggle-persists — over `live_server` + the built Vite bundle via
+   `config.settings.test_e2e`; auto-marked `e2e` + excluded from the default run; run
+   `pytest tests/e2e -m e2e --ds=config.settings.test_e2e`; `pytest-playwright` in dev reqs +
+   a CI `e2e` job. Verified locally: **7 passed**). **Task 1 feature parity is COMPLETE.**
+   REMAINING: finish UI **U5/U6/U7**, then Task 5 (README) + completeness-critic.
 5. **Task 5 — rewrite README** after the above; align with the other two stacks.
 6. **Completeness-critic** Opus pass before declaring done (prompt §"production quality bar").
 
