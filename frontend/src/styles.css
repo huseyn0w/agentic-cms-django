@@ -12,7 +12,8 @@
   --surface-2: 244 241 234;
   --text: 26 26 24;
   --text-muted: 107 103 96;
-  --text-subtle: 148 144 138;
+  /* Darkened from 148/144/138 to clear WCAG AA (4.5:1) for small UI text on --bg. */
+  --text-subtle: 118 114 107;
   --primary: 178 58 46;
   --primary-hover: 153 47 37;
   --primary-contrast: 255 255 255;

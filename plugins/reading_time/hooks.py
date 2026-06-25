@@ -20,6 +20,6 @@ def prepend_reading_time(html: str, post=None, **kwargs) -> str:
     word_count = len(strip_tags(html).split())
     minutes = max(1, math.ceil(word_count / WORDS_PER_MINUTE))
     badge = format_html(
-        '<p class="mb-6 text-sm font-medium text-ink/50">☕ {} min read</p>', minutes
+        '<p class="mb-6 text-sm font-medium text-text-subtle">☕ {} min read</p>', minutes
     )
     return badge + html

@@ -11,6 +11,8 @@ export default {
     "../templates/**/*.html",
     "../apps/**/templates/**/*.html",
     "../themes/**/*.html",
+    // Plugins can emit utility classes from Python (e.g. reading_time's badge).
+    "../plugins/**/*.{py,html}",
     "./src/**/*.{js,ts}",
   ],
   theme: {

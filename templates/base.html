@@ -1,4 +1,4 @@
-{% load django_vite %}<!doctype html>
+{% load django_vite static %}<!doctype html>
 <html lang="{{ i18n_current_language|default:'en' }}" class="h-full">
   <head>
     <meta charset="utf-8" />
@@ -8,6 +8,10 @@
       name="description"
       content="{% block meta_description %}Cmstack-Django is an open-source CMS built on Django — lighter, faster, and SEO-first.{% endblock %}"
     />
+    {# Preload the critical above-the-fold latin variable fonts (U7) so text paints
+       without a flash. Geist Mono (metadata only) is left to lazy discovery. #}
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'assets/fonts/newsreader-latin-wght-normal.woff2' %}" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'assets/fonts/inter-latin-wght-normal.woff2' %}" />
     {% vite_hmr_client %}
     {% vite_asset 'src/main.js' %}
     {# SEO/GEO head meta. The dashboard overrides this block to stay out of analytics. #}

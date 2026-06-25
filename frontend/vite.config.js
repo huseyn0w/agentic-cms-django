@@ -13,6 +13,16 @@ export default defineConfig({
         main: "src/main.js",
         admin: "src/admin.js",
       },
+      output: {
+        // Emit web fonts at a stable, hash-free path so the critical latin
+        // weights can be <link rel=preload>ed from templates (U7). Fonts change
+        // far less often than code, so dropping the content hash is a safe
+        // long-cache tradeoff; everything else keeps its hashed filename.
+        assetFileNames: (info) =>
+          info.name && info.name.endsWith(".woff2")
+            ? "assets/fonts/[name][extname]"
+            : "assets/[name]-[hash][extname]",
+      },
     },
   },
   server: {

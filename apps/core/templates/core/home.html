@@ -15,7 +15,7 @@
         A full-featured CMS,<br class="hidden sm:block" />
         <span class="text-accent">rebuilt on Django.</span>
       </h1>
-      <p class="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-ink/60">
+      <p class="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-text-muted">
         Lighter, faster, and SEO-first. Readable code, runtime themes and plugins,
         and structured data built in.
       </p>
@@ -37,32 +37,32 @@
         <div class="stagger mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div class="reveal rounded-2xl bg-accent/10 p-6 ring-1 ring-accent/20 sm:col-span-2 lg:col-span-2">
             <h3 class="text-xl font-semibold tracking-tight">SEO and GEO, first-class</h3>
-            <p class="mt-2 max-w-lg leading-relaxed text-ink/65">
+            <p class="mt-2 max-w-lg leading-relaxed text-text-muted">
               Open Graph, JSON-LD entity and service schema, sitemaps, hreflang, and an
               llms.txt so answer engines can read and quote your pages.
             </p>
           </div>
           <div class="reveal rounded-2xl border border-ink/10 p-6">
             <h3 class="text-lg font-semibold tracking-tight">Multilingual by design</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink/60">
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Per-language content with clean prefixed URLs, indexed separately by search engines.
             </p>
           </div>
           <div class="reveal rounded-2xl border border-ink/10 p-6">
             <h3 class="text-lg font-semibold tracking-tight">Runtime themes</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink/60">
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Recolor the whole site from a CSS-variable palette. No restart, no rebuild.
             </p>
           </div>
           <div class="reveal rounded-2xl border border-ink/10 p-6">
             <h3 class="text-lg font-semibold tracking-tight">Plugins via hooks</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink/60">
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Actions, filters, and template regions you toggle live. No arbitrary code injection.
             </p>
           </div>
           <div class="reveal rounded-2xl border border-ink/10 p-6">
             <h3 class="text-lg font-semibold tracking-tight">Your own dashboard</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink/60">
+            <p class="mt-2 text-sm leading-relaxed text-text-muted">
               A full-featured admin with roles and scoped ownership. Plus comments and full-text search.
             </p>
           </div>
@@ -91,7 +91,7 @@
               <a href="{{ post.get_absolute_url }}" class="transition-colors group-hover:text-accent">{{ post.title }}</a>
             </h3>
             {% if post.excerpt %}
-              <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-ink/60">{{ post.excerpt }}</p>
+              <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-text-muted">{{ post.excerpt }}</p>
             {% endif %}
           </article>
           {% endfor %}
@@ -106,7 +106,7 @@
         <div class="grid items-center gap-12 lg:grid-cols-2">
           <div class="reveal">
             <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">One palette. Any mood.</h2>
-            <p class="mt-4 max-w-md leading-relaxed text-ink/65">
+            <p class="mt-4 max-w-md leading-relaxed text-text-muted">
               Themes recolor the entire site from a handful of CSS variables, switched
               from the dashboard. The shell is shared, so a theme never forks a template.
             </p>
@@ -141,7 +141,7 @@
         <h2 class="mx-auto max-w-2xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
           Build your next site on {{ site.site_name }}.
         </h2>
-        <p class="mx-auto mt-4 max-w-md text-ink/60">Open source, self-hosted, and ready to extend.</p>
+        <p class="mx-auto mt-4 max-w-md text-text-muted">Open source, self-hosted, and ready to extend.</p>
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="{% url 'account_signup' %}" class="dp-btn dp-btn-primary">Get started</a>
           <a href="https://github.com/huseyn0w/Laravella-CMS" class="dp-btn dp-btn-ghost hover:text-ink">View on GitHub</a>
