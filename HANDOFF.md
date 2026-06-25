@@ -4,7 +4,7 @@ _Last refresh: 2026-06-24. Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
 [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
 
 ## Current state (verified, not asserted)
-- Full test suite: **361 passed** (`.venv/bin/python -m pytest -q`). Was 218 at start.
+- Full test suite: **379 passed** (`.venv/bin/python -m pytest -q`). Was 218 at start.
 - NOTE: `djangorestframework==3.15.2` added (requirements/base.txt) — run
   `.venv/bin/python -m pip install -r requirements/dev.txt` if a fresh checkout lacks it.
 - Lint: `.venv/bin/ruff check apps config` → clean.
@@ -106,9 +106,11 @@ Layering enforced everywhere: `view → service → repository → manager/Query
    profile** (`/authors/<id>/` archive with ProfilePage/Person JSON-LD, email-safe, published-
    author-gated; `/account/` profile editor; 13 tests), ☑ **F11 in-editor media picker +
    swappable storage driver** (Alpine modal inserts library images into Trix; `STORAGES` via
-   `config.storages.build_storages(env)` — local↔S3 by env; 9 tests). REMAINING order:
-   F12 REST API + MCP (largest), F13 CI,
-   F14 E2E, F15 mypy django plugin.
+   `config.storages.build_storages(env)` — local↔S3 by env; 9 tests), ☑ **F12 REST API + MCP**
+   (new `apps.api`: DRF read API `/api/v1/` + gated post write + token auth + `/health[/ready]`;
+   new `apps.mcp`: 13-tool `/api/mcp/` registry, token-auth floor + per-tool server-side perm
+   checks; OAuth 2.1 + SSE transport deferred — see §7; 38 tests). REMAINING order:
+   F13 CI, F14 E2E, F15 mypy django plugin.
 5. **Task 5 — rewrite README** after the above; align with the other two stacks.
 6. **Completeness-critic** Opus pass before declaring done (prompt §"production quality bar").
 
@@ -133,7 +135,7 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 > 2. Read `cmstack-django/HANDOFF.md` and `cmstack-django/REFACTOR_PLAN.md` in full, then
 >    `../FEATURE_MATRIX.md` and `../DESIGN_SYSTEM.md` (read-only canon — never edit the two
 >    shared specs).
-> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **337 passed**) and
+> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **379 passed**) and
 >    `.venv/bin/ruff check apps config`. Use `.venv/bin/python` directly — `source .venv/bin/activate`
 >    does NOT expose Django in this shell. Frontend build: `cd frontend && npm run build`.
 >
@@ -165,13 +167,15 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 > publishing** (`scheduled_at` + `publish_scheduled` cron command), and **F9 menu builder +
 > public menu rendering** (new `apps.menus`; flat menus, label not per-locale — see §7), and
 > **F10 author public pages + self-service profile** (`/authors/<id>/`, `/account/`), and
-> **F11 in-editor media picker + swappable storage driver** (local↔S3 via `STORAGES`).
-> 337 tests pass, ruff clean, ~95% coverage, Vite build within budget.
+> **F11 in-editor media picker + swappable storage driver** (local↔S3 via `STORAGES`), and
+> **F12 REST API + MCP** (new `apps.api` read+gated-write API at `/api/v1/`, token auth,
+> `/health[/ready]`; new `apps.mcp` 13-tool `/api/mcp/` registry with per-tool server-side perm
+> checks — OAuth 2.1/SSE deferred, see §7).
+> 379 tests pass, ruff clean, ~95% coverage, Vite build within budget.
 >
-> **RESUME HERE (ordered):** Task 1 feature parity — **F12 public REST API + MCP server
-> (largest item)**, then
-> F10 author pages + self-service profile, F11 media picker + swappable storage driver, F12 REST
-> API + MCP (largest), F13 CI, F14 E2E, F15 wire mypy `django-stubs` plugin. Also finish UI U5
+> **RESUME HERE (ordered):** Task 1 feature parity — **F13 CI pipeline (GitHub Actions:
+> ruff→black→pytest+cov, a Postgres job to exercise the FTS branch)**, then
+> F14 E2E, F15 wire mypy `django-stubs` plugin. Also finish UI U5
 > (modals replacing `confirm()`, toasts, table bulk-select + backend bulk actions, empty-state
 > component, rich-text toolbar aria), U6 (remaining ARIA, locale tabs roles, form-error
 > aria-invalid/describedby), U7 (font `<link rel=preload>` + subset, REAL Lighthouse ≥95 run —

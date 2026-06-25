@@ -25,6 +25,8 @@ urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),
     # Public REST API (language-agnostic, outside i18n_patterns).
     path("api/", include("apps.api.urls")),
+    # MCP server (token-authenticated tool surface for AI clients).
+    path("api/mcp/", include("apps.mcp.urls")),
     # Liveness + readiness probes.
     path("health/", api_views.health, name="health"),
     path("health/ready/", api_views.readiness, name="health_ready"),

@@ -253,6 +253,24 @@ check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
     and keyboard-accessible up/down reordering (POST that swaps `position` — no
     drag-JS). NOTE (deliberate scope): menus are **flat** and `label` is **not**
     per-locale (the title fallback covers content links) — see REFACTOR_PLAN §7.
+  - `apps.api` — public REST API (DRF, F12) at `/api/v1/` (outside i18n). ReadOnly
+    viewsets for posts/pages/services/categories/tags (published-only, parler-aware
+    serializers, `?lang=` override, list/detail split); the post viewset also takes
+    gated writes (`ModelViewSet`): `TokenAuthentication`+`SessionAuthentication`,
+    `DjangoModelPermissionsOrAnonReadOnly` (anon read, model-perm-gated write),
+    owner-scoped writes, publish gated server-side via `gate_publish_state`.
+    Persistence runs through `content.services.api_create_post/api_update_post` →
+    repository (no ORM in viewsets/serializers). `manage.py create_api_token <user>`
+    mints tokens. `/health/` (liveness) + `/health/ready/` (DB probe) live here too.
+  - `apps.mcp` — MCP server (F12) at `POST /api/mcp/` with a `tools/list` +
+    `tools/call` JSON surface. `tools.py` is a registry of 13 management tools
+    (posts CRUD+publish, pages/categories/tags/media/users lists, comments.moderate,
+    settings.get); each declares the permission(s) it needs and the executor
+    (`services.call_tool`) **re-verifies them server-side** against the calling user
+    before delegating to the existing app services/repositories (same rules as the
+    UI). Token/session auth is the auth floor (`IsAuthenticated`). NOTE (deliberate
+    scope, REFACTOR_PLAN §7): token auth, not full OAuth 2.1; HTTP-JSON, not an
+    SSE/stdio MCP transport — both layer on later without touching the tools.
   - `apps.search` — public site search over published Posts and Pages (Phase 9.2).
     `services.search_content(query, language_code)` is the single entry point: it
     searches the translated title/body (+ Post excerpt) of the **active language's**

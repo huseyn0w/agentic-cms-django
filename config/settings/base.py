@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "apps.search",
     "apps.menus",
     "apps.api",
+    "apps.mcp",
     "apps.core",
     # Plugins (live in the top-level plugins/ directory)
     "plugins.reading_time",
