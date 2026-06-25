@@ -41,10 +41,15 @@ code style): https://github.com/huseyn0w/Laravella-CMS
 - Seed demo data: `docker compose exec web python manage.py seed_demo`
 - Publish scheduled content (cron, e.g. every minute): `python manage.py publish_scheduled`
 - Tests: `docker compose exec web pytest` (single test: `pytest path::test_name`)
-- Lint/format: `ruff check .` and `black .`
+- Lint/format/types: `ruff check .`, `black .`, and `mypy apps config` (django-stubs
+  plugin is wired — see `[tool.mypy]`/`[tool.django-stubs]` in `pyproject.toml`).
 - Frontend build: `cd frontend && npm run build` (watch: `npm run dev`)
-- Lint locally without Docker: `pytest`, `ruff check .`, `black .` from a venv with
-  `requirements/dev.txt` installed.
+- Lint locally without Docker: `pytest`, `ruff check .`, `black .`, `mypy apps config`
+  from a venv with `requirements/dev.txt` installed.
+- CI: `.github/workflows/ci.yml` runs four jobs on push/PR — lint (ruff + black --check
+  + mypy), tests + coverage on SQLite (90% floor), a PostgreSQL job that runs the suite
+  via `config.settings.test_postgres` to exercise the full-text-search branch in
+  `apps/search/repositories.py`, and a Vite frontend build.
 
 ## Project structure (as built)
 

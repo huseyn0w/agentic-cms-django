@@ -1,13 +1,22 @@
 # cmstack-django — HANDOFF
 
-_Last refresh: 2026-06-25 (F6–F12 done; F13 next). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
+_Last refresh: 2026-06-25 (F6–F13 + F15 done; F14 next). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
 [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
 
 ## Current state (verified, not asserted)
 - Full test suite: **379 passed** (`.venv/bin/python -m pytest -q`). Was 218 at start.
 - NOTE: `djangorestframework==3.15.2` added (requirements/base.txt) — run
   `.venv/bin/python -m pip install -r requirements/dev.txt` if a fresh checkout lacks it.
-- Lint: `.venv/bin/ruff check apps config` → clean.
+- Lint: `.venv/bin/ruff check apps config` → clean. `.venv/bin/python -m black --check apps
+  config` → clean (whole tree formatted). `.venv/bin/python -m mypy apps config` → **Success,
+  0 issues** (django-stubs plugin wired; F15). NOTE: the venv's `black`/`mypy` console scripts
+  have a stale shebang (venv created under the old `DjangoPress` path) — invoke via
+  `.venv/bin/python -m black` / `-m mypy`, not the bare scripts. `ruff` is a native binary so
+  `.venv/bin/ruff` works directly.
+- CI (F13): `.github/workflows/ci.yml` — lint (ruff+black+mypy), tests+cov (SQLite, 90% floor),
+  a Postgres job (`config.settings.test_postgres`) exercising the FTS branch, and a Vite build.
+  Verified the Postgres job locally against `postgres:16-alpine` (search suite green; the FTS
+  branch lines 48-62 are covered on PG, the icontains fallback on SQLite — both jobs needed).
 - Coverage: **~96%** overall (content/dashboard ≥93% each; `pytest --cov=apps`). pytest-cov +
   factory_boy installed and wired (`pyproject.toml [tool.coverage.*]`, `requirements/dev.txt`).
 - Run app: `docker compose up` (or venv + `manage.py runserver`). Tests: `.venv/bin/python -m
@@ -109,8 +118,13 @@ Layering enforced everywhere: `view → service → repository → manager/Query
    `config.storages.build_storages(env)` — local↔S3 by env; 9 tests), ☑ **F12 REST API + MCP**
    (new `apps.api`: DRF read API `/api/v1/` + gated post write + token auth + `/health[/ready]`;
    new `apps.mcp`: 13-tool `/api/mcp/` registry, token-auth floor + per-tool server-side perm
-   checks; OAuth 2.1 + SSE transport deferred — see §7; 38 tests). REMAINING order:
-   F13 CI, F14 E2E, F15 mypy django plugin.
+   checks; OAuth 2.1 + SSE transport deferred — see §7; 38 tests), ☑ **F13 CI pipeline**
+   (`.github/workflows/ci.yml`: lint(ruff+black+mypy) / pytest+cov SQLite 90% floor / Postgres
+   FTS job via `config.settings.test_postgres` / Vite build; whole tree black-formatted),
+   ☑ **F15 mypy django-stubs** (`mypy_django_plugin.main` wired; full run is 0 errors —
+   real fixes in views/mixins/repos, with a documented file-level `disable-error-code` on
+   `apps/content/models.py` for parler's un-stubbed dynamic fields/managers). REMAINING order:
+   **F14 E2E (Playwright) — RESUME HERE.**
 5. **Task 5 — rewrite README** after the above; align with the other two stacks.
 6. **Completeness-critic** Opus pass before declaring done (prompt §"production quality bar").
 
