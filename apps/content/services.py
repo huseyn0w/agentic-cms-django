@@ -109,3 +109,22 @@ def toggle_post_like(post: Post, user) -> tuple[bool, int]:
 def get_post_for_action(slug: str) -> Post:
     """Fetch a post by slug for a write action (like), or Http404."""
     return PostRepository.get_by_slug(slug)
+
+
+def publish_scheduled_content() -> dict[str, int]:
+    """Publish every draft whose scheduled time has arrived; return per-type counts.
+
+    Each item is flipped via its own ``publish_scheduled`` transition (so no ORM
+    lives here); the worker/cron command calls this.
+    """
+    counts: dict[str, int] = {}
+    for label, repo in (
+        ("posts", PostRepository),
+        ("pages", PageRepository),
+        ("services", ServiceRepository),
+    ):
+        due = list(repo.due_for_publish())
+        for item in due:
+            item.publish_scheduled()
+        counts[label] = len(due)
+    return counts

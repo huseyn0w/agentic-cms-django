@@ -96,6 +96,10 @@ class PostRepository:
         post.delete()
 
     @staticmethod
+    def due_for_publish() -> QuerySet:
+        return Post.objects.due_for_publish()
+
+    @staticmethod
     def published_indexable(limit: int) -> QuerySet:
         """Published, non-noindex posts for crawler surfaces (llms.txt), capped."""
         return (
@@ -151,6 +155,10 @@ class PageRepository:
     def permanently_delete(page: Page) -> None:
         page.delete()
 
+    @staticmethod
+    def due_for_publish() -> QuerySet:
+        return Page.objects.due_for_publish()
+
 
 class ServiceRepository:
     @staticmethod
@@ -172,6 +180,10 @@ class ServiceRepository:
     @staticmethod
     def published_indexable(limit: int) -> QuerySet:
         return Service.objects.published().filter(noindex=False)[:limit]
+
+    @staticmethod
+    def due_for_publish() -> QuerySet:
+        return Service.objects.due_for_publish()
 
 
 class CategoryRepository:

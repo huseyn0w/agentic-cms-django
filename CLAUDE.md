@@ -39,6 +39,7 @@ code style): https://github.com/huseyn0w/Laravella-CMS
 - Dev up: `docker compose up`
 - Migrate: `docker compose exec web python manage.py migrate`
 - Seed demo data: `docker compose exec web python manage.py seed_demo`
+- Publish scheduled content (cron, e.g. every minute): `python manage.py publish_scheduled`
 - Tests: `docker compose exec web pytest` (single test: `pytest path::test_name`)
 - Lint/format: `ruff check .` and `black .`
 - Frontend build: `cd frontend && npm run build` (watch: `npm run dev`)
@@ -82,6 +83,15 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     keeping the service ORM-free); saving re-snapshots so history is preserved, not
     rewritten. Owner-scoped (posts via `editable_by`), gated on `change_post`/
     `change_page`; reachable from a "Revision history" link in each editor.
+    **Scheduled publishing (F8):** `SchedulableMixin` adds `scheduled_at` +
+    `is_scheduled` + a `publish_scheduled()` transition to Post/Page/Service. A
+    scheduled item stays DRAFT (invisible publicly) until its time; the
+    `publish_scheduled` management command (run from cron) calls
+    `content.services.publish_scheduled_content()`, which flips each
+    `Model.objects.due_for_publish()` item via its own transition (no ORM in the
+    service) and stamps the scheduled time as `published_at`. The dashboard forms
+    expose a datetime-local `scheduled_at` (posts gate it on `can_publish`, like
+    status); the post list shows a "Scheduled · <time>" badge.
     **Multilingual (Phase 8.1, django-parler):** translated fields live on a
     per-model translation table — Post(title/excerpt/body), Page(title/body),
     Category(name/description), Tag(name). `slug`/`status`/`published_at`/`author`/

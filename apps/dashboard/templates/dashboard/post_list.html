@@ -43,9 +43,16 @@
             <a href="{% url 'dashboard:post_edit' post.pk %}" class="font-medium text-ink hover:text-accent">{{ post.title }}</a>
           </td>
           <td class="px-5 py-3">
-            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if post.is_published %}bg-success-bg text-success{% else %}bg-surface-2 text-text-muted{% endif %}">
-              {{ post.get_status_display }}
-            </span>
+            {% if post.is_scheduled %}
+              <span class="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning"
+                    title="Scheduled for {{ post.scheduled_at|date:'M j, Y H:i' }}">
+                Scheduled · {{ post.scheduled_at|date:"M j, H:i" }}
+              </span>
+            {% else %}
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if post.is_published %}bg-success-bg text-success{% else %}bg-surface-2 text-text-muted{% endif %}">
+                {{ post.get_status_display }}
+              </span>
+            {% endif %}
           </td>
           <td class="px-5 py-3 text-ink/60">{{ post.author.display_name|default:"—" }}</td>
           <td class="px-5 py-3 text-ink/50">{{ post.updated_at|date:"M j, Y" }}</td>

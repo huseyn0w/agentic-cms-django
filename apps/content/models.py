@@ -96,6 +96,14 @@ class PublishableQuerySet(TranslatableQuerySet):
     def drafts(self) -> models.QuerySet:
         return self.filter(status=Status.DRAFT)
 
+    def due_for_publish(self) -> models.QuerySet:
+        """Draft items whose scheduled time has arrived (ready to auto-publish)."""
+        return self.filter(
+            status=Status.DRAFT,
+            scheduled_at__isnull=False,
+            scheduled_at__lte=timezone.now(),
+        )
+
     def editable_by(self, user) -> models.QuerySet:
         """Posts ``user`` may manage in the dashboard.
 
@@ -170,7 +178,37 @@ class SoftDeleteModel(models.Model):
         self.save(update_fields=["deleted_at", "updated_at"])
 
 
-class Post(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel):
+class SchedulableMixin(models.Model):
+    """Mixin for content that can be auto-published at a future time.
+
+    The item stays a Draft (so it is invisible publicly) until ``scheduled_at``
+    arrives and the ``publish_scheduled`` management command flips it. Requires the
+    concrete model to expose ``status`` and ``published_at``.
+    """
+
+    scheduled_at = models.DateTimeField(
+        _("scheduled for"),
+        null=True,
+        blank=True,
+        help_text=_("Auto-publish at this time. Keep the status as Draft until then."),
+    )
+
+    class Meta:
+        abstract = True
+
+    @property
+    def is_scheduled(self) -> bool:
+        return self.status == Status.DRAFT and self.scheduled_at is not None
+
+    def publish_scheduled(self) -> None:
+        """Publish a due scheduled item, stamping its scheduled time as the date."""
+        self.status = Status.PUBLISHED
+        self.published_at = self.scheduled_at or timezone.now()
+        self.scheduled_at = None
+        self.save()
+
+
+class Post(SeoFieldsMixin, SoftDeleteModel, SchedulableMixin, TranslatableModel, TimeStampedModel):
     translations = TranslatedFields(
         title=models.CharField(_("title"), max_length=200),
         excerpt=models.TextField(_("excerpt"), blank=True),
@@ -279,7 +317,7 @@ class Post(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel)
             self.status = Status.DRAFT
 
 
-class Page(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel):
+class Page(SeoFieldsMixin, SoftDeleteModel, SchedulableMixin, TranslatableModel, TimeStampedModel):
     """A standalone, optionally hierarchical page (About, Contact, ...)."""
 
     translations = TranslatedFields(
@@ -353,7 +391,7 @@ class Page(SeoFieldsMixin, SoftDeleteModel, TranslatableModel, TimeStampedModel)
         self.save()
 
 
-class Service(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
+class Service(SeoFieldsMixin, SchedulableMixin, TranslatableModel, TimeStampedModel):
     """A GEO-optimized service page — the format answer engines quote.
 
     Pairs a crisp definitional ``summary`` with a rich ``description``, citable

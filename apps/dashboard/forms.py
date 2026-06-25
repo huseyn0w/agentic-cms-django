@@ -13,6 +13,18 @@ from apps.seo.models import SeoSettings
 
 User = get_user_model()
 
+# The HTML5 datetime-local control emits e.g. "2026-06-25T09:00".
+_DATETIME_LOCAL_FORMAT = "%Y-%m-%dT%H:%M"
+
+
+def _schedule_widget() -> forms.DateTimeInput:
+    return forms.DateTimeInput(attrs={"type": "datetime-local"}, format=_DATETIME_LOCAL_FORMAT)
+
+
+def _accept_datetime_local(field: forms.DateTimeField) -> None:
+    """Let a DateTimeField also parse the datetime-local value the widget emits."""
+    field.input_formats = [_DATETIME_LOCAL_FORMAT, *field.input_formats]
+
 
 class PostForm(TranslatableModelForm):
     class Meta:
@@ -24,6 +36,7 @@ class PostForm(TranslatableModelForm):
             "body",
             "featured_image",
             "status",
+            "scheduled_at",
             "categories",
             "tags",
             # SEO (per language for meta_title/description; shared otherwise)
@@ -37,6 +50,7 @@ class PostForm(TranslatableModelForm):
             "body": forms.HiddenInput(),  # driven by the Trix editor in the template
             "excerpt": forms.Textarea(attrs={"rows": 3}),
             "meta_description": forms.Textarea(attrs={"rows": 2}),
+            "scheduled_at": _schedule_widget(),
         }
         help_texts = {
             "slug": "Leave blank to generate from the title.",
@@ -48,10 +62,13 @@ class PostForm(TranslatableModelForm):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
         self.fields["body"].required = False
+        _accept_datetime_local(self.fields["scheduled_at"])
         if not can_publish:
             # Non-publishers can't change publish state at all, so don't offer the
-            # field; the view preserves the stored status (see PublishGatingMixin).
+            # status or scheduling fields; the view preserves the stored status
+            # (see PublishGatingMixin).
             del self.fields["status"]
+            del self.fields["scheduled_at"]
 
 
 class PageForm(TranslatableModelForm):
@@ -63,6 +80,7 @@ class PageForm(TranslatableModelForm):
             "body",
             "template",
             "status",
+            "scheduled_at",
             "parent",
             "meta_title",
             "meta_description",
@@ -73,6 +91,7 @@ class PageForm(TranslatableModelForm):
         widgets = {
             "body": forms.HiddenInput(),
             "meta_description": forms.Textarea(attrs={"rows": 2}),
+            "scheduled_at": _schedule_widget(),
         }
         help_texts = {"slug": "Leave blank to generate from the title."}
 
@@ -80,6 +99,7 @@ class PageForm(TranslatableModelForm):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
         self.fields["body"].required = False
+        _accept_datetime_local(self.fields["scheduled_at"])
 
 
 class ServiceForm(TranslatableModelForm):
@@ -94,6 +114,7 @@ class ServiceForm(TranslatableModelForm):
             "area_served",
             "faq",
             "status",
+            "scheduled_at",
             "meta_title",
             "meta_description",
             "canonical_url",
@@ -105,6 +126,7 @@ class ServiceForm(TranslatableModelForm):
             "summary": forms.Textarea(attrs={"rows": 2}),
             "faq": forms.Textarea(attrs={"rows": 6}),
             "meta_description": forms.Textarea(attrs={"rows": 2}),
+            "scheduled_at": _schedule_widget(),
         }
         help_texts = {
             "slug": "Leave blank to generate from the title.",
@@ -115,6 +137,7 @@ class ServiceForm(TranslatableModelForm):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
         self.fields["description"].required = False
+        _accept_datetime_local(self.fields["scheduled_at"])
 
 
 class CategoryForm(TranslatableModelForm):

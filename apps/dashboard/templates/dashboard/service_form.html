@@ -40,6 +40,7 @@
     <aside class="space-y-5">
       <div class="rounded-2xl border border-ink/10 bg-surface p-5">
         {% include "dashboard/_field.html" with field=form.status %}
+        {% include "dashboard/_field.html" with field=form.scheduled_at %}
         <button type="submit"
                 class="mt-4 w-full rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
           Save service
