@@ -1,44 +1,64 @@
 # cmstack-django — HANDOFF
 
-_Last refresh: 2026-06-25 (F1–F15 + UI U1–U7 + README all done; only the final
-completeness-critic pass remains). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
-[`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
+_Last refresh: 2026-06-26 (original REFACTOR_PLAN scope — F1–F15, UI U1–U7, README,
+adversarial + completeness-critic — is COMPLETE. The user then updated the master prompt
+(`../prompts/cmstack-django.md`); a few of its STRICTER acceptance criteria are not yet
+met — see "REMAINING vs the updated prompt". Resume there.). Read with
+[`REFACTOR_PLAN.md`](REFACTOR_PLAN.md), [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md),
+[`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
 
-## What changed this session (F13/F14/F15 + U5/U6/U7 + README)
-- **F13 CI**, **F15 mypy** (0 errors, django-stubs), **F14 E2E** (8 Playwright journeys) — see below.
-- **U5**: accessible confirm dialog (replaces 11 `confirm()`), toast notifications,
-  table bulk-select + `PostBulkActionView`→`bulk_trash_posts`→`editable_among`, empty-state
-  component, Trix toolbar aria. **U6**: form-field `aria-invalid`/`aria-describedby` via the
-  `dashboard_a11y.aria_field` filter through `_field.html`; locale tabs `role=tab`/
-  `aria-selected`/`aria-current`. **U7**: hash-free woff2 + `<link rel=preload>` for the two
-  critical latin fonts; darkened `--text-subtle` + migrated low-opacity ink text to semantic
-  tokens to clear WCAG AA. **Lighthouse measured (real headless Chrome, built+Postgres
-  server): home 98/100/96/100, post 100/100/96/100 (perf/a11y/bp/seo) — all ≥95.**
-- **Task 5 README** rewritten (current state, architecture/layering + 5 patterns, testing
-  incl. e2e/lighthouse, CI, i18n, deployment; aligned with the sibling-stack READMEs).
-- Test counts now: **387 unit/integration + 8 e2e**; ruff/black/mypy clean.
-- GOTCHA learned: Django `{# #}` comments are SINGLE-LINE — a multi-line one with a
-  `{% include %}` inside silently self-includes (infinite recursion). Use `{% comment %}`.
+## Current state (verified, not asserted — 2026-06-26)
+- Branch `refactor/service-repository-layer`: **37 commits**, LOCAL only (NOT pushed, NOT on `main`).
+- Full unit/integration suite: **388 passed, 8 deselected** (`.venv/bin/python -m pytest -q`).
+- E2E: **8 passed** — `.venv/bin/python -m pytest tests/e2e -m e2e --ds=config.settings.test_e2e`
+  (needs `playwright install chromium` + `cd frontend && npm run build` first).
+- Lint/types clean: `.venv/bin/ruff check apps config` · `.venv/bin/python -m black --check apps
+  config tests plugins` · `.venv/bin/python -m mypy apps config` → **Success, 0 issues**.
+  NOTE: the venv's `black`/`mypy` console scripts have a stale shebang (venv created under the
+  old `DjangoPress` path) — invoke via `.venv/bin/python -m black` / `-m mypy`, not the bare
+  scripts. `ruff` is a native binary so `.venv/bin/ruff` works directly.
+- Coverage: **~97%** overall (`pytest --cov=apps`). pytest-cov + factory_boy wired.
+- CI (F13): `.github/workflows/ci.yml` — lint(ruff+black+mypy) / pytest+cov SQLite(90% floor) /
+  Postgres job (`config.settings.test_postgres`, exercises the FTS branch) / Vite build / e2e.
+- Lighthouse (real headless Chrome, built + Postgres-backed server): **home 98/100/96/100,
+  post 100/100/96/100** (perf/a11y/best-practices/seo) — every category ≥95.
+- Run app: `docker compose up` (or venv + `manage.py runserver`). Use `.venv/bin/python`
+  directly — `source .venv/bin/activate` does NOT expose django in this shell.
 
-## Current state (verified, not asserted)
-- Full test suite: **379 passed** (`.venv/bin/python -m pytest -q`). Was 218 at start.
-- NOTE: `djangorestframework==3.15.2` added (requirements/base.txt) — run
-  `.venv/bin/python -m pip install -r requirements/dev.txt` if a fresh checkout lacks it.
-- Lint: `.venv/bin/ruff check apps config` → clean. `.venv/bin/python -m black --check apps
-  config` → clean (whole tree formatted). `.venv/bin/python -m mypy apps config` → **Success,
-  0 issues** (django-stubs plugin wired; F15). NOTE: the venv's `black`/`mypy` console scripts
-  have a stale shebang (venv created under the old `DjangoPress` path) — invoke via
-  `.venv/bin/python -m black` / `-m mypy`, not the bare scripts. `ruff` is a native binary so
-  `.venv/bin/ruff` works directly.
-- CI (F13): `.github/workflows/ci.yml` — lint (ruff+black+mypy), tests+cov (SQLite, 90% floor),
-  a Postgres job (`config.settings.test_postgres`) exercising the FTS branch, and a Vite build.
-  Verified the Postgres job locally against `postgres:16-alpine` (search suite green; the FTS
-  branch lines 48-62 are covered on PG, the icontains fallback on SQLite — both jobs needed).
-- Coverage: **~96%** overall (content/dashboard ≥93% each; `pytest --cov=apps`). pytest-cov +
-  factory_boy installed and wired (`pyproject.toml [tool.coverage.*]`, `requirements/dev.txt`).
-- Run app: `docker compose up` (or venv + `manage.py runserver`). Tests: `.venv/bin/python -m
-  pytest`. Use `.venv/bin/python` directly — `source .venv/bin/activate` did not expose django
-  in this shell, but `.venv/bin/python` works.
+## REMAINING vs the updated prompt (`../prompts/cmstack-django.md`) — RESUME HERE
+The updated prompt strengthened Task 4 (E2E) beyond what was built. Open items, ordered:
+1. **E2E selectors must be `data-testid`** (prompt §4 + self-check). Today the journeys use
+   `get_by_role`/`get_by_text`; there are ZERO `data-testid` in templates. Add stable
+   `data-testid` attributes to the touched surfaces and switch the E2E selectors to them.
+2. **E2E canonical-flow gaps** (prompt §4: "login/auth, content create → publish, media upload,
+   search, main dashboard actions"). Covered today: home, reader, search, SEO, login-gate,
+   lang-switch, dark-toggle, confirm-dialog-trash. MISSING: **content create → publish** (a
+   dashboard authoring flow) and **media upload**. Add both (admin user has the perms).
+3. **REFACTOR_PLAN docs the prompt now requires:** (a) a **per-layer test-status list**
+   (models/managers, views, forms/serializers, permissions, repositories, services,
+   signals/receivers, templates, template tags, management commands, factories — none at zero);
+   (b) a **per-event sync-vs-async classification** for the signal/observer effects
+   (`comment_created` email, `contact_*` email — both async/fire-and-forget; none are atomic).
+4. (Optional, prompt §test) consider `assertNumQueries` guards on the hottest list views to lock
+   in "no N+1" as an explicit regression, if not already implicit.
+
+Everything else in the prompt's self-check is satisfied (see the DONE sections below).
+
+## Last session's deliverables (F13/F14/F15 + U5/U6/U7 + README + critic)
+- **F13 CI**, **F15 mypy** (0 errors, django-stubs plugin + file-level `disable-error-code` on
+  `apps/content/models.py` for parler's un-stubbed dynamics), **F14 E2E** (8 Playwright journeys).
+- **U5**: accessible confirm dialog (replaced 11 `confirm()`), toasts, table bulk-select +
+  `PostBulkActionView`→`bulk_trash_posts`→`PostRepository.editable_among`, empty-state, Trix aria.
+  **U6**: form-field `aria-invalid`/`aria-describedby` via `dashboard_a11y.aria_field` →
+  `_field.html`; locale tabs `role=tab`/`aria-selected`/`aria-current`. **U7**: hash-free woff2 +
+  `<link rel=preload>` for the 2 critical latin fonts; WCAG-AA contrast fixes (darkened
+  `--text-subtle`, migrated low-opacity ink → semantic tokens).
+- **Task 5 README** rewritten (architecture/layering + 5 patterns, testing incl. e2e/lighthouse,
+  CI, i18n, deployment; aligned with sibling-stack READMEs).
+- **Completeness-critic** (independent subagent) found 1 CRITICAL: bulk-trash 500'd on
+  non-integer `ids` → FIXED (`bulk_trash_posts` drops non-numeric ids) + regression test.
+- GOTCHA learned: Django `{# #}` comments are SINGLE-LINE — a multi-line one containing a
+  `{% include %}` silently self-includes (infinite recursion). Use `{% comment %}…{% endcomment %}`.
 
 ## DONE — Architecture (Task 2), per the two hard rules the user added mid-session
 Two non-negotiable rules now govern (see REFACTOR_PLAN §0 + §0a):
@@ -70,85 +90,20 @@ Layering enforced everywhere: `view → service → repository → manager/Query
   notification email** (build: `submit_comment` emits a `comment_created` Django signal; a
   receiver in `apps/comments/signals.py` sends mail; test with locmem backend).
 
-## PENDING (ordered) — resume here
-1. ☑ **Adversarial verification — DONE.** 2 independent skeptics (behavior+security;
-   N+1+parler+layering) could not break behavior/security/N+1/translations. One minor finding
-   (services calling `SiteSettings.load()` directly) FIXED in commit ea4ff6a and re-verified.
-2. ◐ **Coverage gaps:** `content/services.py` now 92% (visibility tests added). STILL OPEN:
-   `apps/search/repositories.py` 70% — Postgres FTS branch is SQLite-untestable; needs a
-   Postgres CI job (see §F13/F14).
-3. **Task 3 — UI convergence (largest remaining).** See REFACTOR_PLAN §3.
-   - ☑ U1 tokens DONE: full §2 semantic set + `.dark` in `frontend/src/styles.css`, bridged in
-     `tailwind.config.js` (`darkMode:"class"`); legacy `paper/ink/accent` aliased; midnight
-     theme palette updated to new tokens; radius tokens added.
-   - ☑ U2 fonts DONE: Newsreader + Inter + Geist Mono (package.json/main.js/tailwind/.dp-prose).
-     `cd frontend && npm run build` verified (main.css 6.7KB gz, main.js 16.7KB gz).
-   - ☑ U3 public side DONE: sticky 64px header + scroll-shadow + blur, focus-trapped mobile
-     drawer (@alpinejs/focus `x-trap`), skip link + `#content`, header/footer/base on semantic
-     tokens, button primitives rebuilt (md radius + 5 variants + focus ring), and CSS
-     primitives (.dp-auth/.dp-form/.dp-prose) + public cards (post_detail/_comment/allauth)
-     migrated off hardcoded `bg-white` → `bg-surface` so they adapt to themes / are dark-ready.
-     Guard test: `test_home_has_a11y_shell_landmarks`. (Public list/detail templates still use
-     `ink/accent/paper` aliases — they render correctly via the alias bridge; pure cosmetic
-     rename to semantic names is optional, deferrable.)
-   - ☑ U4 admin shell + dark mode DONE: `dashboard/base.html` sidebar(260px)/topbar(56px) on
-     tokens; no-FOUC inline script sets `.dark` from `localStorage('admin-theme')`/system pref;
-     topbar dark/light toggle (Alpine+localStorage, sun/moon) + avatar dropdown + `#content`;
-     `_navlink` active = surface-2 + 2px primary bar + aria-current; ALL dashboard/media
-     templates off `bg-white`→`bg-surface`; status badges → `success-bg/success`/`surface-2`;
-     `admin.css` `.dp-form`+Trix on tokens. Guard: `test_dashboard_shell_has_dark_toggle_and_landmarks`.
-     Zero hardcoded `bg-white`/palette colours remain anywhere (grep CLEAN).
-   - ◐ U5/U6 STARTED: reusable `_breadcrumbs.html` (on post/service/page detail, mirrors
-     BreadcrumbList JSON-LD) + accessible pagination (`nav[aria-label=Pagination]` + aria-current
-     + tokens) across admin lists + public post_list + search. Guard tests added.
-   - ☐ **RESUME HERE → finish U5 components** (modals/dialogs to replace `confirm()`, toasts for
-     messages, table bulk-select + backend bulk actions, empty-state component, rich-text
-     toolbar aria, dropdown already done via avatar menu), **U6 a11y** (audit remaining ARIA,
-     locale tabs `role=tab`/`tabpanel`, form errors `aria-invalid`/`aria-describedby`), **U7
-     perf** (font `<link rel=preload>` + subset, real Lighthouse ≥95 run — needs server+browser).
-     **U4 admin shell** (sidebar
-     style, topbar **dark/light toggle** wiring `darkMode:"class"` + localStorage, avatar
-     dropdown, semantic alerts), **U5 components** (breadcrumbs, dropdown, avatar, dropzone,
-     sortable, modals, toasts, table bulk-select, empty states, badges, rich-text toolbar),
-     **U6 a11y** (ARIA pass, focus rings via `--ring`, tabs roles, pagination nav), **U7 perf**
-     (font `<link rel=preload>` 2 weights + subset, Lighthouse ≥95 measured, responsive images).
-   - Migrate template utilities from `paper/ink/accent` → semantic `bg/surface/text/text-muted/
-     primary/border` as you touch each surface, then drop the aliases.
-   - Build after frontend edits: `cd frontend && npm run build` (or docker `--renew-anon-volumes`).
-4. **Task 1 — feature parity (REFACTOR_PLAN §2).** Build through the new layers (view→service→
-   repository; effects→signal). ☑ F1 search-services, ☑ F2 coverage, ☑ **F5 comment-email
-   (signal→observer)**, ☑ **F3 RSS**, ☑ **F4 contact form (signal→observer)**, ☑ **F6 soft-
-   delete/trash/restore (posts+pages) + post likes** (`SoftDeleteModel` mixin +
-   `SoftDeleteManager` hiding trash by default; dashboard delete→trash + trash list + restore +
-   permanent-delete; `Like` toggle endpoint + a11y button; 21 tests), ☑ **F7 revision-restore
-   UI** (`RevisionRepository` + shared `dashboard/revisions.html`: per-language history + difflib
-   diff + restore via `Post/Page.restore_revision` model transition; owner-scoped, gated on
-   change_post/change_page; 7 tests), ☑ **F8 scheduled publishing** (`SchedulableMixin` on
-   Post/Page/Service + `due_for_publish()` + `publish_scheduled` cron command; datetime-local
-   field in forms, post-list badge; 9 tests), ☑ **F9 menu builder + public rendering** (new
-   `apps.menus`: Menu/MenuItem, `{% menu_items %}` tag, header/footer render managed menus with
-   fallback, dashboard builder with keyboard up/down reorder; flat + non-translatable label by
-   design — see REFACTOR_PLAN §7; 14 tests), ☑ **F10 author public pages + self-service
-   profile** (`/authors/<id>/` archive with ProfilePage/Person JSON-LD, email-safe, published-
-   author-gated; `/account/` profile editor; 13 tests), ☑ **F11 in-editor media picker +
-   swappable storage driver** (Alpine modal inserts library images into Trix; `STORAGES` via
-   `config.storages.build_storages(env)` — local↔S3 by env; 9 tests), ☑ **F12 REST API + MCP**
-   (new `apps.api`: DRF read API `/api/v1/` + gated post write + token auth + `/health[/ready]`;
-   new `apps.mcp`: 13-tool `/api/mcp/` registry, token-auth floor + per-tool server-side perm
-   checks; OAuth 2.1 + SSE transport deferred — see §7; 38 tests), ☑ **F13 CI pipeline**
-   (`.github/workflows/ci.yml`: lint(ruff+black+mypy) / pytest+cov SQLite 90% floor / Postgres
-   FTS job via `config.settings.test_postgres` / Vite build; whole tree black-formatted),
-   ☑ **F15 mypy django-stubs** (`mypy_django_plugin.main` wired; full run is 0 errors —
-   real fixes in views/mixins/repos, with a documented file-level `disable-error-code` on
-   `apps/content/models.py` for parler's un-stubbed dynamic fields/managers), ☑ **F14 E2E**
-   (`tests/e2e/`: 7 headless-Chromium journeys — home/reader/search/SEO/login-gate/lang-
-   switch/dark-toggle-persists — over `live_server` + the built Vite bundle via
-   `config.settings.test_e2e`; auto-marked `e2e` + excluded from the default run; run
-   `pytest tests/e2e -m e2e --ds=config.settings.test_e2e`; `pytest-playwright` in dev reqs +
-   a CI `e2e` job. Verified locally: **7 passed**). **Task 1 feature parity is COMPLETE.**
-   REMAINING: finish UI **U5/U6/U7**, then Task 5 (README) + completeness-critic.
-5. **Task 5 — rewrite README** after the above; align with the other two stacks.
-6. **Completeness-critic** Opus pass before declaring done (prompt §"production quality bar").
+## DONE — full original plan (all ☑; see git log on the branch)
+- **Task 2 architecture refactor** (above) — independently adversarially verified; greps confirm
+  zero ORM in `apps/*/views.py` and no raw `Model.objects`/`get_object_or_404` in `apps/*/services.py`.
+- **Task 1 feature parity:** F1 search-services, F2 coverage tooling, F3 RSS, F4 contact form
+  (signal→observer), F5 comment-notification email (signal→observer), F6 soft-delete/trash/restore +
+  likes, F7 revision-restore UI, F8 scheduled publishing, F9 menu builder, F10 author pages +
+  profile, F11 media picker + swappable storage, F12 REST API + MCP, **F13 CI**, **F14 E2E**,
+  **F15 mypy django-stubs (0 errors)**.
+- **Task 3 UI (U1–U7):** semantic tokens + `.dark`, fonts, public shell, admin shell + dark
+  toggle, U5 components (confirm dialog/toasts/bulk-select/empty-state/Trix aria), U6 a11y
+  (form-field aria + locale-tab roles), U7 fonts preload + WCAG-AA contrast + **Lighthouse ≥95
+  measured**.
+- **Task 5 README** rewritten. **Completeness-critic** pass done (1 CRITICAL found+fixed).
+- The actionable open items are in **"REMAINING vs the updated prompt"** near the top — start there.
 
 ## Gotchas
 - parler: query translated fields via `.language(code)`/`translations__field`, never
@@ -163,59 +118,45 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 ---
 
 ## Ready-to-paste continuation prompt (new window)
-> You are a senior Django engineer continuing the autonomous `cmstack-django` refactor.
+> You are a senior Django engineer continuing the autonomous `cmstack-django` work under the
+> updated master prompt `../prompts/cmstack-django.md` (read it — operating rules, model
+> routing, the two hard architecture rules, and the Task-4 E2E requirements all live there).
 >
-> **First, orient — do these before any work:**
-> 1. `cd` to the project; run `git checkout refactor/service-repository-layer` (all prior work
->    lives on this LOCAL branch — 15 commits, NOT pushed, NOT on `main`).
-> 2. Read `cmstack-django/HANDOFF.md` and `cmstack-django/REFACTOR_PLAN.md` in full, then
->    `../FEATURE_MATRIX.md` and `../DESIGN_SYSTEM.md` (read-only canon — never edit the two
->    shared specs).
-> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **379 passed**) and
->    `.venv/bin/ruff check apps config`. Use `.venv/bin/python` directly — `source .venv/bin/activate`
->    does NOT expose Django in this shell. Frontend build: `cd frontend && npm run build`.
+> **First, orient — before any work:**
+> 1. `cd cmstack-django`; you are already on the LOCAL branch `refactor/service-repository-layer`
+>    (37 commits, NOT pushed, NOT on `main`). Commit there; push only if asked.
+> 2. Read `HANDOFF.md` and `REFACTOR_PLAN.md` in full, then `../FEATURE_MATRIX.md` and
+>    `../DESIGN_SYSTEM.md` (read-only canon — never edit the two shared specs).
+> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **388 passed, 8
+>    deselected**), `.venv/bin/ruff check apps config`, `.venv/bin/python -m mypy apps config`
+>    (Success, 0 issues), and E2E `.venv/bin/python -m pytest tests/e2e -m e2e
+>    --ds=config.settings.test_e2e` (needs `playwright install chromium` +
+>    `cd frontend && npm run build`). Use `.venv/bin/python -m black`/`-m mypy` (the bare
+>    console scripts have a stale shebang). Expect **8 e2e passed**.
 >
-> **Operating rules (unchanged):** work autonomously inside `cmstack-django/` (no permission
-> needed for read/edit/test/manage.py/git); respond to me in **Russian**, keep all code,
-> comments, commit messages and docs in **English**; use the Superpowers framework
+> **Operating rules (unchanged):** work autonomously inside `cmstack-django/`; respond to me in
+> **Russian**, keep all code/comments/commits/docs in **English**; Superpowers framework
 > (writing-plans / TDD / subagent-driven-development / requesting-code-review /
-> verification-before-completion), follow rigid skills exactly. **Commit messages must NOT
-> contain any `Co-Authored-By` trailer** (the user had it stripped from history — do not
-> re-add it). Branch-first is already done; commit to `refactor/service-repository-layer`; only
-> push if asked.
+> verification-before-completion); orchestrate via parallel subagents and adversarial
+> verification per the master prompt. **Commit messages must NOT contain any `Co-Authored-By`
+> trailer.**
 >
-> **Two NON-NEGOTIABLE architecture rules, already in force — preserve them in every new file:**
-> (1) views (`apps/*/views.py`) hold ZERO business logic and ZERO ORM — HTTP boundary only;
-> (2) services (`apps/*/services.py`) NEVER touch the ORM — all data access via
-> `apps/<app>/repositories.py`; side effects via Django signals → observers (see
-> `apps/comments/signals.py`, `apps/core/signals.py` for the pattern). Layering:
-> view → service → repository → manager → model, plus service → signal → receiver for effects.
+> **Two NON-NEGOTIABLE architecture rules (already in force — preserve in every new file):**
+> (1) `apps/*/views.py` hold ZERO business logic and ZERO ORM (HTTP boundary only);
+> (2) `apps/*/services.py` NEVER touch the ORM — data access via `apps/<app>/repositories.py`;
+> side effects via Django signals → receivers. Layering: view → service → repository → manager
+> → model, plus service → signal → receiver.
 >
-> **DONE so far (don't redo):** the architecture refactor (all apps; independently
-> adversarially verified; zero ORM in views/services per grep); feature parity F1 (search incl.
-> services), F2 (coverage tooling), F3 (RSS /rss.xml), F4 (contact form), F5 (comment-notification
-> email) — all via the signal/observer pattern with tests; UI U1 (semantic tokens + `.dark`),
-> U2 (Newsreader/Inter/Geist Mono fonts), U3 (public shell: sticky header, focus-trap mobile
-> drawer, skip link, buttons, public surfaces on tokens/dark-ready), U4 (admin shell + working
-> dark-mode toggle, all dashboard templates tokenised), U5/U6 start (breadcrumbs partial +
-> accessible pagination), **F6 soft-delete/trash/restore (posts+pages) + post likes**,
-> **F7 revision-restore UI** (history + diff + restore for posts/pages), **F8 scheduled
-> publishing** (`scheduled_at` + `publish_scheduled` cron command), and **F9 menu builder +
-> public menu rendering** (new `apps.menus`; flat menus, label not per-locale — see §7), and
-> **F10 author public pages + self-service profile** (`/authors/<id>/`, `/account/`), and
-> **F11 in-editor media picker + swappable storage driver** (local↔S3 via `STORAGES`), and
-> **F12 REST API + MCP** (new `apps.api` read+gated-write API at `/api/v1/`, token auth,
-> `/health[/ready]`; new `apps.mcp` 13-tool `/api/mcp/` registry with per-tool server-side perm
-> checks — OAuth 2.1/SSE deferred, see §7).
-> 379 tests pass, ruff clean, ~95% coverage, Vite build within budget.
+> **DONE (do NOT redo):** the whole original REFACTOR_PLAN — architecture refactor (all apps,
+> adversarially verified), feature parity **F1–F15**, UI **U1–U7** (Lighthouse ≥95 measured),
+> README rewrite, and a completeness-critic pass. 388 unit + 8 e2e pass; ruff/black/mypy clean.
 >
-> **RESUME HERE (ordered):** Task 1 feature parity — **F13 CI pipeline (GitHub Actions:
-> ruff→black→pytest+cov, a Postgres job to exercise the FTS branch)**, then
-> F14 E2E, F15 wire mypy `django-stubs` plugin. Also finish UI U5
-> (modals replacing `confirm()`, toasts, table bulk-select + backend bulk actions, empty-state
-> component, rich-text toolbar aria), U6 (remaining ARIA, locale tabs roles, form-error
-> aria-invalid/describedby), U7 (font `<link rel=preload>` + subset, REAL Lighthouse ≥95 run —
-> needs a running server + browser). Finally Task 5 (rewrite README) + a completeness-critic pass.
-> Build each feature through the view→service→repository (+signal) layering; TDD; show real
-> test/coverage output — never claim passing without the run. The remaining Postgres-FTS branch
-> in `search/repositories.py` is only coverable via a Postgres CI job (F13).
+> **RESUME HERE — close the gaps the UPDATED prompt added (see HANDOFF "REMAINING vs the
+> updated prompt"), TDD + show real output:**
+> 1. Add stable **`data-testid`** attributes to the relevant templates and switch the Playwright
+>    selectors to them (the prompt requires `data-testid`, not role/text).
+> 2. Add the missing **canonical E2E flows: content create → publish** (dashboard authoring) and
+>    **media upload** — keep parity with the sibling stacks' flow list.
+> 3. Record in `REFACTOR_PLAN.md`: the **per-layer test-status list** and the **per-event
+>    sync/async classification** for the signal effects (both current effects are async email).
+> 4. Then re-run the completeness-critic and refresh `HANDOFF.md`.
