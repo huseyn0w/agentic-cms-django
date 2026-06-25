@@ -14,3 +14,28 @@ window.cmstackInsertImage = function (url, alt) {
   const safeAlt = (alt || "").replace(/"/g, "&quot;");
   editor.editor.insertHTML(`<img src="${url}" alt="${safeAlt}">`);
 };
+
+// Accessible confirm dialog: intercept submits of destructive forms that opt in
+// with data-dp-confirm="message" and hand off to the focus-trapped Alpine dialog
+// in dashboard/_confirm_dialog.html. Capture phase so we run before submission.
+document.addEventListener(
+  "submit",
+  (e) => {
+    const form = e.target;
+    const message = form instanceof HTMLFormElement && form.getAttribute("data-dp-confirm");
+    if (!message) return;
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent("dp-confirm", { detail: { message, form } }));
+  },
+  true,
+);
+
+// Label the Trix toolbar's icon-only buttons for screen readers (U6 a11y). Trix
+// renders them with a title but no accessible name; mirror title → aria-label.
+document.addEventListener("trix-initialize", (e) => {
+  const toolbar = e.target.toolbarElement;
+  if (!toolbar) return;
+  toolbar.querySelectorAll("button[title]").forEach((btn) => {
+    if (!btn.getAttribute("aria-label")) btn.setAttribute("aria-label", btn.getAttribute("title"));
+  });
+});

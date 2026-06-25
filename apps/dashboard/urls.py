@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.DashboardHomeView.as_view(), name="home"),
     # Posts
     path("posts/", views.PostListView.as_view(), name="post_list"),
+    path("posts/bulk/", views.PostBulkActionView.as_view(), name="post_bulk_action"),
     path("posts/trash/", views.PostTrashListView.as_view(), name="post_trash"),
     path("posts/new/", views.PostCreateView.as_view(), name="post_create"),
     path("posts/<int:pk>/edit/", views.PostUpdateView.as_view(), name="post_edit"),

@@ -33,7 +33,7 @@
           <td class="px-5 py-3 text-ink/50">{{ page.updated_at|date:"M j, Y" }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_page %}
-              <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" onsubmit="return confirm('Move this page to trash?')">
+              <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" data-dp-confirm="Move this page to trash?">
                 {% csrf_token %}
                 <button type="submit" class="text-xs text-ink/40 hover:text-accent">Trash</button>
               </form>

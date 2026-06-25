@@ -28,7 +28,7 @@
           <td class="px-5 py-3 text-text-muted">{{ menu.items.count }}</td>
           <td class="px-5 py-3 text-right">
             <form method="post" action="{% url 'dashboard:menu_delete' menu.pk %}"
-                  onsubmit="return confirm('Delete this menu and its items?')">
+                  data-dp-confirm="Delete this menu and its items?">
               {% csrf_token %}
               <button type="submit" class="text-xs text-error hover:underline">Delete</button>
             </form>

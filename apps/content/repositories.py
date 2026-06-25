@@ -68,6 +68,11 @@ class PostRepository:
         return Post.objects.editable_by(user).select_related("author")[:limit]
 
     @staticmethod
+    def editable_among(user, ids) -> QuerySet:
+        """Live posts among ``ids`` that ``user`` may manage (owner-scoped)."""
+        return Post.objects.editable_by(user).filter(pk__in=ids)
+
+    @staticmethod
     def count_all() -> int:
         return Post.objects.count()
 

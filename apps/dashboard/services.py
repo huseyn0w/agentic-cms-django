@@ -83,6 +83,18 @@ def trash_post(user, pk: int) -> None:
     PostRepository.get_editable(user, pk).trash()
 
 
+def bulk_trash_posts(user, ids) -> int:
+    """Trash every live post among ``ids`` the user may manage; return the count.
+
+    Owner-scoping happens in the repository query, so ids the user can't manage are
+    silently skipped (no 404) — a partial bulk action just affects fewer rows.
+    """
+    posts = list(PostRepository.editable_among(user, ids))
+    for post in posts:
+        post.trash()
+    return len(posts)
+
+
 def restore_post(user, pk: int) -> None:
     PostRepository.get_trashed_editable(user, pk).restore()
 

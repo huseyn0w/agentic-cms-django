@@ -33,7 +33,7 @@
                     aria-label="Move down" {% if forloop.last %}disabled{% endif %}>↓</button>
           </form>
           <form method="post" action="{% url 'dashboard:menu_item_delete' menu.pk item.pk %}"
-                onsubmit="return confirm('Remove this item?')">
+                data-dp-confirm="Remove this item?">
             {% csrf_token %}
             <button type="submit" class="rounded-md px-2 py-1 text-xs text-error hover:underline">Delete</button>
           </form>

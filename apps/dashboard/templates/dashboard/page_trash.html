@@ -29,7 +29,7 @@
                 <button type="submit" class="text-xs font-medium text-primary hover:underline">Restore</button>
               </form>
               <form method="post" action="{% url 'dashboard:page_destroy' page.pk %}"
-                    onsubmit="return confirm('Permanently delete this page? This cannot be undone.')">
+                    data-dp-confirm="Permanently delete this page? This cannot be undone.">
                 {% csrf_token %}
                 <button type="submit" class="text-xs text-error hover:underline">Delete permanently</button>
               </form>

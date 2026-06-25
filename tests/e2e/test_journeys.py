@@ -105,3 +105,22 @@ def test_login_then_dark_mode_toggle_persists(live_server, page, admin_user):
     # The choice is persisted in localStorage and survives a reload (no-FOUC script).
     page.reload()
     expect(page.locator("html")).to_have_class(re.compile(r"\bdark\b"))
+
+
+def test_admin_confirm_dialog_trashes_a_post(live_server, page, admin_user, published_post):
+    page.goto(f"{live_server.url}/accounts/login/")
+    page.locator("input[name='login']").fill("boss")
+    page.locator("input[name='password']").fill("pw-secret-123")
+    page.locator("button[type='submit']").first.click()
+
+    page.goto(f"{live_server.url}/dashboard/posts/")
+    expect(page.get_by_text("Hello E2E World")).to_be_visible()
+
+    # Clicking a destructive action opens the accessible dialog instead of submitting.
+    page.get_by_role("button", name="Trash").first.click()
+    dialog = page.get_by_role("dialog")
+    expect(dialog).to_be_visible()
+
+    # Confirming submits the form; the post is soft-deleted and leaves the live list.
+    page.get_by_role("button", name="Confirm").click()
+    expect(page.get_by_text("Hello E2E World")).to_have_count(0)

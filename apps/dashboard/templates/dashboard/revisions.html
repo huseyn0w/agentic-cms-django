@@ -21,7 +21,7 @@
           <div class="mt-1 flex items-center justify-between gap-2 text-xs text-text-muted">
             <span>{{ rev.author.display_name|default:"—" }}</span>
             <form method="post" action="{% url restore_url_name obj.pk rev.pk %}"
-                  onsubmit="return confirm('Restore this revision? Current content is snapshotted first.')">
+                  data-dp-confirm="Restore this revision? Current content is snapshotted first.">
               {% csrf_token %}
               <button type="submit" class="font-medium text-primary hover:underline">Restore</button>
             </form>

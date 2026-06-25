@@ -106,17 +106,13 @@
     </header>
 
     <main id="content" class="flex-1 px-6 py-8">
-      {% if messages %}
-        <div class="mb-6 space-y-2">
-          {% for message in messages %}
-            <div class="rounded-md border border-border bg-surface-2 px-4 py-3 text-sm text-text" role="status">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
       <div class="mx-auto max-w-5xl">
         {% block content %}{% endblock %}
       </div>
     </main>
   </div>
 </div>
+
+{% include "dashboard/_toasts.html" %}
+{% include "dashboard/_confirm_dialog.html" %}
 {% endblock %}

@@ -30,7 +30,7 @@
           <td class="px-5 py-3 text-ink/50">{{ service.updated_at|date:"M j, Y" }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_service %}
-              <form method="post" action="{% url 'dashboard:service_delete' service.pk %}" onsubmit="return confirm('Delete this service?')">
+              <form method="post" action="{% url 'dashboard:service_delete' service.pk %}" data-dp-confirm="Delete this service?">
                 {% csrf_token %}
                 <button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
               </form>

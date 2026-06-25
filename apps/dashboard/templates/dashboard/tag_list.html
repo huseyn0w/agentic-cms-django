@@ -19,7 +19,7 @@
           <td class="px-5 py-3 text-ink/50">{{ tag.post_count }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_tag %}
-              <form method="post" action="{% url 'dashboard:tag_delete' tag.pk %}" onsubmit="return confirm('Delete this tag?')">
+              <form method="post" action="{% url 'dashboard:tag_delete' tag.pk %}" data-dp-confirm="Delete this tag?">
                 {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
               </form>
             {% endif %}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.http import Http404
 from django.shortcuts import redirect
+from django.template.defaultfilters import pluralize
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -189,6 +190,23 @@ class PostDeleteView(AdminAccessMixin, View):
     def post(self, request, pk: int):
         services.trash_post(request.user, pk)
         messages.success(request, "Post moved to trash.")
+        return redirect("dashboard:post_list")
+
+
+class PostBulkActionView(AdminAccessMixin, View):
+    """Apply a bulk action to the selected posts (currently: move to trash)."""
+
+    permission_required = ("accounts.access_admin", "content.delete_post")
+    http_method_names = ["post"]
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        if request.POST.get("action") == "trash" and ids:
+            count = services.bulk_trash_posts(request.user, ids)
+            if count:
+                messages.success(request, f"{count} post{pluralize(count)} moved to trash.")
+            else:
+                messages.info(request, "No posts were trashed.")
         return redirect("dashboard:post_list")
 
 
