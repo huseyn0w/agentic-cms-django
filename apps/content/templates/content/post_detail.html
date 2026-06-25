@@ -26,7 +26,7 @@
     {% endif %}
     <h1 class="text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">{{ post.title }}</h1>
     <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink/50">
-      {% if post.author %}<span class="font-medium text-ink/70">{{ post.author.display_name }}</span>{% endif %}
+      {% if post.author %}<a class="font-medium text-ink/70 transition-colors hover:text-accent" href="{{ post.author.get_absolute_url }}">{{ post.author.display_name }}</a>{% endif %}
       {% if post.published_at %}<span aria-hidden="true">·</span><time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>{% endif %}
     </p>
   </header>

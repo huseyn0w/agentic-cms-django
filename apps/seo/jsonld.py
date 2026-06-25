@@ -47,6 +47,28 @@ def person_schema(author) -> dict | None:
     return {"@type": "Person", "name": name}
 
 
+def profilepage_schema(author, abs_url: Callable[[str], str], profile_url: str) -> dict | None:
+    """A ProfilePage wrapping the author Person (bio/website/avatar, no email)."""
+    person = person_schema(author)
+    if person is None:
+        return None
+    person["url"] = abs_url(profile_url)
+    bio = (getattr(author, "bio", "") or "").strip()
+    if bio:
+        person["description"] = bio
+    website = (getattr(author, "website", "") or "").strip()
+    if website:
+        person["sameAs"] = [website]
+    avatar = getattr(author, "avatar", None)
+    if avatar:
+        person["image"] = abs_url(avatar.url)
+    return {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "mainEntity": person,
+    }
+
+
 def article_schema(post, seo, site, abs_url: Callable[[str], str], language: str = "") -> dict:
     data: dict = {
         "@context": "https://schema.org",

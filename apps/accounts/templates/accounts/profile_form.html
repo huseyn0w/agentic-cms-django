@@ -1,0 +1,33 @@
+{% extends "public_base.html" %}
+
+{% block title %}Your profile · {{ site.site_name }}{% endblock %}
+
+{% block main %}
+<div class="mx-auto max-w-xl">
+  <header class="mb-8">
+    <h1 class="text-3xl font-semibold tracking-tight text-ink">Your profile</h1>
+    <p class="mt-2 text-sm text-ink/60">
+      This appears on your public author page.
+      {% if user.get_username %}
+        <a class="font-medium text-accent underline-offset-4 hover:underline" href="{{ user.get_absolute_url }}">View it →</a>
+      {% endif %}
+    </p>
+  </header>
+
+  <form method="post" enctype="multipart/form-data" class="dp-form space-y-5">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-lg bg-error-bg px-4 py-3 text-sm text-error">{{ form.non_field_errors }}</div>
+    {% endif %}
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<p class="mt-1 text-xs text-ink/50">{{ field.help_text }}</p>{% endif %}
+        {% for error in field.errors %}<p class="mt-1 text-sm text-error">{{ error }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="dp-btn dp-btn-primary">Save profile</button>
+  </form>
+</div>
+{% endblock %}

@@ -59,6 +59,17 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     `post_migrate` (`apps/accounts/signals.py`); the map may reference permissions
     from models that don't exist yet (they're assigned once those phases land).
     Auth/social login via django-allauth, mounted at `/accounts/`.
+    **Public author pages + self-service profile (F10):** the User carries
+    `avatar`/`bio`/`website`; `User.get_absolute_url()` → `/authors/<id>/`, a public
+    (i18n) archive (`AuthorDetailView` → `accounts.services` →
+    `PostRepository.published_by_author`) showing bio/avatar/website + the author's
+    published posts. It is gated to users with ≥1 published post so subscriber
+    accounts can't be enumerated, and **never renders email**. It emits
+    `ProfilePage`+`Person` JSON-LD (`seo.jsonld.profilepage_schema`, the `"profile"`
+    branch of `seo_jsonld`). `/account/` (`ProfileUpdateView`, LoginRequired) is the
+    self-service editor (name/bio/website/avatar) — `accounts/urls.py` is mounted in
+    `i18n_patterns` with namespace `accounts` (`accounts:author_detail`,
+    `accounts:profile`); the public header shows an "Account" link when signed in.
   - `apps.content` — posts, pages, categories (hierarchical), tags, and per-type
     revisions. Rich-text bodies are sanitized server-side with nh3 on every save
     (`apps/content/utils.py`); templates render bodies with `|safe` because they

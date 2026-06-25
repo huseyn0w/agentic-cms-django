@@ -41,6 +41,11 @@ class PostRepository:
         )
 
     @staticmethod
+    def published_by_author(author) -> QuerySet:
+        """An author's published posts (for their public archive page)."""
+        return PostRepository.published().filter(author=author)
+
+    @staticmethod
     def get_by_slug(slug: str) -> Post:
         return get_object_or_404(
             Post.objects.select_related("author").prefetch_related("categories", "tags"),

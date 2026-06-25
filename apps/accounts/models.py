@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -37,6 +38,10 @@ class User(AbstractUser):
     def display_name(self) -> str:
         """Best human-readable name: full name if set, else username."""
         return self.get_full_name() or self.get_username()
+
+    def get_absolute_url(self) -> str:
+        """Public author archive page."""
+        return reverse("accounts:author_detail", args=[self.pk])
 
     def has_role(self, role_name: str) -> bool:
         """True if the user belongs to the group (role) with this name."""
