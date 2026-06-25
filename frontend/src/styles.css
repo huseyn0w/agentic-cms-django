@@ -120,6 +120,28 @@
   }
 }
 
+/* Nested-menu dropdown primitive (raw CSS so it is never purged, F9). The
+   submenu reveals on hover AND keyboard focus-within of its group, so it works
+   with NO JavaScript and is fully keyboard-navigable (Tab into a child keeps the
+   panel open via :focus-within). The parent link still navigates to its own
+   page. On coarse pointers (touch) the panel is shown when any descendant has
+   focus, so tapping the parent both navigates and is reachable. */
+.nav-group {
+  position: relative;
+}
+.nav-submenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 12rem;
+  display: none;
+  z-index: 50;
+}
+.nav-group:hover > .nav-submenu,
+.nav-group:focus-within > .nav-submenu {
+  display: block;
+}
+
 /* Button primitive (raw CSS so it is never purged; @apply pulls in Tailwind
    utilities). DESIGN_SYSTEM §5: md radius (not pills), 5 variants, focus-visible
    ring, press scale(0.98), hover lift gated to real pointers, no motion under

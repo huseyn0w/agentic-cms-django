@@ -756,7 +756,7 @@ class MenuManageView(AdminAccessMixin, SectionMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         menu = services.get_menu(self.kwargs["pk"])
         ctx["menu"] = menu
-        ctx["items"] = services.menu_items(menu)
+        ctx["items"] = services.menu_tree(menu)
         return ctx
 
 
@@ -767,6 +767,11 @@ class MenuItemCreateView(AdminAccessMixin, SectionMixin, CreateView):
     template_name = "dashboard/menu_item_form.html"
     section = "menus"
     heading = "Add menu item"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["menu"] = services.get_menu(self.kwargs["pk"])
+        return kwargs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -791,6 +796,11 @@ class MenuItemUpdateView(AdminAccessMixin, SectionMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return services.get_menu_item(services.get_menu(self.kwargs["pk"]), self.kwargs["item_pk"])
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["menu"] = services.get_menu(self.kwargs["pk"])
+        return kwargs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

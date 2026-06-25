@@ -41,9 +41,10 @@ def test_get_menu_items_returns_resolved_list_in_order():
     MenuItem.objects.create(menu=menu, url="/b/", label="B", position=1)
     MenuItem.objects.create(menu=menu, url="/a/", label="A", position=0)
     items = services.get_menu_items("primary")
+    # Flat menus resolve to top-level nodes, each carrying an empty children list.
     assert items == [
-        {"label": "A", "url": "/a/"},
-        {"label": "B", "url": "/b/"},
+        {"label": "A", "url": "/a/", "children": []},
+        {"label": "B", "url": "/b/", "children": []},
     ]
 
 

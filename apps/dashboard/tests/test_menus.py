@@ -86,3 +86,57 @@ def test_edit_item_updates_label(client, make_user):
 def test_editor_without_manage_settings_is_blocked(client, make_user):
     client.force_login(make_user("ed", role="Editor"))
     assert client.get(reverse("dashboard:menu_list")).status_code == 403
+
+
+# --------------------------------------------------------------------------- #
+# Nesting (F9 — one level deep)
+# --------------------------------------------------------------------------- #
+def test_item_can_be_created_under_a_parent(client, make_user):
+    client.force_login(make_user("boss", role="Administrator"))
+    menu = Menu.objects.create(name="Primary", slug="primary")
+    parent = MenuItem.objects.create(menu=menu, label="Products", url="/p/")
+    client.post(
+        reverse("dashboard:menu_item_create", args=[menu.pk]),
+        {"parent": parent.pk, "label": "Alpha", "link_type": LinkType.CUSTOM, "url": "/a/"},
+    )
+    child = menu.items.get(label="Alpha")
+    assert child.parent_id == parent.pk
+    assert child.position == 0  # own sibling group, not appended after the parent
+
+
+def test_parent_choices_exclude_self_and_other_menus(client, make_user):
+    client.force_login(make_user("boss", role="Administrator"))
+    menu = Menu.objects.create(name="Primary", slug="primary")
+    other = Menu.objects.create(name="Footer", slug="footer")
+    here = MenuItem.objects.create(menu=menu, label="Here", url="/h/")
+    MenuItem.objects.create(menu=other, label="Elsewhere", url="/e/")
+    html = client.get(reverse("dashboard:menu_item_edit", args=[menu.pk, here.pk])).content.decode()
+    # The parent <select> offers neither the item itself nor another menu's items.
+    assert "Elsewhere" not in html
+    assert f'value="{here.pk}"' not in html
+
+
+def test_item_with_children_cannot_be_nested(client, make_user):
+    client.force_login(make_user("boss", role="Administrator"))
+    menu = Menu.objects.create(name="Primary", slug="primary")
+    parent = MenuItem.objects.create(menu=menu, label="Parent", url="/p/")
+    root2 = MenuItem.objects.create(menu=menu, label="Root2", url="/r/")
+    MenuItem.objects.create(menu=menu, label="Child", url="/c/", parent=parent)
+    response = client.post(
+        reverse("dashboard:menu_item_edit", args=[menu.pk, parent.pk]),
+        {"parent": root2.pk, "label": "Parent", "link_type": LinkType.CUSTOM, "url": "/p/"},
+    )
+    assert response.status_code == 200  # rejected, re-rendered
+    parent.refresh_from_db()
+    assert parent.parent_id is None
+
+
+def test_manage_view_indents_child_items(client, make_user):
+    client.force_login(make_user("boss", role="Administrator"))
+    menu = Menu.objects.create(name="Primary", slug="primary")
+    parent = MenuItem.objects.create(menu=menu, label="Products", url="/p/")
+    MenuItem.objects.create(menu=menu, label="Alpha", url="/a/", parent=parent)
+    html = client.get(reverse("dashboard:menu_manage", args=[menu.pk])).content.decode()
+    assert "Products" in html
+    assert "Alpha" in html
+    assert "↳" in html  # nested-item marker

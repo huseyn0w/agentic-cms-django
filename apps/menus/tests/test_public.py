@@ -30,3 +30,32 @@ def test_footer_menu_renders(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"Privacy" in response.content
+
+
+def test_nested_children_render_in_header_dropdown(client):
+    menu = Menu.objects.create(name="Primary", slug="primary")
+    parent = MenuItem.objects.create(
+        menu=menu, label="Products", link_type=LinkType.CUSTOM, url="/products/"
+    )
+    MenuItem.objects.create(
+        menu=menu, label="Alpha", link_type=LinkType.CUSTOM, url="/products/a/", parent=parent
+    )
+    html = client.get("/").content.decode()
+    # The parent advertises a submenu and the child link is present + reachable.
+    assert 'aria-haspopup="true"' in html
+    assert 'role="menu"' in html
+    assert 'href="/products/a/"' in html
+    assert "Alpha" in html
+
+
+def test_footer_flattens_nested_children(client):
+    menu = Menu.objects.create(name="Footer", slug="footer")
+    parent = MenuItem.objects.create(
+        menu=menu, label="Legal", link_type=LinkType.CUSTOM, url="/legal/"
+    )
+    MenuItem.objects.create(
+        menu=menu, label="Privacy", link_type=LinkType.CUSTOM, url="/privacy/", parent=parent
+    )
+    html = client.get("/").content.decode()
+    assert 'href="/legal/"' in html
+    assert 'href="/privacy/"' in html  # child reachable inline in the footer

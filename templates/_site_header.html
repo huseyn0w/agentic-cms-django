@@ -22,7 +22,23 @@
     <nav class="hidden items-center gap-6 text-sm sm:flex" aria-label="Primary">
       {% if primary_items %}
         {% for item in primary_items %}
-          <a class="font-medium text-text-muted transition-colors hover:text-text" href="{{ item.url }}">{{ item.label }}</a>
+          {% if item.children %}
+            <div class="nav-group">
+              <a class="inline-flex items-center gap-1 font-medium text-text-muted transition-colors hover:text-text" href="{{ item.url }}" aria-haspopup="true">
+                {{ item.label }}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+              </a>
+              <ul class="nav-submenu mt-2 rounded-lg border border-border bg-surface p-1 shadow-md" role="menu" aria-label="{{ item.label }}">
+                {% for child in item.children %}
+                  <li role="none">
+                    <a role="menuitem" class="block rounded-md px-3 py-2 text-text-muted transition-colors hover:bg-surface-2 hover:text-text" href="{{ child.url }}">{{ child.label }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% else %}
+            <a class="font-medium text-text-muted transition-colors hover:text-text" href="{{ item.url }}">{{ item.label }}</a>
+          {% endif %}
         {% endfor %}
       {% else %}
         <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'content:service_list' %}">Services</a>
@@ -109,6 +125,11 @@
       {% if primary_items %}
         {% for item in primary_items %}
           <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{{ item.url }}">{{ item.label }}</a>
+          {% if item.children %}
+            {% for child in item.children %}
+              <a class="rounded-md py-2 pl-7 pr-3 text-sm text-text-muted transition-colors hover:bg-surface-2 hover:text-text" href="{{ child.url }}">{{ child.label }}</a>
+            {% endfor %}
+          {% endif %}
         {% endfor %}
       {% else %}
         <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'content:service_list' %}">Services</a>

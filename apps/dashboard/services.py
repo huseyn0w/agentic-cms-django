@@ -248,14 +248,23 @@ def menu_items(menu):
     return MenuRepository.items_for(menu)
 
 
+def menu_tree(menu):
+    """Top-level items (children prefetched) for the dashboard builder's tree view."""
+    return MenuRepository.top_level(menu)
+
+
 def delete_menu(pk: int) -> None:
     MenuRepository.delete(MenuRepository.get(pk))
 
 
 def prepare_new_menu_item(item, menu) -> None:
-    """Attach a new item to its menu and append it after the current last."""
+    """Attach a new item to its menu and append it after its last sibling.
+
+    Position is scoped to the item's parent group (one-level nesting), so a new
+    child starts its own ordering rather than inheriting the top-level count.
+    """
     item.menu = menu
-    item.position = MenuItemRepository.next_position(menu)
+    item.position = MenuItemRepository.next_position(menu, parent=item.parent)
 
 
 def get_menu_item(menu, item_pk: int):
@@ -267,13 +276,17 @@ def delete_menu_item(menu, item_pk: int) -> None:
 
 
 def move_menu_item(menu, item_pk: int, direction: str) -> None:
-    """Swap an item with its neighbour (``up``/``down``); a no-op at the ends."""
-    MenuItemRepository.get(menu, item_pk)  # 404 if not in this menu
-    items = MenuItemRepository.ordered(menu)
-    index = next(i for i, item in enumerate(items) if item.pk == item_pk)
+    """Swap an item with its neighbour (``up``/``down``) within its sibling group.
+
+    Reordering is scoped to items sharing the same parent, so a child never
+    swaps past a top-level item. A no-op at the ends of the group.
+    """
+    item = MenuItemRepository.get(menu, item_pk)  # 404 if not in this menu
+    siblings = MenuItemRepository.siblings(menu, item.parent)
+    index = next(i for i, s in enumerate(siblings) if s.pk == item_pk)
     target = index - 1 if direction == "up" else index + 1
-    if 0 <= target < len(items):
-        MenuItemRepository.swap_positions(items[index], items[target])
+    if 0 <= target < len(siblings):
+        MenuItemRepository.swap_positions(siblings[index], siblings[target])
 
 
 # --------------------------------------------------------------------------- #

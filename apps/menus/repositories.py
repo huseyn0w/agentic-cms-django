@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from django.db.models import QuerySet
+from django.db.models import Prefetch, QuerySet
 from django.shortcuts import get_object_or_404
 
 from .models import Menu, MenuItem
+
+# Reused link-target join — every item render needs its linked object.
+_WITH_TARGET = ("post", "page", "category")
 
 
 class MenuRepository:
@@ -24,7 +27,21 @@ class MenuRepository:
     @staticmethod
     def items_for(menu: Menu) -> QuerySet:
         """A menu's items in order, with link targets joined to avoid N+1."""
-        return menu.items.select_related("post", "page", "category")
+        return menu.items.select_related(*_WITH_TARGET)
+
+    @staticmethod
+    def top_level(menu: Menu) -> QuerySet:
+        """Root items (no parent) in order, with each item's children prefetched.
+
+        The ``children`` prefetch carries the same ``select_related`` so rendering
+        a nested menu never issues a per-child query (no N+1).
+        """
+        children = Prefetch("children", queryset=MenuItem.objects.select_related(*_WITH_TARGET))
+        return (
+            menu.items.filter(parent__isnull=True)
+            .select_related(*_WITH_TARGET)
+            .prefetch_related(children)
+        )
 
     @staticmethod
     def delete(menu: Menu) -> None:
@@ -38,12 +55,27 @@ class MenuItemRepository:
 
     @staticmethod
     def ordered(menu: Menu) -> list[MenuItem]:
-        return list(menu.items.all())
+        """All of a menu's items (used by the tree builder in the dashboard)."""
+        return list(menu.items.select_related(*_WITH_TARGET))
 
     @staticmethod
-    def next_position(menu: Menu) -> int:
-        last = menu.items.order_by("-position").first()
+    def siblings(menu: Menu, parent: MenuItem | None) -> list[MenuItem]:
+        """An item's ordered sibling group (same menu + same parent)."""
+        return list(menu.items.filter(parent=parent))
+
+    @staticmethod
+    def next_position(menu: Menu, parent: MenuItem | None = None) -> int:
+        """Next position within a sibling group (top level when ``parent`` is None)."""
+        last = menu.items.filter(parent=parent).order_by("-position").first()
         return (last.position + 1) if last else 0
+
+    @staticmethod
+    def top_level_choices(menu: Menu, exclude: MenuItem | None = None) -> QuerySet:
+        """Root items eligible to be a parent (one-level nesting; never self)."""
+        qs = menu.items.filter(parent__isnull=True)
+        if exclude is not None:
+            qs = qs.exclude(pk=exclude.pk)
+        return qs
 
     @staticmethod
     def delete(item: MenuItem) -> None:

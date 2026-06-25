@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from typing import cast
 
 from django import forms
 from django.contrib.auth import get_user_model
@@ -10,6 +11,7 @@ from parler.forms import TranslatableModelForm
 from apps.content.models import Category, Page, Post, Service, Tag
 from apps.core.models import SiteSettings
 from apps.menus.models import LinkType, Menu, MenuItem
+from apps.menus.repositories import MenuItemRepository
 from apps.seo.models import SeoSettings
 
 User = get_user_model()
@@ -153,8 +155,9 @@ class MenuForm(forms.ModelForm):
 class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
-        fields = ["label", "link_type", "url", "post", "page", "category"]
+        fields = ["parent", "label", "link_type", "url", "post", "page", "category"]
         help_texts = {
+            "parent": "Nest this item under a top-level item (one level deep).",
             "label": "Leave blank to use the linked item's title.",
             "url": "Used only for the “Custom URL” link type.",
         }
@@ -167,11 +170,26 @@ class MenuItemForm(forms.ModelForm):
         LinkType.CATEGORY: "category",
     }
 
+    def __init__(self, *args, menu: Menu | None = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Parent choices are this menu's top-level items only (one-level nesting),
+        # never the item itself. Scoped via the repository (the ORM home).
+        parent_field = cast(forms.ModelChoiceField, self.fields["parent"])
+        instance = self.instance if self.instance.pk else None
+        if menu is not None:
+            parent_field.queryset = MenuItemRepository.top_level_choices(menu, exclude=instance)
+        parent_field.required = False
+        parent_field.empty_label = "— Top level —"
+
     def clean(self):
         cleaned = super().clean()
         required = self._REQUIRED_FOR.get(cleaned.get("link_type"))
         if required and not cleaned.get(required):
             self.add_error(required, "Required for this link type.")
+        # One level only: an item that already has children can't itself be nested.
+        parent = cleaned.get("parent")
+        if parent is not None and self.instance.pk and self.instance.children.exists():
+            self.add_error("parent", "This item has sub-items; move those out first.")
         return cleaned
 
 

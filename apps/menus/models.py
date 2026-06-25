@@ -45,6 +45,14 @@ class MenuItem(models.Model):
     """
 
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name="items")
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        help_text=_("Nest this item under a top-level item (one level deep)."),
+    )
     label = models.CharField(
         _("label"),
         max_length=80,

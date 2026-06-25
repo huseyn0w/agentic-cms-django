@@ -12,6 +12,10 @@
       {% if footer_items %}
         {% for item in footer_items %}
           <a class="transition-colors hover:text-text" href="{{ item.url }}">{{ item.label }}</a>
+          {# Footers are flat: nested children render inline as sibling links. #}
+          {% for child in item.children %}
+            <a class="transition-colors hover:text-text" href="{{ child.url }}">{{ child.label }}</a>
+          {% endfor %}
         {% endfor %}
       {% else %}
         <a class="transition-colors hover:text-text" href="{% url 'content:post_list' %}">Blog</a>
