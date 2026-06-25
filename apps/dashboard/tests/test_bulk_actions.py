@@ -64,6 +64,20 @@ def test_unknown_bulk_action_is_a_noop(client, make_user):
     assert Post.objects.filter(pk=post.pk).exists()
 
 
+def test_non_integer_ids_do_not_500(client, make_user):
+    """Tampered/garbage ids are dropped, not passed to an int pk lookup."""
+    editor = make_user("ed", role="Editor")
+    post = Post.objects.create(title="Untouched", author=editor)
+    client.force_login(editor)
+    response = client.post(
+        reverse("dashboard:post_bulk_action"),
+        {"action": "trash", "ids": ["abc", "", str(post.pk)]},
+    )
+    assert response.status_code == 302
+    # The valid id still trashed; the garbage ones were ignored (no 500).
+    assert Post.objects.only_trashed().filter(pk=post.pk).exists()
+
+
 # --------------------------------------------------------------------------- #
 # U5 component wiring (guard tests)
 # --------------------------------------------------------------------------- #

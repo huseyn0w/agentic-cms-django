@@ -86,10 +86,13 @@ def trash_post(user, pk: int) -> None:
 def bulk_trash_posts(user, ids) -> int:
     """Trash every live post among ``ids`` the user may manage; return the count.
 
-    Owner-scoping happens in the repository query, so ids the user can't manage are
-    silently skipped (no 404) — a partial bulk action just affects fewer rows.
+    ``ids`` comes straight from the request, so non-numeric values are dropped here
+    (rather than letting them reach an integer pk lookup and raise). Owner-scoping
+    happens in the repository query, so ids the user can't manage are silently
+    skipped (no 404) — a partial bulk action just affects fewer rows.
     """
-    posts = list(PostRepository.editable_among(user, ids))
+    clean_ids = [int(i) for i in ids if str(i).isdigit()]
+    posts = list(PostRepository.editable_among(user, clean_ids))
     for post in posts:
         post.trash()
     return len(posts)
