@@ -247,16 +247,26 @@ active_theme`, changed under Dashboard → Appearance (`manage_settings`). The
 check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
   - `apps.menus` — managed navigation (F9). `Menu` (referenced by `slug`) +
     `MenuItem` (links a Post/Page/Category or a custom URL; `get_url()`/`get_label()`
-    resolve the target, with `label` falling back to the linked object's translated
-    title so content links localise automatically). `menus.services.get_menu_items
-(slug)` → render-ready `[{label,url}]`; the `{% menu_items "slug" as items %}` tag
-    (`menus/templatetags/menu_tags.py`) exposes it. The shared `_site_header.html`
-    (`primary`) and `_site_footer.html` (`footer`) render a managed menu when one
-    exists and fall back to built-in links otherwise. The admin builder lives in the
-    dashboard (manage_settings-gated): create/delete menus, add/edit/delete items,
-    and keyboard-accessible up/down reordering (POST that swaps `position` — no
-    drag-JS). NOTE (deliberate scope): menus are **flat** and `label` is **not**
-    per-locale (the title fallback covers content links) — see REFACTOR_PLAN §7.
+    resolve the target). **Nested (one level deep):** `MenuItem.parent` (self-FK)
+    nests an item under a top-level one; `menus.services.get_menu_items(slug)` →
+    render-ready **tree** `[{label,url,children}]` (children always present, possibly
+    empty; the child set is prefetched so there's no N+1). The `{% menu_items "slug"
+    as items %}` tag (`menus/templatetags/menu_tags.py`) exposes it. The shared
+    `_site_header.html` (`primary`) renders an **accessible dropdown** for items with
+    children (`.nav-group`/`.nav-submenu` raw-CSS primitive in `styles.css`: reveals
+    on hover AND `:focus-within`, works with **no JS**, `aria-haspopup` + `role=menu`);
+    the mobile drawer indents children; `_site_footer.html` (`footer`) flattens
+    children inline. Both fall back to built-in links when no managed menu exists.
+    **Per-locale labels:** `MenuItem.label` is a **parler translated field** (like
+    Post/Page/etc.); `get_label()` resolves active-language label → any translated
+    label → linked object's translated title → custom URL. The admin builder
+    (dashboard, manage_settings-gated): create/delete menus, add/edit/delete items
+    with a parent select (top-level items of this menu only; an item with children
+    can't itself be nested), a tree manage view, keyboard-accessible up/down reorder
+    scoped to the sibling group (POST that swaps `position` — no drag-JS), and the
+    item form edits labels one language at a time via `?language=` tabs
+    (`DashboardTranslatableFormMixin`). NOTE (deliberate scope): **drag-drop** reorder
+    and **>1 level** of nesting are intentionally not built — see REFACTOR_PLAN §7.
   - `apps.api` — public REST API (DRF, F12) at `/api/v1/` (outside i18n). ReadOnly
     viewsets for posts/pages/services/categories/tags (published-only, parler-aware
     serializers, `?lang=` override, list/detail split); the post viewset also takes

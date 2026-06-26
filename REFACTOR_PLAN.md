@@ -226,15 +226,24 @@ Each phase: TDD, subagent-driven where parallelizable, adversarial verification 
 ---
 
 ## 7. Matrix-gap flags for the user
-- **F9 menus — deliberate scope reduction (not a matrix error).** The matrix's menu row says
-  "items reference posts/pages/categories/custom URLs; **per-locale**" and implies a
-  drag-sortable nested builder. Shipped: **flat** menus (header/footer — the explicitly listed
-  "public menu rendering" requirement), **keyboard-accessible up/down reordering** (more robust
-  and a11y-friendly than drag-drop, works without JS), and a **non-translatable `label`** that
-  **falls back to the linked object's translated title** — so post/page/category items localise
-  automatically (the common case) while custom-URL labels are shared across locales. Full
-  per-locale custom labels (parler on `MenuItem`) and nested/dropdown menus are deferred
-  follow-ups; flag raised so the user can prioritise them if needed.
+- **F9 menus — FULL scope now delivered (the earlier reduction is CLOSED).** The matrix's menu
+  row asked for "items reference posts/pages/categories/custom URLs; **per-locale**" with a
+  nested builder. All of it now ships:
+  - **Nested (one-level) dropdown menus** — `MenuItem.parent` self-FK; the public header
+    renders an accessible CSS dropdown (`.nav-group`/`.nav-submenu` raw-CSS primitive: reveals
+    on hover **and** `:focus-within`, works with **no JS**, `aria-haspopup` + `role=menu`); the
+    mobile drawer indents children; the footer flattens them inline. The service resolves an
+    ordered tree (`get_menu_items` → `[{label,url,children}]`, children prefetched, no N+1). The
+    dashboard builder gained a parent select (scoped to the menu's top-level items, never self),
+    a one-level guard, a tree manage view, and sibling-scoped reorder.
+  - **Per-locale labels** — `MenuItem.label` is now a parler translated field (like
+    Post/Page/Category/Tag), edited one language at a time via the dashboard `?language=` tabs;
+    `get_label()` resolves active-language label → any translated label → linked object's
+    translated title → custom URL. Data-preserving migration (rename→create→copy→drop, verified
+    an existing label round-trips into the default-language translation).
+  - Still **deliberately** out of scope: **drag-drop** reordering (the keyboard up/down swap is
+    more robust + a11y-friendly and works without JS) and **>1 level** of nesting (standard nav
+    depth). Flag these only if the user explicitly wants them.
 - **F12 MCP — deliberate auth-floor reduction (not a matrix error).** The matrix asks for an
   "OAuth 2.1 auth floor" (laravel's model). Shipped: a **DRF token (or session) auth floor**
   over an HTTP `tools/list`/`tools/call` endpoint, with **every tool re-verifying its own

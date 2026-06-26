@@ -8,9 +8,10 @@ listed at the bottom.). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
 [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
 
 ## Current state (verified, not asserted — 2026-06-26)
-- Branch `refactor/service-repository-layer`: **59 commits**, LOCAL only (NOT pushed, NOT on `main`).
-  Latest: `5b3831d` (data-testid + create→publish & media-upload e2e + per-layer/sync-async docs).
-- Full unit/integration suite: **392 passed, 10 deselected** (`.venv/bin/python -m pytest -q`).
+- Branch `refactor/service-repository-layer`: **63 commits**, PUSHED to `origin` (tracking set;
+  NOT on `main`). Latest: `f1c0877` (F9 per-locale parler labels) on top of `bfc6756` (F9 nested
+  dropdown menus), `28bd7ef` (blog-list translations prefetch), `5b3831d` (data-testid + e2e).
+- Full unit/integration suite: **406 passed, 10 deselected** (`.venv/bin/python -m pytest -q`).
 - E2E: **10 passed** — `.venv/bin/python -m pytest tests/e2e -m e2e --ds=config.settings.test_e2e`
   (needs `playwright install chromium` + `cd frontend && npm run build` first).
 - Lint/types clean: `.venv/bin/ruff check apps config` · `.venv/bin/python -m black --check apps
@@ -59,10 +60,12 @@ CRITICAL/MAJOR; only 2 harmless NITs — see end):
 ### Open items remaining: NONE required. Optional follow-ups (critic NITs / prior scope flags):
 - (NIT) 3 testids exist but are unused container/symmetry hooks (`recent-posts`, `post-row`,
   `confirm-cancel`) — harmless; remove only if you want strict minimalism.
-- (NIT) blog-list prefetch relies on parler's per-request translation cache for the flat query
-  count; add an explicit `translations` prefetch only if that caching is ever disabled.
-- Prior deliberate scope flags still stand (REFACTOR_PLAN §7): F9 flat/non-per-locale menus;
-  F12 MCP token-auth floor (not OAuth 2.1 / SSE). Raise with the user only if they want them.
+- **DONE since:** blog-list `translations` prefetch added (`28bd7ef`); **F9 full scope delivered**
+  — nested one-level dropdown menus (`bfc6756`) + per-locale parler labels (`f1c0877`); see
+  REFACTOR_PLAN §7 (the F9 reduction is now CLOSED).
+- Prior deliberate scope flags still standing (REFACTOR_PLAN §7): F12 MCP token-auth floor (not
+  OAuth 2.1 / SSE); F9 drag-drop reorder + >1-level nesting (intentionally not built). Raise with
+  the user only if they want them.
 
 ## Last session's deliverables (F13/F14/F15 + U5/U6/U7 + README + critic)
 - **F13 CI**, **F15 mypy** (0 errors, django-stubs plugin + file-level `disable-error-code` on
@@ -143,11 +146,11 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 > routing, the two hard architecture rules, and the Task-4 E2E requirements all live there).
 >
 > **First, orient — before any work:**
-> 1. `cd cmstack-django`; you are already on the LOCAL branch `refactor/service-repository-layer`
->    (59 commits, NOT pushed, NOT on `main`). Commit there; push only if asked.
+> 1. `cd cmstack-django`; you are already on the branch `refactor/service-repository-layer`
+>    (63 commits, PUSHED to `origin`, NOT on `main`). Commit there; push as needed.
 > 2. Read `HANDOFF.md` and `REFACTOR_PLAN.md` in full, then `../FEATURE_MATRIX.md` and
 >    `../DESIGN_SYSTEM.md` (read-only canon — never edit the two shared specs).
-> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **392 passed, 10
+> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **406 passed, 10
 >    deselected**), `.venv/bin/ruff check apps config`, `.venv/bin/python -m mypy apps config`
 >    (Success, 0 issues), and E2E `.venv/bin/python -m pytest tests/e2e -m e2e
 >    --ds=config.settings.test_e2e` (needs `playwright install chromium` +
@@ -172,11 +175,11 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 > README rewrite, two completeness-critic passes — **AND** the updated prompt's stricter Task-4
 > (E2E) criteria: `data-testid` selectors, the content-create→publish + media-upload journeys,
 > the REFACTOR_PLAN §8 per-layer test-status table + §9 sync/async classification, a no-N+1
-> guard, and `factory_boy` wired (see "DONE this session" above). 392 unit + 10 e2e pass;
+> guard, and `factory_boy` wired — **AND** the full F9 menu scope (nested one-level dropdown
+> menus + per-locale parler labels, REFACTOR_PLAN §7 reduction CLOSED). 406 unit + 10 e2e pass;
 > ruff/black/mypy clean.
 >
 > **No required work remains.** If asked for more, candidates (all optional, none blocking):
-> the 2 critic NITs (remove unused container testids; explicit blog-list `translations`
-> prefetch), the prior §7 scope flags (F9 per-locale/nested menus; F12 OAuth 2.1 + SSE MCP
-> transport), or pushing the branch / opening a PR (currently LOCAL-only). Confirm scope with me
-> before starting — the autonomous gap-closing brief is complete.
+> remove the 3 unused container testids, the remaining §7 scope flags (F12 OAuth 2.1 + SSE MCP
+> transport; F9 drag-drop + >1-level nesting), or opening a PR (branch is pushed to `origin`).
+> Confirm scope with me before starting — the autonomous gap-closing brief is complete.
