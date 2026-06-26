@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "django_recaptcha",
     "rest_framework",
     "rest_framework.authtoken",
+    # OAuth 2.1 provider (PKCE) — an additional auth floor for the API/MCP.
+    "oauth2_provider",
     # Local apps
     "apps.accounts",
     "apps.content",
@@ -281,14 +283,36 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
-    # Token for programmatic clients; session so the dashboard can reuse the API.
+    # Token for programmatic clients; session so the dashboard can reuse the API;
+    # OAuth2 (django-oauth-toolkit) as the OAuth 2.1 auth floor for API + MCP.
+    # OAuth is AUTHENTICATION ONLY — the per-view permission classes and the MCP
+    # per-tool re-verification still own authorization.
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ],
     # Read access is public; write endpoints require the matching model permission.
     # (Keep the default AnonymousUser so DjangoModelPermissions allows anon reads.)
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+}
+
+# --------------------------------------------------------------------------- #
+# OAuth 2.1 provider (django-oauth-toolkit)
+# --------------------------------------------------------------------------- #
+# An OAuth 2.1 authorization server for the API/MCP. PKCE is required (no
+# implicit grant, no client secrets needed for public clients); access is scoped
+# to "read"/"write" with "read" the default. Tokens are presented as
+# ``Authorization: Bearer <token>`` and validated by OAuth2Authentication (added
+# to the DRF auth classes above). It works with the custom user model out of the
+# box because OAuth links the token to AUTH_USER_MODEL via a FK.
+OAUTH2_PROVIDER = {
+    "PKCE_REQUIRED": True,
+    "SCOPES": {
+        "read": "Read access to the API and MCP tools",
+        "write": "Write access to the API and MCP tools",
+    },
+    "DEFAULT_SCOPES": ["read"],
 }
 
 # --------------------------------------------------------------------------- #

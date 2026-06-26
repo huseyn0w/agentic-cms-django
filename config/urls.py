@@ -27,6 +27,8 @@ urlpatterns = [
     path("api/", include("apps.api.urls")),
     # MCP server (token-authenticated tool surface for AI clients).
     path("api/mcp/", include("apps.mcp.urls")),
+    # OAuth 2.1 provider (authorize/token/revoke endpoints), outside i18n.
+    path("oauth/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     # Liveness + readiness probes.
     path("health/", api_views.health, name="health"),
     path("health/ready/", api_views.readiness, name="health_ready"),

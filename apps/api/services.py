@@ -17,7 +17,7 @@ from apps.content.repositories import (
     TagRepository,
 )
 
-from .repositories import TokenRepository
+from .repositories import OAuthApplicationRepository, TokenRepository
 
 
 def published_posts() -> QuerySet:
@@ -35,6 +35,23 @@ def issue_token(username: str) -> str | None:
     if user is None:
         return None
     return TokenRepository.get_or_create_for(user)
+
+
+def create_oauth_application(
+    *, name: str, username: str | None, redirect_uri: str, public: bool
+) -> dict:
+    """Create a local OAuth Application (client) for the API/MCP.
+
+    Raises ``LookupError`` if ``username`` is given but no such user exists.
+    """
+    user = None
+    if username:
+        user = UserRepository.get_by_username(username)
+        if user is None:
+            raise LookupError(f"No user named {username!r}.")
+    return OAuthApplicationRepository.create(
+        name=name, user=user, redirect_uri=redirect_uri, public=public
+    )
 
 
 def published_pages() -> QuerySet:

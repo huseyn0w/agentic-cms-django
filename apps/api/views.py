@@ -13,6 +13,7 @@ from django.utils import translation
 from rest_framework import permissions, viewsets
 
 from . import serializers, services
+from .permissions import OAuth2ReadWriteScopeFloor
 
 
 class LanguageScopedMixin:
@@ -39,7 +40,13 @@ class PostViewSet(LanguageScopedMixin, viewsets.ModelViewSet):
     """
 
     lookup_field = "slug"
-    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    # Model permissions (anon read, perm-gated write) PLUS an OAuth scope floor
+    # that only applies to OAuth-authenticated requests (read for safe methods,
+    # write otherwise). Token/Session clients are unaffected by the scope floor.
+    permission_classes = [
+        permissions.DjangoModelPermissionsOrAnonReadOnly,
+        OAuth2ReadWriteScopeFloor,
+    ]
 
     def get_queryset(self):
         # Reads (and the permission check's model probe for anon writers) use the

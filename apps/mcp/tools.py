@@ -32,6 +32,9 @@ class Tool:
     permissions: tuple[str, ...]
     handler: Callable
     input_schema: dict = field(default_factory=dict)
+    # State-mutating tools require the OAuth ``write`` scope (in addition to the
+    # per-tool model permission). Read-only tools (list/get/settings.get) do not.
+    write: bool = False
 
     def schema(self) -> dict:
         return {
@@ -170,6 +173,7 @@ TOOLS: list[Tool] = [
         ("content.add_post",),
         _create_post,
         {"title": {"type": "string"}, "body": {"type": "string"}, "status": {"type": "string"}},
+        write=True,
     ),
     Tool(
         "posts.update",
@@ -177,6 +181,7 @@ TOOLS: list[Tool] = [
         ("content.change_post",),
         _update_post,
         {"id": {"type": "integer"}, "title": {"type": "string"}, "body": {"type": "string"}},
+        write=True,
     ),
     Tool(
         "posts.publish",
@@ -184,6 +189,7 @@ TOOLS: list[Tool] = [
         ("content.publish_post",),
         _publish_post,
         {"id": {"type": "integer"}},
+        write=True,
     ),
     Tool(
         "posts.delete",
@@ -191,6 +197,7 @@ TOOLS: list[Tool] = [
         ("content.delete_post",),
         _delete_post,
         {"id": {"type": "integer"}},
+        write=True,
     ),
     Tool("pages.list", "List pages.", ("content.view_page",), _list_pages),
     Tool("categories.list", "List categories.", ("content.view_category",), _list_categories),
@@ -201,6 +208,7 @@ TOOLS: list[Tool] = [
         ("comments.moderate_comment",),
         _moderate_comment,
         {"id": {"type": "integer"}, "action": {"type": "string"}},
+        write=True,
     ),
     Tool("media.list", "List media assets.", ("media.view_mediaasset",), _list_media),
     Tool("users.list", "List users and roles.", ("accounts.manage_users",), _list_users),
