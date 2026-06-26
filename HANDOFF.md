@@ -8,11 +8,11 @@ listed at the bottom.). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
 [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
 
 ## Current state (verified, not asserted — 2026-06-26)
-- Branch `refactor/service-repository-layer`: **68 commits**, PUSHED to `origin` (tracking set;
-  NOT on `main`). Latest: `6bb6e80` (F12 OAuth 2.1 + SSE MCP), `ca89901` (F9 arbitrary-depth +
-  drag-drop), `a4cbc4c` (per-category RSS + dead-testid cleanup). **ALL REFACTOR_PLAN §7
-  deferred scope is now CLOSED.**
-- Full unit/integration suite: **452 passed, 10 deselected** (`.venv/bin/python -m pytest -q`).
+- Branch `refactor/service-repository-layer`: **69 commits**, PUSHED to `origin` (tracking set;
+  NOT on `main`). Latest: `d1031a2` (F12 stdio MCP transport), `6bb6e80` (F12 OAuth 2.1 + SSE),
+  `ca89901` (F9 arbitrary-depth + drag-drop), `a4cbc4c` (per-category RSS + dead-testid cleanup).
+  **ALL REFACTOR_PLAN §7 deferred scope is now CLOSED — nothing deferred remains.**
+- Full unit/integration suite: **466 passed, 10 deselected** (`.venv/bin/python -m pytest -q`).
 - E2E: **10 passed** — `.venv/bin/python -m pytest tests/e2e -m e2e --ds=config.settings.test_e2e`
   (needs `playwright install chromium` + `cd frontend && npm run build` first).
 - Lint/types clean: `.venv/bin/ruff check apps config` · `.venv/bin/python -m black --check apps
@@ -62,13 +62,14 @@ CRITICAL/MAJOR; only 2 harmless NITs — see end):
 - **F9 menus — full scope delivered:** per-locale parler labels (`f1c0877`), arbitrary-depth
   recursive dropdown menus with cycle-protection + no-N+1 tree (`ca89901`), and drag-drop reorder
   (SortableJS progressive enhancement, keyboard ↑/↓ no-JS fallback, `ca89901`).
-- **F12 API/MCP — full scope delivered (`6bb6e80`):** OAuth 2.1 auth floor (django-oauth-toolkit,
-  PKCE, read/write scopes) added ALONGSIDE token/session; SSE MCP transport (`GET /api/mcp/sse`).
-  Adversarially security-reviewed: no authz bypass; MCP write-scope enforced per-tool (incl. the
-  empty-scope edge case). Only a **stdio** MCP transport is left as a deliberate omission.
+- **F12 API/MCP — full scope delivered:** OAuth 2.1 auth floor (django-oauth-toolkit, PKCE,
+  read/write scopes) added ALONGSIDE token/session (`6bb6e80`); adversarially security-reviewed —
+  no authz bypass; MCP write-scope enforced per-tool (incl. the empty-scope edge case). **Three
+  MCP transports** over one registry + authz: JSON `POST /api/mcp/`, SSE `GET /api/mcp/sse`
+  (`6bb6e80`), and **stdio** `manage.py mcp_stdio` (line-delimited JSON-RPC 2.0, `d1031a2`).
 - **Other:** per-category RSS feeds + removal of the 3 dead container testids (`a4cbc4c`);
   blog-list `translations` prefetch (`28bd7ef`).
-- Possible future (only if asked): stdio MCP transport; push to `main` / open a PR.
+- Possible future (only if asked): integration — push to `main` / open a PR.
 
 ## Last session's deliverables (F13/F14/F15 + U5/U6/U7 + README + critic)
 - **F13 CI**, **F15 mypy** (0 errors, django-stubs plugin + file-level `disable-error-code` on
@@ -150,10 +151,10 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 >
 > **First, orient — before any work:**
 > 1. `cd cmstack-django`; you are already on the branch `refactor/service-repository-layer`
->    (68 commits, PUSHED to `origin`, NOT on `main`). Commit there; push as needed.
+>    (69 commits, PUSHED to `origin`, NOT on `main`). Commit there; push as needed.
 > 2. Read `HANDOFF.md` and `REFACTOR_PLAN.md` in full, then `../FEATURE_MATRIX.md` and
 >    `../DESIGN_SYSTEM.md` (read-only canon — never edit the two shared specs).
-> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **452 passed, 10
+> 3. Confirm the baseline yourself: `.venv/bin/python -m pytest -q` (expect **466 passed, 10
 >    deselected**), `.venv/bin/ruff check apps config`, `.venv/bin/python -m mypy apps config`
 >    (Success, 0 issues), and E2E `.venv/bin/python -m pytest tests/e2e -m e2e
 >    --ds=config.settings.test_e2e` (needs `playwright install chromium` +
@@ -180,9 +181,10 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 > the REFACTOR_PLAN §8 per-layer test-status table + §9 sync/async classification, a no-N+1
 > guard, and `factory_boy` wired — **AND ALL of REFACTOR_PLAN §7's deferred scope**: full F9
 > menus (per-locale parler labels + arbitrary-depth recursive dropdowns + drag-drop reorder) and
-> full F12 (OAuth 2.1 auth floor via django-oauth-toolkit + SSE MCP transport, security-reviewed,
-> no authz bypass). 452 unit + 10 e2e pass; ruff/black/mypy + `manage.py check` clean.
+> full F12 (OAuth 2.1 auth floor via django-oauth-toolkit + all three MCP transports — JSON, SSE,
+> and stdio — security-reviewed, no authz bypass). 466 unit + 10 e2e pass; ruff/black/mypy +
+> `manage.py check` clean.
 >
-> **No required work remains; §7 is fully closed.** If asked for more, the only deliberate
-> omission left is a **stdio** MCP transport; otherwise: integration/PR to `main` (branch is
-> pushed to `origin`). Confirm scope with me before starting — the autonomous brief is complete.
+> **No work remains; §7 is fully closed (nothing deferred).** If asked for more, the only step
+> left is integration — push to `main` / open a PR (branch is pushed to `origin`). Confirm scope
+> with me before starting — the autonomous brief is complete.

@@ -41,6 +41,8 @@ code style): https://github.com/huseyn0w/Laravella-CMS
 - Publish scheduled content (cron, e.g. every minute): `python manage.py publish_scheduled`
 - Mint an API token: `python manage.py create_api_token <user>`; mint a local OAuth 2.1
   client: `python manage.py create_oauth_app <user>` (prints the client secret once).
+- Run the MCP server over stdio for a local client: `python manage.py mcp_stdio --user <user>`
+  (line-delimited JSON-RPC 2.0; tools run with that user's permissions).
 - Tests: `docker compose exec web pytest` (single test: `pytest path::test_name`)
 - Lint/format/types: `ruff check .`, `black .`, and `mypy apps config` (django-stubs
   plugin is wired — see `[tool.mypy]`/`[tool.django-stubs]` in `pyproject.toml`).
@@ -297,10 +299,17 @@ check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
     5 state-mutating tools are `write=True`). The executor (`services.call_tool`)
     **re-verifies the permissions server-side** against the calling user before
     delegating to the existing app services/repositories (same rules as the UI).
-    **Two transports, one registry + one auth floor** (`Token`+`Session`+`OAuth2`,
-    `IsAuthenticated`): `POST /api/mcp/` (`tools/list`+`tools/call` JSON) and
-    `GET /api/mcp/sse` (`text/event-stream` — emits `tools/list` on connect and a
-    `tools/call` result event for `?name=&arguments=`; anonymous rejected). **OAuth
+    **Three transports, one registry + authz:** `POST /api/mcp/` (`tools/list`+
+    `tools/call` JSON) and `GET /api/mcp/sse` (`text/event-stream` — emits
+    `tools/list` on connect and a `tools/call` result event for `?name=&arguments=`;
+    anonymous rejected) share the HTTP auth floor (`Token`+`Session`+`OAuth2`,
+    `IsAuthenticated`); plus **stdio** — `manage.py mcp_stdio --user <name>` speaks
+    line-delimited JSON-RPC 2.0 (`initialize`/`ping`/`tools/list`/`tools/call`) over
+    stdin/stdout for local desktop clients. The stdio dispatch is an I/O-free service
+    (`services.handle_jsonrpc(user, request)`); the command is a thin stdin/stdout
+    loop that runs every tool as the named user, so `call_tool`'s per-tool re-check is
+    the authorization (local trust + that user's perms; no bearer token → not
+    scope-gated). **OAuth
     scope is per-TOOL, not HTTP-method** (MCP writes ride POST/GET): when the caller is
     OAuth-authenticated, `call_tool`/`stream_events` deny a `write` tool unless the
     token carries the `write` scope (an empty-scope token is also denied — gating keys

@@ -259,11 +259,12 @@ No outstanding matrix gaps remain.
     bypass). The API write surface adds an additive scope floor; **MCP scope is per-TOOL** (each
     `Tool.write` flag; a `read`-scope or empty-scope OAuth token cannot run a write tool over
     JSON or SSE), while token/session auth stays un-scoped.
-  - **SSE transport** — `GET /api/mcp/sse` (`text/event-stream`) emits `tools/list` on connect
-    and a `tools/call` result event, reusing the same registry + auth floor + per-tool authz;
-    anonymous rejected.
-  - Still deliberately out of scope: a **stdio** MCP transport (HTTP+SSE covers networked
-    clients; stdio is a local-process concern). Flag only if needed.
+  - **Three transports, one registry + authz:** `POST /api/mcp/` (JSON), `GET /api/mcp/sse`
+    (`text/event-stream` — emits `tools/list` on connect and a `tools/call` result event,
+    anonymous rejected), and **stdio** (`manage.py mcp_stdio --user <name>` — line-delimited
+    JSON-RPC 2.0 over stdin/stdout for local desktop clients; runs as the named user so
+    `call_tool`'s per-tool `has_perm` is the authorization; no bearer token so not scope-gated).
+  - Nothing left deferred for F12 — all transports + the OAuth floor are delivered.
 
 ---
 
