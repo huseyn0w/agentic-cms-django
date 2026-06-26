@@ -13,9 +13,11 @@ class UserAdmin(DjangoUserAdmin):
     """
 
     list_display = ("username", "email", "display_name", "is_staff", "is_active")
-    fieldsets = DjangoUserAdmin.fieldsets + (
+    fieldsets = [
+        *(DjangoUserAdmin.fieldsets or ()),
         (_("Profile"), {"fields": ("avatar", "bio", "website")}),
-    )
-    add_fieldsets = DjangoUserAdmin.add_fieldsets + (
+    ]
+    add_fieldsets = [
+        *(DjangoUserAdmin.add_fieldsets or ()),
         (_("Profile"), {"fields": ("bio", "website")}),
-    )
+    ]

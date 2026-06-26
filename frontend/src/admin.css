@@ -3,7 +3,7 @@
    file has no @tailwind directives of its own (those live in the main bundle). */
 
 .dp-form label {
-  @apply mb-1 block text-sm font-medium text-ink/80;
+  @apply mb-1 block text-sm font-medium text-text;
 }
 
 .dp-form input[type="text"],
@@ -13,16 +13,16 @@
 .dp-form input[type="file"],
 .dp-form select,
 .dp-form textarea {
-  @apply block w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none transition;
+  @apply block w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm text-text outline-none transition placeholder:text-text-subtle;
 }
 
-.dp-form input[type="text"]:focus,
-.dp-form input[type="url"]:focus,
-.dp-form input[type="email"]:focus,
-.dp-form input[type="number"]:focus,
-.dp-form select:focus,
-.dp-form textarea:focus {
-  @apply border-accent ring-2 ring-accent/20;
+.dp-form input[type="text"]:focus-visible,
+.dp-form input[type="url"]:focus-visible,
+.dp-form input[type="email"]:focus-visible,
+.dp-form input[type="number"]:focus-visible,
+.dp-form select:focus-visible,
+.dp-form textarea:focus-visible {
+  @apply border-ring ring-2 ring-ring/40;
 }
 
 .dp-form select[multiple] {
@@ -30,21 +30,21 @@
 }
 
 .dp-form .helptext {
-  @apply mt-1 text-xs text-ink/40;
+  @apply mt-1 text-xs text-text-subtle;
 }
 
 /* Trix editor — match the editorial surface. */
 trix-editor {
-  @apply min-h-64 rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm leading-relaxed text-ink;
+  @apply min-h-64 rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm leading-relaxed text-text;
 }
 
 trix-editor:focus {
-  @apply border-accent ring-2 ring-accent/20;
+  @apply border-ring ring-2 ring-ring/40;
   outline: none;
 }
 
 trix-toolbar .trix-button-group {
-  @apply rounded-md border-ink/15;
+  @apply rounded-md border-border-strong;
 }
 
 /* We don't wire file attachments yet — hide the attach button. */

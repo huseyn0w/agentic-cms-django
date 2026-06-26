@@ -1,16 +1,16 @@
 {% comment %}A single approved comment + its approved replies (recursive). Body is autoescaped.{% endcomment %}
 <li id="comment-{{ comment.id }}">
-  <article class="rounded-2xl border border-ink/10 bg-white/70 p-5">
+  <article class="rounded-lg border border-border bg-surface p-5">
     <header class="flex items-center gap-3">
-      <span aria-hidden="true" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink/5 font-mono text-xs font-semibold uppercase text-ink/60">{{ comment.name|first|upper }}</span>
+      <span aria-hidden="true" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2 font-mono text-xs font-semibold uppercase text-text-muted">{{ comment.name|first|upper }}</span>
       <div class="flex flex-1 items-baseline justify-between gap-3">
-        <span class="font-medium text-ink">{{ comment.name }}</span>
-        <time class="font-mono text-xs text-ink/40" datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"M j, Y" }}</time>
+        <span class="font-medium text-text">{{ comment.name }}</span>
+        <time class="font-mono text-xs text-text-subtle" datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"M j, Y" }}</time>
       </div>
     </header>
-    <p class="mt-3 whitespace-pre-line leading-relaxed text-ink/80">{{ comment.body }}</p>
+    <p class="mt-3 whitespace-pre-line leading-relaxed text-text-muted">{{ comment.body }}</p>
     <button type="button"
-            class="mt-3 text-xs font-medium text-ink/40 transition-colors hover:text-accent"
+            class="mt-3 text-xs font-medium text-text-subtle transition-colors hover:text-primary"
             @click="replyTo='{{ comment.id }}'; replyToName='{{ comment.name|escapejs }}'; $nextTick(() => document.getElementById('id_body').focus())">
       Reply
     </button>
@@ -18,7 +18,7 @@
 
   {% with replies=comment.approved_replies %}
     {% if replies %}
-      <ul class="ml-5 mt-4 space-y-4 border-l border-ink/10 pl-5">
+      <ul class="ml-5 mt-4 space-y-4 border-l border-border pl-5">
         {% for child in replies %}
           {% include "content/_comment.html" with comment=child %}
         {% endfor %}

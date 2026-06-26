@@ -34,16 +34,50 @@ DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["tests.py", "test_*.py", "*_test.py"]
 # --ds is highest precedence, so the suite always runs under test settings even
 # when the container sets DJANGO_SETTINGS_MODULE=dev in the environment.
-addopts = "-ra --strict-markers --ds=config.settings.test"
+addopts = "-ra --strict-markers --ds=config.settings.test -m 'not e2e'"
 testpaths = ["apps", "tests"]
+markers = [
+    # Browser journeys are slow and need Chromium + a built frontend, so they are
+    # excluded from the default run. Invoke them with:
+    #   pytest tests/e2e -m e2e --ds=config.settings.test_e2e
+    "e2e: end-to-end Playwright browser journeys (excluded from the default run)",
+]
 filterwarnings = [
     # whitenoise warns when STATIC_ROOT is empty (before collectstatic) — benign in tests.
     "ignore:No directory at:UserWarning",
+]
+
+# Coverage is opt-in via `pytest --cov=apps` (kept out of default addopts so the
+# single-test workflow in CLAUDE.md stays fast and isn't gated by fail_under).
+[tool.coverage.run]
+source = ["apps"]
+branch = true
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/test_*.py",
+    "*/apps.py",
+    "*/admin.py",
+    "manage.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "def __str__",
+    "def __repr__",
 ]
 
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_ignores = true
-plugins = []
+plugins = ["mypy_django_plugin.main"]
 exclude = ["migrations", "frontend"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"

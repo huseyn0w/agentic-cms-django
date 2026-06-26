@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import translation
 
-from apps.content.models import Page, Post, Status
+from apps.content.models import Page, Post, Service, Status
 from apps.search.services import search_content
 
 User = get_user_model()
@@ -56,6 +56,35 @@ def test_is_case_insensitive(author):
 def test_excludes_drafts(author):
     Post.objects.create(title="Secret draft topic", author=author)  # draft
     assert search_content("topic", "en") == []
+
+
+def test_matches_published_service_by_title(author):
+    service = Service.objects.create(
+        title="Website migration service", author=author, status=Status.PUBLISHED
+    )
+    assert service in search_content("migration", "en")
+
+
+def test_matches_published_service_by_summary(author):
+    service = Service.objects.create(
+        title="Audit",
+        summary="We review your Lighthouse scores and fix regressions.",
+        author=author,
+        status=Status.PUBLISHED,
+    )
+    assert service in search_content("lighthouse", "en")
+
+
+def test_excludes_draft_service(author):
+    Service.objects.create(title="Hidden draft service", author=author)  # draft
+    assert search_content("hidden", "en") == []
+
+
+def test_excludes_noindex_service(author):
+    Service.objects.create(
+        title="Noindex service", author=author, status=Status.PUBLISHED, noindex=True
+    )
+    assert search_content("noindex", "en") == []
 
 
 def test_excludes_noindex_content(author):

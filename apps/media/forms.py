@@ -14,6 +14,11 @@ class MediaUploadForm(forms.ModelForm):
     class Meta:
         model = MediaAsset
         fields = ["file", "title", "alt_text"]
+        # Stable hooks for the Playwright end-to-end upload journey.
+        widgets = {
+            "file": forms.ClearableFileInput(attrs={"data-testid": "media-file"}),
+            "title": forms.TextInput(attrs={"data-testid": "media-title"}),
+        }
 
     def clean_file(self):
         # Validation is by extension + size (and SVG is excluded in constants).

@@ -1,3 +1,12 @@
+# django-parler ships no type stubs, so its TranslatableModel / TranslatableManager /
+# TranslatableQuerySet / TranslatedFields all degrade to ``Any`` for mypy. That makes the
+# django-stubs plugin unable to: type the dynamically-injected translated fields such as
+# ``title``/``body`` (has-type), resolve managers built via ``TranslatableManager.from_queryset``
+# (django-manager-missing / valid-type / misc), or reconcile the SchedulableMixin helpers with
+# the concrete CharField / DateTimeField columns (assignment / var-annotated). These are
+# third-party-stub gaps, not real type errors, so they are silenced for this module only —
+# every other module stays fully type-checked.
+# mypy: disable-error-code="has-type, assignment, django-manager-missing, var-annotated, valid-type, misc"
 from __future__ import annotations
 
 from django.conf import settings
@@ -96,11 +105,119 @@ class PublishableQuerySet(TranslatableQuerySet):
     def drafts(self) -> models.QuerySet:
         return self.filter(status=Status.DRAFT)
 
+    def due_for_publish(self) -> models.QuerySet:
+        """Draft items whose scheduled time has arrived (ready to auto-publish)."""
+        return self.filter(
+            status=Status.DRAFT,
+            scheduled_at__isnull=False,
+            scheduled_at__lte=timezone.now(),
+        )
+
+    def editable_by(self, user) -> models.QuerySet:
+        """Posts ``user`` may manage in the dashboard.
+
+        Content managers (those who can delete any post — Editors/Admins) see
+        everything; Authors/Contributors are scoped to their own posts. Returns a
+        chainable queryset so callers can add ``.published()``/ordering/prefetch.
+        """
+        if user.has_perm("content.delete_post"):
+            return self
+        return self.filter(author=user)
+
 
 PublishableManager = TranslatableManager.from_queryset(PublishableQuerySet)
 
 
-class Post(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
+class SoftDeleteQuerySet(PublishableQuerySet):
+    """A publishable queryset that also understands soft-deletion."""
+
+    def alive(self) -> models.QuerySet:
+        return self.filter(deleted_at__isnull=True)
+
+    def trashed(self) -> models.QuerySet:
+        return self.filter(deleted_at__isnull=False)
+
+
+_SoftDeleteManagerBase = TranslatableManager.from_queryset(SoftDeleteQuerySet)
+
+
+class SoftDeleteManager(_SoftDeleteManagerBase):
+    """Default manager that hides soft-deleted rows.
+
+    ``Post.objects`` therefore never returns trashed items, so every existing
+    public/admin/search/sitemap/feed query excludes them automatically without
+    change. Trash views opt back in via ``with_trashed()`` / ``only_trashed()``.
+    """
+
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().alive()
+
+    def with_trashed(self) -> models.QuerySet:
+        return super().get_queryset()
+
+    def only_trashed(self) -> models.QuerySet:
+        return super().get_queryset().trashed()
+
+
+class SoftDeleteModel(models.Model):
+    """Mixin adding a ``deleted_at`` marker plus trash/restore transitions.
+
+    The transitions are entity behaviour (cf. ``Comment.approve``) and persist
+    only the marker via ``update_fields`` so the heavy ``save()`` override and the
+    revision-snapshot signal stay no-ops on a soft-delete.
+    """
+
+    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    @property
+    def is_trashed(self) -> bool:
+        return self.deleted_at is not None
+
+    def trash(self) -> None:
+        """Soft-delete: hide from the default manager, keep the row + history."""
+        self.deleted_at = timezone.now()
+        self.save(update_fields=["deleted_at", "updated_at"])
+
+    def restore(self) -> None:
+        """Undo a soft-delete, bringing the row back into the default manager."""
+        self.deleted_at = None
+        self.save(update_fields=["deleted_at", "updated_at"])
+
+
+class SchedulableMixin(models.Model):
+    """Mixin for content that can be auto-published at a future time.
+
+    The item stays a Draft (so it is invisible publicly) until ``scheduled_at``
+    arrives and the ``publish_scheduled`` management command flips it. Requires the
+    concrete model to expose ``status`` and ``published_at``.
+    """
+
+    scheduled_at = models.DateTimeField(
+        _("scheduled for"),
+        null=True,
+        blank=True,
+        help_text=_("Auto-publish at this time. Keep the status as Draft until then."),
+    )
+
+    class Meta:
+        abstract = True
+
+    @property
+    def is_scheduled(self) -> bool:
+        return self.status == Status.DRAFT and self.scheduled_at is not None
+
+    def publish_scheduled(self) -> None:
+        """Publish a due scheduled item, stamping its scheduled time as the date."""
+        self.status = Status.PUBLISHED
+        self.published_at = self.scheduled_at or timezone.now()
+        self.scheduled_at = None
+        self.save()
+
+
+class Post(SeoFieldsMixin, SoftDeleteModel, SchedulableMixin, TranslatableModel, TimeStampedModel):
     translations = TranslatedFields(
         title=models.CharField(_("title"), max_length=200),
         excerpt=models.TextField(_("excerpt"), blank=True),
@@ -132,7 +249,7 @@ class Post(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
     )
     tags = models.ManyToManyField(Tag, verbose_name=_("tags"), blank=True, related_name="posts")
 
-    objects = PublishableManager()
+    objects = SoftDeleteManager()
 
     class Meta:
         verbose_name = _("post")
@@ -180,8 +297,36 @@ class Post(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
             return False
         return user == self.author or user.has_perm("content.delete_post")
 
+    def restore_revision(self, revision) -> None:
+        """Roll this post's content back to ``revision`` (in its language).
 
-class Page(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
+        Saving re-sanitises and snapshots the restored state, so history is
+        preserved rather than rewritten.
+        """
+        self.set_current_language(revision.language_code)
+        self.title = revision.title
+        self.body = revision.body
+        self.save()
+
+    def gate_publish_state(self, user) -> None:
+        """Constrain this post's ``status`` to what ``user`` is allowed to set.
+
+        Users without ``content.publish_post`` may not change the publish state:
+        a new post is forced to DRAFT; an edited post keeps its stored status, so
+        editing a post an Editor already published never silently unpublishes it
+        (and a Contributor still can't publish a draft themselves). A no-op for
+        users who may publish. Call before saving.
+        """
+        if user.has_perm("content.publish_post"):
+            return
+        if self.pk:
+            # status is a shared (untranslated) field; fetch just it.
+            self.status = Post.objects.only("status").get(pk=self.pk).status
+        else:
+            self.status = Status.DRAFT
+
+
+class Page(SeoFieldsMixin, SoftDeleteModel, SchedulableMixin, TranslatableModel, TimeStampedModel):
     """A standalone, optionally hierarchical page (About, Contact, ...)."""
 
     translations = TranslatedFields(
@@ -215,7 +360,7 @@ class Page(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
         related_name="children",
     )
 
-    objects = PublishableManager()
+    objects = SoftDeleteManager()
 
     class Meta:
         verbose_name = _("page")
@@ -247,8 +392,15 @@ class Page(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
             return True
         return user.is_authenticated and user.has_perm("content.change_page")
 
+    def restore_revision(self, revision) -> None:
+        """Roll this page's content back to ``revision`` (in its language)."""
+        self.set_current_language(revision.language_code)
+        self.title = revision.title
+        self.body = revision.body
+        self.save()
 
-class Service(SeoFieldsMixin, TranslatableModel, TimeStampedModel):
+
+class Service(SeoFieldsMixin, SchedulableMixin, TranslatableModel, TimeStampedModel):
     """A GEO-optimized service page — the format answer engines quote.
 
     Pairs a crisp definitional ``summary`` with a rich ``description``, citable
@@ -391,3 +543,28 @@ class PostRevision(Revision):
 
 class PageRevision(Revision):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="revisions")
+
+
+class Like(models.Model):
+    """An authenticated reader's like on a post.
+
+    Identity is the user, so a like is idempotent (one per user per post via the
+    unique constraint) and a guest must sign in first. Deleting a like row is an
+    unlike, so the relation doubles as a toggle.
+    """
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="likes"
+    )
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("like")
+        verbose_name_plural = _("likes")
+        constraints = [
+            models.UniqueConstraint(fields=["post", "user"], name="unique_post_like_per_user")
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user_id} ♥ {self.post_id}"

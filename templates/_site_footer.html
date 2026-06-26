@@ -2,11 +2,23 @@
   The one public site footer. Shared by public_base.html and core/home.html.
   Keeps the plugin "public_footer" region available site-wide.
 {% endcomment %}
-{% load plugin_hooks %}
+{% load plugin_hooks menu_tags %}
+{% menu_items "footer" as footer_items %}
 <footer class="mx-auto w-full max-w-5xl px-6 py-12">
   {% hook "public_footer" %}
-  <div class="flex flex-col gap-4 border-t border-ink/10 pt-8 text-xs text-ink/45 sm:flex-row sm:items-center sm:justify-between">
+  <div class="flex flex-col gap-4 border-t border-border pt-8 text-xs text-text-subtle sm:flex-row sm:items-center sm:justify-between">
     <p class="font-mono uppercase tracking-wide">© {% now "Y" %} {{ site.site_name }}</p>
-    <p>Built with Django 5 · Tailwind · Alpine · Vite</p>
+    <nav class="flex items-center gap-4" aria-label="Footer">
+      {% if footer_items %}
+        {# Footers are flat: the whole tree renders inline as sibling links. #}
+        {% for item in footer_items %}
+          {% include "_menu_node_footer.html" with node=item %}
+        {% endfor %}
+      {% else %}
+        <a class="transition-colors hover:text-text" href="{% url 'content:post_list' %}">Blog</a>
+        <a class="transition-colors hover:text-text" href="{% url 'content:service_list' %}">Services</a>
+        <a class="transition-colors hover:text-text" href="{% url 'core:contact' %}">Contact</a>
+      {% endif %}
+    </nav>
   </div>
 </footer>

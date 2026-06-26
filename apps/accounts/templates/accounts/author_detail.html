@@ -1,0 +1,54 @@
+{% extends "public_base.html" %}
+{% load seo_tags %}
+
+{% block title %}{{ author.display_name }} · {{ site.site_name }}{% endblock %}
+{% block meta_description %}{{ author.bio|default:author.display_name }}{% endblock %}
+{% block seo_jsonld %}{% seo_jsonld author "profile" %}{% endblock %}
+
+{% block main %}
+<header class="mb-14 reveal flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+  {% if author.avatar %}
+    <img src="{{ author.avatar.url }}" alt="{{ author.display_name }}"
+         class="h-20 w-20 rounded-full object-cover" loading="lazy" />
+  {% endif %}
+  <div>
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">Author</p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{{ author.display_name }}</h1>
+    {% if author.bio %}<p class="mt-3 max-w-2xl text-pretty leading-relaxed text-ink/65">{{ author.bio }}</p>{% endif %}
+    {% if author.website %}
+      <a class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent underline-offset-4 hover:underline"
+         href="{{ author.website }}" rel="me nofollow noopener" target="_blank">{{ author.website }} <span aria-hidden="true">↗</span></a>
+    {% endif %}
+  </div>
+</header>
+
+<div class="stagger divide-y divide-ink/10">
+  {% for post in posts %}
+    <article class="reveal group py-10 first:pt-0">
+      <p class="font-mono text-xs uppercase tracking-wide text-ink/40">
+        {% if post.published_at %}{{ post.published_at|date:"M j, Y" }}{% endif %}
+      </p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <a class="transition-colors group-hover:text-accent" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      </h2>
+      {% if post.excerpt %}
+        <p class="mt-3 max-w-2xl text-pretty leading-relaxed text-ink/65">{{ post.excerpt }}</p>
+      {% endif %}
+    </article>
+  {% empty %}
+    <p class="py-10 text-ink/60">No posts published yet.</p>
+  {% endfor %}
+</div>
+
+{% if is_paginated %}
+  <nav class="mt-14 flex items-center justify-between border-t border-border pt-6 font-mono text-xs uppercase tracking-wide text-text-subtle" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+      <a class="transition-colors hover:text-text" href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Newer</a>
+    {% else %}<span></span>{% endif %}
+    <span aria-current="page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="transition-colors hover:text-text" href="?page={{ page_obj.next_page_number }}">Older <span aria-hidden="true">→</span></a>
+    {% else %}<span></span>{% endif %}
+  </nav>
+{% endif %}
+{% endblock %}

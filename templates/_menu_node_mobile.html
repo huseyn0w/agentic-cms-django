@@ -1,0 +1,13 @@
+{% comment %}
+  Recursive mobile-drawer rendering of a menu node (F9, arbitrary depth). No
+  flyouts on touch — every node is a plain link, children indented one step deeper
+  via an inline left padding computed from `depth`. `node` = {label,url,children}.
+
+  Usage: {% include "_menu_node_mobile.html" with node=item depth=0 %}
+{% endcomment %}
+<a class="rounded-md py-2 pr-3 {% if depth %}text-sm text-text-muted{% else %}font-medium text-text{% endif %} transition-colors hover:bg-surface-2 hover:text-text"
+   style="padding-left: {{ depth|add:1 }}rem;"
+   href="{{ node.url }}">{{ node.label }}</a>
+{% for child in node.children %}
+  {% include "_menu_node_mobile.html" with node=child depth=depth|add:1 %}
+{% endfor %}

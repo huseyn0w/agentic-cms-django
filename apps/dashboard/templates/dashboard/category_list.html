@@ -7,7 +7,7 @@
        class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">New category</a>
   {% endif %}
 </div>
-<div class="overflow-hidden rounded-2xl border border-ink/10 bg-white">
+<div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
   <table class="w-full text-sm">
     <thead class="border-b border-ink/10 text-left text-xs uppercase tracking-wide text-ink/40">
       <tr><th class="px-5 py-3 font-medium">Name</th><th class="px-5 py-3 font-medium">Parent</th><th class="px-5 py-3 font-medium">Posts</th><th class="px-5 py-3"></th></tr>
@@ -20,7 +20,7 @@
           <td class="px-5 py-3 text-ink/50">{{ category.post_count }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_category %}
-              <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" onsubmit="return confirm('Delete this category?')">
+              <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" data-dp-confirm="Delete this category?">
                 {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
               </form>
             {% endif %}

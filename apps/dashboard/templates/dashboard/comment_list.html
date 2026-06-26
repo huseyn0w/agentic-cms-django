@@ -13,7 +13,7 @@
 
 <div class="space-y-4">
   {% for comment in comments %}
-    <div class="rounded-2xl border border-ink/10 bg-white p-5">
+    <div class="rounded-2xl border border-ink/10 bg-surface p-5">
       <div class="flex items-baseline justify-between gap-3">
         <div>
           <span class="font-medium text-ink">{{ comment.name }}</span>
@@ -36,7 +36,7 @@
         <form method="post" action="{% url 'dashboard:comment_moderate' comment.pk 'spam' %}">{% csrf_token %}
           <button class="rounded-full border border-ink/10 px-3 py-1 text-xs hover:border-accent hover:text-accent">Spam</button>
         </form>
-        <form method="post" action="{% url 'dashboard:comment_moderate' comment.pk 'delete' %}" onsubmit="return confirm('Delete this comment?')">{% csrf_token %}
+        <form method="post" action="{% url 'dashboard:comment_moderate' comment.pk 'delete' %}" data-dp-confirm="Delete this comment?">{% csrf_token %}
           <button class="rounded-full border border-ink/10 px-3 py-1 text-xs text-ink/40 hover:text-accent">Delete</button>
         </form>
       </div>

@@ -1,6 +1,10 @@
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from django.views import View
 from django.views.generic import TemplateView
 
-from apps.content.models import Post, Service
+from . import services
+from .forms import ContactForm
 
 
 class HomeView(TemplateView):
@@ -11,8 +15,21 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["recent_posts"] = (
-            Post.objects.published().select_related("author").prefetch_related("categories")[:3]
-        )
-        ctx["featured_services"] = Service.objects.published()[:3]
+        ctx.update(services.home_context())
         return ctx
+
+
+class ContactView(View):
+    """Public contact form. Thin HTTP boundary: parse → service → respond."""
+
+    template_name = "core/contact.html"
+
+    def get(self, request):
+        return render(request, self.template_name, {"form": ContactForm()})
+
+    def post(self, request):
+        sent, form = services.submit_contact(request.POST)
+        if sent:
+            messages.success(request, "Thanks! Your message has been sent.")
+            return redirect("core:contact")
+        return render(request, self.template_name, {"form": form})

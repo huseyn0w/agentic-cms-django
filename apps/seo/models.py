@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.core.cache import cache
 from django.db import models
 from django.utils.html import strip_tags
@@ -123,6 +125,11 @@ class SeoFieldsMixin:
     them into the values the <head> needs, with sensible fallbacks. It is plain
     Python (no DB fields) so it composes with parler's TranslatableModel.
     """
+
+    if TYPE_CHECKING:
+        # Provided by the concrete model (a parler-translated field); declared
+        # here so the mixin's helpers type-check.
+        title: str
 
     def seo_title(self) -> str:
         return (getattr(self, "meta_title", "") or "").strip() or self.title

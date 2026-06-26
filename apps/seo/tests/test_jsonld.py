@@ -21,7 +21,7 @@ def _ld_nodes(html: str) -> list[dict]:
 
 
 def _types(nodes: list[dict]) -> set[str]:
-    return {n.get("@type") for n in nodes}
+    return {t for n in nodes if (t := n.get("@type"))}
 
 
 @pytest.fixture
@@ -102,3 +102,33 @@ def test_dashboard_has_no_jsonld(client, published_post):
     # Use the public list page to confirm the article block is only on detail pages.
     html = client.get(reverse("content:post_list")).content.decode()
     assert "Article" not in _types(_ld_nodes(html))
+
+
+def test_profilepage_schema_includes_bio_website_and_avatar():
+    from types import SimpleNamespace
+
+    from apps.seo import jsonld
+
+    author = SimpleNamespace(
+        display_name="Jane Doe",
+        bio="Writer.",
+        website="https://jane.example",
+        avatar=SimpleNamespace(url="/media/avatars/jane.jpg"),
+    )
+    schema = jsonld.profilepage_schema(author, lambda u: f"https://site{u}", "/authors/1/")
+    person = schema["mainEntity"]
+    assert schema["@type"] == "ProfilePage"
+    assert person["name"] == "Jane Doe"
+    assert person["url"] == "https://site/authors/1/"
+    assert person["description"] == "Writer."
+    assert person["sameAs"] == ["https://jane.example"]
+    assert person["image"] == "https://site/media/avatars/jane.jpg"
+
+
+def test_profilepage_schema_is_none_without_a_name():
+    from types import SimpleNamespace
+
+    from apps.seo import jsonld
+
+    nameless = SimpleNamespace(display_name="", get_username=lambda: "")
+    assert jsonld.profilepage_schema(nameless, lambda u: u, "/authors/1/") is None

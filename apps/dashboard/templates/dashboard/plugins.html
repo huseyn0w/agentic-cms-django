@@ -3,7 +3,7 @@
 {% block content %}
 <p class="mb-6 text-sm text-ink/60">Enable or disable installed plugins. Changes take effect immediately.</p>
 
-<div class="overflow-hidden rounded-2xl border border-ink/10 bg-white">
+<div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
   {% for plugin in plugins %}
     <div class="flex items-center justify-between gap-4 border-b border-ink/5 px-5 py-4 last:border-0">
       <div>
@@ -13,9 +13,9 @@
       </div>
       <div class="flex items-center gap-3">
         {% if plugin.enabled %}
-          <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">Enabled</span>
+          <span class="rounded-full bg-success-bg px-3 py-1 text-xs font-medium text-success">Enabled</span>
         {% else %}
-          <span class="rounded-full bg-ink/5 px-3 py-1 text-xs font-medium text-ink/50">Disabled</span>
+          <span class="rounded-full bg-surface-2 px-3 py-1 text-xs font-medium text-text-subtle">Disabled</span>
         {% endif %}
         <form method="post" action="{% url 'dashboard:plugin_toggle' plugin.info.slug %}">
           {% csrf_token %}

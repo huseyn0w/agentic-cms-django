@@ -2,15 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Default palette (the "default" theme). A theme overrides these variables via
-   its _theme_palette.html include to recolor the whole public site. RGB channels,
-   space-separated, so Tailwind's <alpha-value> opacity modifiers keep working. */
+/* Semantic design tokens (DESIGN_SYSTEM §2). RGB channels, space-separated, so
+   Tailwind's <alpha-value> opacity modifiers keep working (`bg-surface/60`).
+   :root = light (default); `.dark` flips them; a theme's _theme_palette.html may
+   re-scope any of these to recolor the whole public site at runtime. */
 :root {
-  --color-paper: 246 244 239;
-  --color-ink: 26 26 24;
-  --color-accent: 192 73 43;
-  /* Strong ease-out: starts fast, feels responsive (vs the weak CSS default). */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --bg: 251 250 247;
+  --surface: 255 255 255;
+  --surface-2: 244 241 234;
+  --text: 26 26 24;
+  --text-muted: 107 103 96;
+  /* Darkened from 148/144/138 to clear WCAG AA (4.5:1) for small UI text on --bg. */
+  --text-subtle: 118 114 107;
+  --primary: 178 58 46;
+  --primary-hover: 153 47 37;
+  --primary-contrast: 255 255 255;
+  --accent: 194 104 60;
+  --border: 230 225 215;
+  --border-strong: 210 204 190;
+  --ring: 178 58 46;
+  --success: 47 125 91;
+  --success-bg: 231 241 234;
+  --warning: 169 112 26;
+  --warning-bg: 246 238 221;
+  --error: 180 39 31;
+  --error-bg: 247 231 229;
+
+  /* Motion (DESIGN_SYSTEM §6). Strong ease-out-expo. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Back-compat aliases for the (few) places that still read the old var names
+     and for theme palette files that set --color-*. Mapped to the new tokens. */
+  --color-paper: var(--bg);
+  --color-ink: var(--text);
+  --color-accent: var(--primary);
+}
+
+.dark {
+  --bg: 15 15 16;
+  --surface: 23 23 26;
+  --surface-2: 32 32 36;
+  --text: 244 242 236;
+  --text-muted: 167 162 154;
+  --text-subtle: 110 106 99;
+  --primary: 224 121 95;
+  --primary-hover: 236 139 114;
+  --primary-contrast: 26 17 16;
+  --accent: 224 160 106;
+  --border: 42 42 46;
+  --border-strong: 58 58 64;
+  --ring: 224 121 95;
+  --success: 95 185 140;
+  --success-bg: 22 39 31;
+  --warning: 214 162 76;
+  --warning-bg: 42 33 19;
+  --error: 232 103 92;
+  --error-bg: 42 21 19;
 }
 
 /* Alpine: hide x-cloak elements until Alpine initializes (and keep them hidden
@@ -72,27 +120,77 @@
   }
 }
 
+/* Nested-menu dropdown primitive (raw CSS so it is never purged, F9). The
+   submenu reveals on hover AND keyboard focus-within of its group, so it works
+   with NO JavaScript and is fully keyboard-navigable (Tab into a child keeps the
+   panel open via :focus-within). The parent link still navigates to its own
+   page. On coarse pointers (touch) the panel is shown when any descendant has
+   focus, so tapping the parent both navigates and is reachable. */
+.nav-group {
+  position: relative;
+}
+.nav-submenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 12rem;
+  display: none;
+  z-index: 50;
+  list-style: none;
+}
+.nav-group:hover > .nav-submenu,
+.nav-group:focus-within > .nav-submenu {
+  display: block;
+}
+/* Nested levels fly out to the side (next to their parent item), not downward,
+   so a deep tree never overlaps itself. Same hover/focus-within reveal. */
+.nav-submenu .nav-group {
+  position: relative;
+}
+.nav-submenu .nav-group > .nav-submenu {
+  left: 100%;
+  top: -0.25rem;
+}
+
 /* Button primitive (raw CSS so it is never purged; @apply pulls in Tailwind
-   utilities). Press feedback (scale 0.97) is instant and universal; the hover
-   lift is gated to real pointers so touch taps don't trigger it; the transition
-   is dropped under reduced motion. Compose as class="dp-btn dp-btn-primary". */
+   utilities). DESIGN_SYSTEM §5: md radius (not pills), 5 variants, focus-visible
+   ring, press scale(0.98), hover lift gated to real pointers, no motion under
+   reduced-motion. Compose as class="dp-btn dp-btn-primary" (+ dp-btn-sm/lg). */
 .dp-btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium;
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
   transition:
-    transform 160ms var(--ease-out),
-    color 160ms var(--ease-out);
+    transform 120ms var(--ease-out),
+    background-color 120ms var(--ease-out),
+    color 120ms var(--ease-out),
+    border-color 120ms var(--ease-out);
 }
 
 .dp-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.dp-btn-sm {
+  @apply px-3 py-1.5 text-sm;
+}
+.dp-btn-lg {
+  @apply px-6 py-3 text-base;
 }
 
 .dp-btn-primary {
-  @apply bg-ink px-6 py-3 text-paper;
+  @apply bg-primary text-primary-contrast hover:bg-primary-hover;
 }
-
+.dp-btn-secondary {
+  @apply bg-surface-2 text-text hover:bg-border;
+}
+.dp-btn-outline {
+  @apply border border-border-strong bg-transparent text-text hover:bg-surface-2;
+}
 .dp-btn-ghost {
-  @apply px-5 py-3 text-ink/70;
+  @apply bg-transparent text-text-muted hover:bg-surface-2 hover:text-text;
+}
+.dp-btn-destructive {
+  @apply bg-error text-white hover:opacity-90;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -105,6 +203,9 @@
   .dp-btn {
     transition: none;
   }
+  .dp-btn:active {
+    transform: none;
+  }
 }
 
 /* Scoped styling for the allauth auth screens (login / signup / reset).
@@ -112,30 +213,30 @@
    every allauth element template. */
 @layer components {
   .dp-auth h1 {
-    @apply mb-6 text-2xl font-semibold tracking-tight text-ink;
+    @apply mb-6 font-display text-2xl font-medium tracking-tight text-text;
   }
 
   .dp-auth p {
-    @apply mb-4 text-sm leading-relaxed text-ink/60;
+    @apply mb-4 text-sm leading-relaxed text-text-muted;
   }
 
   .dp-auth label {
-    @apply mb-1 block text-sm font-medium text-ink/80;
+    @apply mb-1 block text-sm font-medium text-text;
   }
 
   .dp-auth input:not([type="checkbox"]):not([type="radio"]) {
-    @apply mb-4 block w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink
-      outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20;
+    @apply mb-4 block w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm text-text
+      outline-none transition placeholder:text-text-subtle focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40;
   }
 
   .dp-auth button,
   .dp-auth [type="submit"] {
-    @apply inline-flex w-full items-center justify-center rounded-full bg-ink px-5 py-2.5
-      text-sm font-medium text-paper transition-transform duration-200 hover:-translate-y-0.5;
+    @apply inline-flex w-full items-center justify-center rounded-md bg-primary px-5 py-2.5
+      text-sm font-medium text-primary-contrast transition-colors duration-200 hover:bg-primary-hover;
   }
 
   .dp-auth a {
-    @apply font-medium text-accent underline-offset-4 hover:underline;
+    @apply font-medium text-primary underline-offset-4 hover:underline;
   }
 
   .dp-auth ul {
@@ -147,25 +248,26 @@
    nh3-sanitized HTML whose tags Tailwind can't see at build time). Tuned for the
    warm-paper palette and the Geist body / Space Grotesk heading pairing. */
 .dp-prose {
-  @apply text-lg leading-relaxed text-ink/80;
+  /* Article body uses the editorial serif (Newsreader) per DESIGN_SYSTEM §3. */
+  @apply font-display text-lg leading-relaxed text-text-muted;
 }
 .dp-prose > * + * {
   margin-top: 1.4em;
 }
 .dp-prose h2 {
-  @apply mb-0 mt-12 text-2xl font-semibold tracking-tight text-ink;
+  @apply mb-0 mt-12 text-2xl font-medium tracking-tight text-text;
 }
 .dp-prose h3 {
-  @apply mb-0 mt-10 text-xl font-semibold tracking-tight text-ink;
+  @apply mb-0 mt-10 text-xl font-medium tracking-tight text-text;
 }
 .dp-prose h4 {
-  @apply mb-0 mt-8 text-lg font-semibold tracking-tight text-ink;
+  @apply mb-0 mt-8 text-lg font-semibold tracking-tight text-text;
 }
 .dp-prose a {
-  @apply font-medium text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent;
+  @apply font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary;
 }
 .dp-prose strong {
-  @apply font-semibold text-ink;
+  @apply font-semibold text-text;
 }
 .dp-prose ul {
   @apply list-disc pl-6;
@@ -177,42 +279,42 @@
   margin-top: 0.5em;
 }
 .dp-prose blockquote {
-  @apply border-l-2 border-accent/40 pl-5 italic text-ink/70;
+  @apply border-l-2 border-primary/50 pl-5 italic text-text-muted;
 }
 .dp-prose img {
-  @apply rounded-2xl;
+  @apply rounded-md;
 }
 .dp-prose code {
-  @apply rounded bg-ink/5 px-1.5 py-0.5 font-mono text-[0.88em];
+  @apply rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.88em];
 }
 .dp-prose pre {
-  @apply overflow-x-auto rounded-2xl bg-ink/[0.04] p-5 text-sm leading-relaxed;
+  @apply overflow-x-auto rounded-lg bg-surface-2 p-5 text-sm leading-relaxed;
 }
 .dp-prose pre code {
   @apply bg-transparent p-0;
 }
 .dp-prose hr {
-  @apply my-10 border-ink/10;
+  @apply my-10 border-border;
 }
 
 /* Public form styling (comment form). The dashboard's .dp-form lives in the
    separate admin.css bundle, which public pages don't load — so the public
    surfaces need their own, palette-aware rules here. */
 .dp-form label {
-  @apply mb-1.5 block text-sm font-medium text-ink/80;
+  @apply mb-1.5 block text-sm font-medium text-text;
 }
 .dp-form input[type="text"],
 .dp-form input[type="email"],
 .dp-form input[type="url"],
 .dp-form textarea {
-  @apply block w-full rounded-xl border border-ink/15 bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink/35;
+  @apply block w-full rounded-sm border border-border-strong bg-surface px-3.5 py-2.5 text-sm text-text outline-none transition placeholder:text-text-subtle;
 }
-.dp-form input[type="text"]:focus,
-.dp-form input[type="email"]:focus,
-.dp-form input[type="url"]:focus,
-.dp-form textarea:focus {
-  @apply border-accent ring-2 ring-accent/20;
+.dp-form input[type="text"]:focus-visible,
+.dp-form input[type="email"]:focus-visible,
+.dp-form input[type="url"]:focus-visible,
+.dp-form textarea:focus-visible {
+  @apply border-ring ring-2 ring-ring/40;
 }
 .dp-form .helptext {
-  @apply mt-1 text-xs text-ink/45;
+  @apply mt-1 text-xs text-text-subtle;
 }

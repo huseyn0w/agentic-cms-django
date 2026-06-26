@@ -1,9 +1,14 @@
-{% comment %}Render a single bound form field with label, errors and help text.{% endcomment %}
+{% comment %}Render a single bound form field with label, errors and help text.
+The widget gets aria-invalid + aria-describedby (U6) tying it to the ids below.
+Pass an optional `testid` to stamp a stable data-testid on the widget (E2E).{% endcomment %}
+{% load dashboard_a11y %}
 <div>
   <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-  {{ field }}
-  {% for error in field.errors %}
-    <p class="mt-1 text-sm text-accent">{{ error }}</p>
-  {% endfor %}
-  {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
+  {% with tid=testid|default:"" %}{{ field|aria_field:tid }}{% endwith %}
+  {% if field.errors %}
+    <div id="{{ field.auto_id }}_error">
+      {% for error in field.errors %}<p class="mt-1 text-sm text-error">{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+  {% if field.help_text %}<p id="{{ field.auto_id }}_help" class="helptext">{{ field.help_text }}</p>{% endif %}
 </div>

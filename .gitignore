@@ -36,3 +36,6 @@ htmlcov/
 .DS_Store
 .idea/
 .vscode/
+
+# Claude Code personal permissions (do not commit)
+.claude/settings.local.json

@@ -1,7 +1,10 @@
 {% extends "dashboard/base.html" %}
 
 {% block content %}
-<div class="mb-6 flex items-center justify-end">
+<div class="mb-6 flex items-center justify-end gap-3">
+  {% if perms.content.delete_page %}
+    <a href="{% url 'dashboard:page_trash' %}" class="text-sm text-text-muted hover:text-text">Trash</a>
+  {% endif %}
   {% if perms.content.add_page %}
     <a href="{% url 'dashboard:page_create' %}"
        class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
@@ -10,7 +13,7 @@
   {% endif %}
 </div>
 
-<div class="overflow-hidden rounded-2xl border border-ink/10 bg-white">
+<div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
   <table class="w-full text-sm">
     <thead class="border-b border-ink/10 text-left text-xs uppercase tracking-wide text-ink/40">
       <tr>
@@ -30,9 +33,9 @@
           <td class="px-5 py-3 text-ink/50">{{ page.updated_at|date:"M j, Y" }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_page %}
-              <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" onsubmit="return confirm('Delete this page?')">
+              <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" data-dp-confirm="Move this page to trash?">
                 {% csrf_token %}
-                <button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
+                <button type="submit" class="text-xs text-ink/40 hover:text-accent">Trash</button>
               </form>
             {% endif %}
           </td>

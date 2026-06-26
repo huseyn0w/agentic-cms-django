@@ -28,3 +28,13 @@ def test_users_section_requires_manage_users(client, make_user):
 def test_settings_section_requires_manage_settings(client, make_user):
     client.force_login(make_user("ed", role="Editor"))  # no manage_settings
     assert client.get(reverse("dashboard:settings")).status_code == 403
+
+
+def test_dashboard_shell_has_dark_toggle_and_landmarks(client, make_user):
+    """Admin shell carries the no-FOUC dark init, a theme toggle and #content (U4)."""
+    client.force_login(make_user("ed", role="Editor"))
+    html = client.get(reverse("dashboard:home")).content.decode()
+    assert "admin-theme" in html  # no-FOUC localStorage key + toggle persistence
+    assert "Switch to" in html  # dark/light toggle aria-label
+    assert 'id="content"' in html
+    assert "bg-surface" in html and "bg-white" not in html  # tokenised, dark-ready

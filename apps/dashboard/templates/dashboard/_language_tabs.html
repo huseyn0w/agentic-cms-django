@@ -4,15 +4,18 @@
   being edited, "available" already has a translation, "empty" does not yet.
 {% endcomment %}
 {% if language_tabs %}
-  <div class="mb-6 flex items-center gap-1 border-b border-ink/10" role="tablist" aria-label="Language">
+  <div class="mb-6 flex items-center gap-1 border-b border-border" role="tablist" aria-label="Language">
     {% for url, title, code, status in language_tabs %}
       <a
         href="{{ url }}"
-        class="-mb-px rounded-t-lg border-b-2 px-4 py-2 text-sm transition-colors
-          {% if status == 'current' %}border-accent font-semibold text-ink{% else %}border-transparent text-ink/50 hover:text-ink{% endif %}"
+        role="tab"
+        aria-selected="{% if status == 'current' %}true{% else %}false{% endif %}"
+        {% if status == 'current' %}aria-current="page"{% endif %}
+        class="-mb-px rounded-t-md border-b-2 px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+          {% if status == 'current' %}border-primary font-semibold text-text{% else %}border-transparent text-text-muted hover:text-text{% endif %}"
       >
         {{ title }}
-        {% if status == 'empty' %}<span class="ml-1 text-xs text-ink/30">·</span>{% endif %}
+        {% if status == 'empty' %}<span class="ml-1 text-xs text-text-subtle" title="No translation yet">·</span>{% endif %}
       </a>
     {% endfor %}
   </div>

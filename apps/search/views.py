@@ -13,7 +13,9 @@ class SearchView(ListView):
     context_object_name = "results"
     paginate_by = 10
 
-    def get_queryset(self) -> list:
+    # ListView paginates any sequence; search returns a flat list of mixed
+    # Post/Page instances, not a QuerySet — hence the LSP-narrowing override.
+    def get_queryset(self) -> list:  # type: ignore[override]
         self.query = self.request.GET.get("q", "").strip()
         if not self.query:
             return []

@@ -1,0 +1,30 @@
+{% comment %}
+  One node of the public header's RECURSIVE dropdown (F9, arbitrary depth). A node
+  with children becomes a `.nav-group` whose `.nav-submenu` flyout reveals on hover
+  AND :focus-within (raw CSS in styles.css — works with NO JS, keyboard navigable).
+  Each level re-includes this partial for its own children, so depth is unbounded;
+  every group carries aria-haspopup + role=menu. `node` = {label,url,children};
+  `top` is true only for the first level (desktop top-bar styling).
+
+  Usage: {% include "_menu_node.html" with node=item top=True %}
+{% endcomment %}
+{% if node.children %}
+  <li class="nav-group" role="none">
+    <a class="{% if top %}inline-flex items-center gap-1 font-medium text-text-muted transition-colors hover:text-text{% else %}flex items-center justify-between gap-2 rounded-md px-3 py-2 text-text-muted transition-colors hover:bg-surface-2 hover:text-text{% endif %}"
+       href="{{ node.url }}" {% if not top %}role="menuitem"{% endif %} aria-haspopup="true">
+      {{ node.label }}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        {% if top %}<path d="M6 9l6 6 6-6"/>{% else %}<path d="M9 6l6 6-6 6"/>{% endif %}
+      </svg>
+    </a>
+    <ul class="nav-submenu {% if top %}mt-2 {% endif %}rounded-lg border border-border bg-surface p-1 shadow-md" role="menu" aria-label="{{ node.label }}">
+      {% for child in node.children %}
+        {% include "_menu_node.html" with node=child top=False %}
+      {% endfor %}
+    </ul>
+  </li>
+{% else %}
+  <li role="none">
+    <a {% if top %}class="font-medium text-text-muted transition-colors hover:text-text"{% else %}role="menuitem" class="block rounded-md px-3 py-2 text-text-muted transition-colors hover:bg-surface-2 hover:text-text"{% endif %} href="{{ node.url }}">{{ node.label }}</a>
+  </li>
+{% endif %}

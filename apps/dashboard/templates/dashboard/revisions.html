@@ -1,0 +1,62 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+  <h2 class="text-lg font-semibold text-text">{{ obj }}</h2>
+  <a href="{% url back_url_name obj.pk %}" class="dp-btn dp-btn-ghost text-sm">← Back to editor</a>
+</div>
+
+<div class="grid gap-6 lg:grid-cols-[20rem_1fr]">
+  <!-- History list -->
+  <aside class="overflow-hidden rounded-2xl border border-border bg-surface">
+    <ul class="divide-y divide-border text-sm">
+      {% for rev in revisions %}
+        <li class="px-4 py-3 {% if selected.pk == rev.pk %}bg-surface-2{% endif %}">
+          <div class="flex items-center justify-between gap-2">
+            <a href="?revision={{ rev.pk }}" class="font-medium text-text hover:text-primary">
+              {{ rev.created_at|date:"M j, Y H:i" }}
+            </a>
+            <span class="font-mono text-xs uppercase text-text-muted">{{ rev.language_code }}</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between gap-2 text-xs text-text-muted">
+            <span>{{ rev.author.display_name|default:"—" }}</span>
+            <form method="post" action="{% url restore_url_name obj.pk rev.pk %}"
+                  data-dp-confirm="Restore this revision? Current content is snapshotted first.">
+              {% csrf_token %}
+              <button type="submit" class="font-medium text-primary hover:underline">Restore</button>
+            </form>
+          </div>
+        </li>
+      {% empty %}
+        <li class="px-4 py-8 text-center text-text-muted">No revisions yet.</li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <!-- Diff panel -->
+  <section class="overflow-hidden rounded-2xl border border-border bg-surface p-5">
+    {% if diff %}
+      <h3 class="mb-4 text-sm font-semibold text-text">
+        Diff <span class="text-text-muted">— revision ({{ diff.language_code }}) vs current</span>
+      </h3>
+      <dl class="mb-5 text-sm">
+        <dt class="font-medium text-text-muted">Title</dt>
+        <dd class="mt-1">
+          {% if diff.title_changed %}
+            <span class="rounded bg-error-bg px-1.5 py-0.5 text-error line-through">{{ diff.title_old }}</span>
+            <span aria-hidden="true">→</span>
+            <span class="rounded bg-success-bg px-1.5 py-0.5 text-success">{{ diff.title_new }}</span>
+          {% else %}
+            <span class="text-text">{{ diff.title_new }}</span> <span class="text-text-muted">(unchanged)</span>
+          {% endif %}
+        </dd>
+      </dl>
+      <div class="overflow-x-auto rounded-lg border border-border">
+        <pre class="font-mono text-xs leading-relaxed"><code>{% for row in diff.body %}<div class="px-3 {% if row.kind == 'add' %}bg-success-bg text-success{% elif row.kind == 'remove' %}bg-error-bg text-error{% else %}text-text-muted{% endif %}">{% if row.kind == 'add' %}+ {% elif row.kind == 'remove' %}- {% else %}  {% endif %}{{ row.text }}</div>{% endfor %}</code></pre>
+      </div>
+    {% else %}
+      <p class="text-sm text-text-muted">Select a revision from the history to see what restoring it would change.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

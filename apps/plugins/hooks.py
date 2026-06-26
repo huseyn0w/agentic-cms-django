@@ -22,8 +22,9 @@ import sys
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
+from types import FrameType
 
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 
 
 @dataclass
@@ -53,7 +54,7 @@ def _calling_plugin() -> str | None:
     imported function or a ``functools.partial`` (whose module is elsewhere), but
     the registration call still happens from inside the ``plugins.<slug>`` module.
     """
-    frame = sys._getframe(1)
+    frame: FrameType | None = sys._getframe(1)
     while frame is not None:
         slug = _slug_from_module(frame.f_globals.get("__name__", ""))
         if slug is not None:

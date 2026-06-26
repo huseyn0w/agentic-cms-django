@@ -5,7 +5,7 @@
 
 <div class="grid gap-4 sm:grid-cols-2">
   {% for theme in themes %}
-    <div class="rounded-2xl border {% if theme.slug == active_slug %}border-accent{% else %}border-ink/10{% endif %} bg-white p-5">
+    <div class="rounded-2xl border {% if theme.slug == active_slug %}border-accent{% else %}border-ink/10{% endif %} bg-surface p-5">
       <div class="flex items-start justify-between gap-4">
         <div>
           <h2 class="font-semibold tracking-tight text-ink">{{ theme.name }}</h2>

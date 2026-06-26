@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
-class User(AbstractUser):
+# django-manager-missing: the reverse `services` relation resolves through a
+# parler manager django-stubs can't introspect (django-parler ships no stubs).
+class User(AbstractUser):  # type: ignore[django-manager-missing]
     """
     Cmstack-Django user.
 
@@ -23,7 +26,7 @@ class User(AbstractUser):
     bio = models.TextField(_("bio"), blank=True)
     website = models.URLField(_("website"), blank=True)
 
-    class Meta(AbstractUser.Meta):
+    class Meta(AbstractUser.Meta):  # type: ignore[name-defined]  # django-stubs gap
         permissions = [
             ("access_admin", "Can access the admin dashboard"),
             ("manage_users", "Can manage users and roles"),
@@ -37,6 +40,10 @@ class User(AbstractUser):
     def display_name(self) -> str:
         """Best human-readable name: full name if set, else username."""
         return self.get_full_name() or self.get_username()
+
+    def get_absolute_url(self) -> str:
+        """Public author archive page."""
+        return reverse("accounts:author_detail", args=[self.pk])
 
     def has_role(self, role_name: str) -> bool:
         """True if the user belongs to the group (role) with this name."""

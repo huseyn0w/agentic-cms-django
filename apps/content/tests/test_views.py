@@ -1,9 +1,12 @@
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from apps.content.models import Category, Post, Status, Tag
+from tests.factories import PostFactory
 
 User = get_user_model()
 pytestmark = pytest.mark.django_db
@@ -23,11 +26,45 @@ def test_post_list_shows_only_published(client, author):
     assert b"Draft" not in response.content
 
 
+def test_post_list_has_no_n_plus_one(client):
+    """The blog index query count must not grow with the number of posts.
+
+    Rendering more posts (each with a parler translation + author) on the same
+    page must not add queries — the regression that locks in `no N+1` on the
+    hottest public list view. We compare two payload sizes rather than pinning an
+    absolute count so the guard survives unrelated query-shape changes.
+    """
+    url = reverse("content:post_list")
+
+    PostFactory.create_batch(2)
+    # Warm the cached singletons (SiteSettings/SeoSettings/menus) first so the
+    # measured requests differ only in post count, not cold-cache loads.
+    client.get(url)
+    with CaptureQueriesContext(connection) as few:
+        assert client.get(url).status_code == 200
+
+    PostFactory.create_batch(4)
+    with CaptureQueriesContext(connection) as many:
+        assert client.get(url).status_code == 200
+
+    assert len(many.captured_queries) == len(few.captured_queries)
+
+
 def test_published_post_detail_visible(client, author):
     post = Post.objects.create(title="Hello World", author=author, status=Status.PUBLISHED)
     response = client.get(post.get_absolute_url())
     assert response.status_code == 200
     assert b"Hello World" in response.content
+
+
+def test_post_detail_has_breadcrumbs(client, author):
+    """Detail pages carry an accessible breadcrumb trail (DESIGN_SYSTEM §5)."""
+    post = Post.objects.create(title="Breadcrumbed", author=author, status=Status.PUBLISHED)
+    html = client.get(post.get_absolute_url()).content.decode()
+    assert 'aria-label="Breadcrumb"' in html
+    assert ">Home<" in html
+    assert ">Blog<" in html
+    assert 'aria-current="page"' in html
 
 
 def test_draft_hidden_from_anonymous(client, author):

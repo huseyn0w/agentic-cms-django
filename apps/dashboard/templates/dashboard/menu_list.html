@@ -1,0 +1,43 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-end">
+  <a href="{% url 'dashboard:menu_create' %}"
+     class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
+    New menu
+  </a>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-border bg-surface">
+  <table class="w-full text-sm">
+    <thead class="border-b border-border text-left text-xs uppercase tracking-wide text-text-muted">
+      <tr>
+        <th class="px-5 py-3 font-medium">Name</th>
+        <th class="px-5 py-3 font-medium">Slug</th>
+        <th class="px-5 py-3 font-medium">Items</th>
+        <th class="px-5 py-3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for menu in menus %}
+        <tr class="border-b border-border/50 last:border-0">
+          <td class="px-5 py-3">
+            <a href="{% url 'dashboard:menu_manage' menu.pk %}" class="font-medium text-text hover:text-primary">{{ menu.name }}</a>
+          </td>
+          <td class="px-5 py-3 font-mono text-xs text-text-muted">{{ menu.slug }}</td>
+          <td class="px-5 py-3 text-text-muted">{{ menu.items.count }}</td>
+          <td class="px-5 py-3 text-right">
+            <form method="post" action="{% url 'dashboard:menu_delete' menu.pk %}"
+                  data-dp-confirm="Delete this menu and its items?">
+              {% csrf_token %}
+              <button type="submit" class="text-xs text-error hover:underline">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="px-5 py-8 text-center text-text-muted">No menus yet. Create “primary” for the header or “footer”.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

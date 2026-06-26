@@ -1,7 +1,8 @@
-{% comment %}Sidebar nav link. `section` (set per view) marks the active item.{% endcomment %}
+{% comment %}Sidebar nav link. `section` (set per view) marks the active item (DESIGN_SYSTEM §5: surface-2 fill + 2px primary left bar).{% endcomment %}
 <a
   href="{% url url %}"
-  class="rounded-lg px-3 py-2 transition-colors {% if section == key %}bg-ink text-paper{% else %}text-ink/60 hover:bg-ink/5 hover:text-ink{% endif %}"
+  {% if section == key %}aria-current="page"{% endif %}
+  class="relative rounded-md px-3 py-2 transition-colors {% if section == key %}bg-surface-2 font-medium text-text before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-primary before:content-['']{% else %}text-text-muted hover:bg-surface-2 hover:text-text{% endif %}"
 >
   {{ label }}
 </a>

@@ -22,5 +22,12 @@ nh3==0.2.20
 # Spam protection: reCAPTCHA v3 on public forms (gracefully disabled without keys)
 django-recaptcha==4.0.0
 
+# Public REST API (read) + gated write API
+djangorestframework==3.15.2
+
+# OAuth 2.1 provider (PKCE) — auth floor for the API + MCP (Bearer tokens),
+# alongside the existing token/session auth. Maintained library; no hand-rolled crypto.
+django-oauth-toolkit==3.3.0
+
 # WSGI server (used in prod, harmless in dev)
 gunicorn==23.0.0

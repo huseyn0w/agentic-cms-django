@@ -75,3 +75,13 @@ class Comment(models.Model):
 
     def approved_replies(self) -> models.QuerySet:
         return self.replies.approved().select_related("user")
+
+    def approve(self) -> None:
+        """Mark this comment approved (visible publicly)."""
+        self.status = CommentStatus.APPROVED
+        self.save(update_fields=["status"])
+
+    def mark_spam(self) -> None:
+        """Flag this comment as spam (hidden from the public site)."""
+        self.status = CommentStatus.SPAM
+        self.save(update_fields=["status"])

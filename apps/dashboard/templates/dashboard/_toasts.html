@@ -1,0 +1,33 @@
+{% comment %}
+  Toast notifications for Django messages (U5). A polite live region announces
+  each message; toasts auto-dismiss after a few seconds and can be closed early.
+  Server-rendered, so they show without JS too — Alpine only adds dismissal.
+{% endcomment %}
+<div class="pointer-events-none fixed right-4 top-4 z-50 flex w-full max-w-sm flex-col gap-2" aria-live="polite" aria-atomic="false">
+  {% if messages %}
+    {% for message in messages %}
+      <div
+        x-data="{ show: true }"
+        x-show="show"
+        x-init="setTimeout(() => show = false, 6000)"
+        x-transition.opacity.duration.200ms
+        class="pointer-events-auto flex items-start gap-3 rounded-md border px-4 py-3 text-sm shadow-md
+          {% if 'success' in message.tags %}border-success bg-success-bg text-success
+          {% elif 'error' in message.tags %}border-error bg-error-bg text-error
+          {% elif 'warning' in message.tags %}border-warning bg-warning-bg text-warning
+          {% else %}border-border bg-surface-2 text-text{% endif %}"
+        role="status"
+      >
+        <span class="flex-1">{{ message }}</span>
+        <button
+          type="button"
+          @click="show = false"
+          class="-mr-1 shrink-0 rounded p-0.5 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Dismiss notification"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>

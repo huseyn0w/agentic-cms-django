@@ -5,24 +5,26 @@
 <form method="post" enctype="multipart/form-data" class="dp-form">
   {% csrf_token %}
   {% if form.non_field_errors %}
-    <div class="mb-4 rounded-lg bg-accent/5 px-4 py-3 text-sm text-accent">{{ form.non_field_errors }}</div>
+    <div class="mb-4 rounded-md border border-error bg-error-bg px-4 py-3 text-sm text-error" role="alert">{{ form.non_field_errors }}</div>
   {% endif %}
 
   <div class="grid gap-8 lg:grid-cols-[1fr_18rem]">
     <!-- Main column -->
     <div class="space-y-5">
-      {% include "dashboard/_field.html" with field=form.title %}
+      {% include "dashboard/_field.html" with field=form.title testid="post-title" %}
       {% include "dashboard/_field.html" with field=form.slug %}
-      {% include "dashboard/_field.html" with field=form.excerpt %}
+      {% include "dashboard/_field.html" with field=form.excerpt testid="post-excerpt" %}
 
       <div>
         <label for="{{ form.body.id_for_label }}">Content</label>
         {{ form.body }}
-        <trix-editor input="{{ form.body.id_for_label }}"></trix-editor>
-        {% for error in form.body.errors %}<p class="mt-1 text-sm text-accent">{{ error }}</p>{% endfor %}
+        <trix-editor input="{{ form.body.id_for_label }}" aria-label="Content" data-testid="post-body-editor"
+          {% if form.body.errors %}aria-invalid="true" aria-describedby="{{ form.body.auto_id }}_error"{% endif %}></trix-editor>
+        {% include "dashboard/_media_picker.html" %}
+        {% if form.body.errors %}<div id="{{ form.body.auto_id }}_error">{% for error in form.body.errors %}<p class="mt-1 text-sm text-error">{{ error }}</p>{% endfor %}</div>{% endif %}
       </div>
 
-      <details class="rounded-2xl border border-ink/10 bg-white p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
+      <details class="rounded-2xl border border-ink/10 bg-surface p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
         <summary class="cursor-pointer text-sm font-semibold text-ink">SEO &amp; sharing</summary>
         <div class="mt-4 space-y-5">
           {% include "dashboard/_field.html" with field=form.meta_title %}
@@ -36,14 +38,19 @@
 
     <!-- Meta sidebar -->
     <aside class="space-y-5">
-      <div class="rounded-2xl border border-ink/10 bg-white p-5">
-        {% if form.status %}{% include "dashboard/_field.html" with field=form.status %}{% endif %}
-        <button type="submit"
+      <div class="rounded-2xl border border-ink/10 bg-surface p-5">
+        {% if form.status %}{% include "dashboard/_field.html" with field=form.status testid="post-status" %}{% endif %}
+        {% if form.scheduled_at %}{% include "dashboard/_field.html" with field=form.scheduled_at %}{% endif %}
+        <button type="submit" data-testid="post-save"
                 class="mt-4 w-full rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
           Save post
         </button>
+        {% if form.instance.pk %}
+          <a href="{% url 'dashboard:post_revisions' form.instance.pk %}"
+             class="mt-3 block text-center text-sm text-text-muted hover:text-text">Revision history</a>
+        {% endif %}
       </div>
-      <div class="space-y-5 rounded-2xl border border-ink/10 bg-white p-5">
+      <div class="space-y-5 rounded-2xl border border-ink/10 bg-surface p-5">
         {% include "dashboard/_field.html" with field=form.categories %}
         {% include "dashboard/_field.html" with field=form.tags %}
         {% include "dashboard/_field.html" with field=form.featured_image %}

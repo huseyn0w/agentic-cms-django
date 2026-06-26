@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
@@ -11,4 +13,6 @@ class AdminAccessMixin(LoginRequiredMixin, PermissionRequiredMixin):
     specific permission via `permission_required` (a tuple is ANDed).
     """
 
-    permission_required = "accounts.access_admin"
+    # Subclasses override this with a tuple of permissions (ANDed by Django), so
+    # the declared type must admit both a single permission and a sequence.
+    permission_required: str | Sequence[str] = "accounts.access_admin"

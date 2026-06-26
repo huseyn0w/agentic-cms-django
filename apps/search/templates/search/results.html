@@ -27,7 +27,7 @@
   </p>
   <div class="space-y-10">
     {% for result in results %}
-      <article class="group">
+      <article class="group" data-testid="search-result">
         <p class="mb-1 text-xs font-medium uppercase tracking-wide text-accent">{{ result.search_type }}</p>
         <h2 class="text-2xl font-semibold tracking-tight">
           <a class="transition-colors hover:text-accent" href="{{ result.get_absolute_url }}">{{ result.title }}</a>
@@ -44,14 +44,14 @@
   </div>
 
   {% if is_paginated %}
-    <nav class="mt-12 flex items-center justify-between text-sm text-ink/60">
+    <nav class="mt-12 flex items-center justify-between font-mono text-xs text-text-muted" aria-label="Pagination">
       {% if page_obj.has_previous %}
-        <a class="hover:text-ink" href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}">← Previous</a>
-      {% else %}<span></span>{% endif %}
-      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <a class="rounded-md px-2 py-1 transition-colors hover:text-text" href="?q={{ query|urlencode }}&page={{ page_obj.previous_page_number }}"><span aria-hidden="true">←</span> Previous</a>
+      {% else %}<span class="px-2 py-1 text-text-subtle"><span aria-hidden="true">←</span> Previous</span>{% endif %}
+      <span aria-current="page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
-        <a class="hover:text-ink" href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}">Next →</a>
-      {% else %}<span></span>{% endif %}
+        <a class="rounded-md px-2 py-1 transition-colors hover:text-text" href="?q={{ query|urlencode }}&page={{ page_obj.next_page_number }}">Next <span aria-hidden="true">→</span></a>
+      {% else %}<span class="px-2 py-1 text-text-subtle">Next <span aria-hidden="true">→</span></span>{% endif %}
     </nav>
   {% endif %}
 {% else %}

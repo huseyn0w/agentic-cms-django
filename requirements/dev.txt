@@ -3,6 +3,10 @@
 # Tests
 pytest==8.3.4
 pytest-django==4.9.0
+pytest-cov==6.0.0
+factory-boy==3.3.1
+# End-to-end browser journeys (tests/e2e, `-m e2e`); `playwright install chromium`.
+pytest-playwright==0.8.0
 
 # Lint / format / types
 ruff==0.8.4

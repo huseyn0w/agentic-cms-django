@@ -71,6 +71,15 @@ def seo_jsonld(context, obj=None, og_type: str = "website"):
             (obj.seo_title(), obj.canonical_url or abs_url(obj.get_absolute_url())),
         ]
         nodes.append(jsonld.breadcrumb_schema(crumbs))
+    elif obj is not None and og_type == "profile":
+        profile = jsonld.profilepage_schema(obj, abs_url, obj.get_absolute_url())
+        if profile:
+            nodes.append(profile)
+        crumbs = [
+            ("Home", abs_url("/")),
+            (obj.display_name, abs_url(obj.get_absolute_url())),
+        ]
+        nodes.append(jsonld.breadcrumb_schema(crumbs))
     elif obj is not None:
         crumbs = [
             ("Home", abs_url("/")),

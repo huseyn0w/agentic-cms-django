@@ -38,12 +38,21 @@ code style): https://github.com/huseyn0w/Laravella-CMS
 
 - Dev up: `docker compose up`
 - Migrate: `docker compose exec web python manage.py migrate`
-- Seed demo data: `docker compose exec web python manage.py seed_demo`
+- Publish scheduled content (cron, e.g. every minute): `python manage.py publish_scheduled`
+- Mint an API token: `python manage.py create_api_token <user>`; mint a local OAuth 2.1
+  client: `python manage.py create_oauth_app <user>` (prints the client secret once).
+- Run the MCP server over stdio for a local client: `python manage.py mcp_stdio --user <user>`
+  (line-delimited JSON-RPC 2.0; tools run with that user's permissions).
 - Tests: `docker compose exec web pytest` (single test: `pytest path::test_name`)
-- Lint/format: `ruff check .` and `black .`
+- Lint/format/types: `ruff check .`, `black .`, and `mypy apps config` (django-stubs
+  plugin is wired — see `[tool.mypy]`/`[tool.django-stubs]` in `pyproject.toml`).
 - Frontend build: `cd frontend && npm run build` (watch: `npm run dev`)
-- Lint locally without Docker: `pytest`, `ruff check .`, `black .` from a venv with
-  `requirements/dev.txt` installed.
+- Lint locally without Docker: `pytest`, `ruff check .`, `black .`, `mypy apps config`
+  from a venv with `requirements/dev.txt` installed.
+- CI: `.github/workflows/ci.yml` runs four jobs on push/PR — lint (ruff + black --check
+  + mypy), tests + coverage on SQLite (90% floor), a PostgreSQL job that runs the suite
+  via `config.settings.test_postgres` to exercise the full-text-search branch in
+  `apps/search/repositories.py`, and a Vite frontend build.
 
 ## Project structure (as built)
 
@@ -58,11 +67,50 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     `post_migrate` (`apps/accounts/signals.py`); the map may reference permissions
     from models that don't exist yet (they're assigned once those phases land).
     Auth/social login via django-allauth, mounted at `/accounts/`.
+    **Public author pages + self-service profile (F10):** the User carries
+    `avatar`/`bio`/`website`; `User.get_absolute_url()` → `/authors/<id>/`, a public
+    (i18n) archive (`AuthorDetailView` → `accounts.services` →
+    `PostRepository.published_by_author`) showing bio/avatar/website + the author's
+    published posts. It is gated to users with ≥1 published post so subscriber
+    accounts can't be enumerated, and **never renders email**. It emits
+    `ProfilePage`+`Person` JSON-LD (`seo.jsonld.profilepage_schema`, the `"profile"`
+    branch of `seo_jsonld`). `/account/` (`ProfileUpdateView`, LoginRequired) is the
+    self-service editor (name/bio/website/avatar) — `accounts/urls.py` is mounted in
+    `i18n_patterns` with namespace `accounts` (`accounts:author_detail`,
+    `accounts:profile`); the public header shows an "Account" link when signed in.
   - `apps.content` — posts, pages, categories (hierarchical), tags, and per-type
     revisions. Rich-text bodies are sanitized server-side with nh3 on every save
     (`apps/content/utils.py`); templates render bodies with `|safe` because they
     were cleaned at write time — keep it that way. `publish_post` is a custom
     permission; published querysets via `Model.objects.published()`.
+    **Soft-delete (F6):** Post + Page mix in `SoftDeleteModel` (`deleted_at` +
+    `trash()`/`restore()`/`is_trashed`) and use `SoftDeleteManager`, whose default
+    `get_queryset()` hides trashed rows — so EVERY existing public/admin/search/
+    sitemap/feed query excludes trash with no change; trash views opt back in via
+    `Model.objects.with_trashed()`/`only_trashed()`. The dashboard "delete" now
+    trashes; a Trash list offers restore + permanent-delete (gated on
+    `delete_post`/`delete_page`, owner-scoped through `editable_by`). `trash()`/
+    `restore()` persist only `deleted_at` via `update_fields`, so the heavy `save()`
+    override and the revision-snapshot signal stay no-ops. **Likes (F6):** `Like`
+    (post+user, unique together) is a toggle (create = like, delete = unlike) via
+    `content:post_like` (login-required; guests redirect to login); the post-detail
+    like button is `aria-pressed`-driven and degrades without JS (plain POST form).
+    **Revision restore (F7):** snapshots already accrue via `content/signals.py`;
+    the dashboard adds a shared revisions page (`dashboard/revisions.html`) with a
+    per-language history list, a `difflib` line diff (revision vs current) and a
+    restore action. Restore is a model transition (`Post/Page.restore_revision`,
+    keeping the service ORM-free); saving re-snapshots so history is preserved, not
+    rewritten. Owner-scoped (posts via `editable_by`), gated on `change_post`/
+    `change_page`; reachable from a "Revision history" link in each editor.
+    **Scheduled publishing (F8):** `SchedulableMixin` adds `scheduled_at` +
+    `is_scheduled` + a `publish_scheduled()` transition to Post/Page/Service. A
+    scheduled item stays DRAFT (invisible publicly) until its time; the
+    `publish_scheduled` management command (run from cron) calls
+    `content.services.publish_scheduled_content()`, which flips each
+    `Model.objects.due_for_publish()` item via its own transition (no ORM in the
+    service) and stamps the scheduled time as `published_at`. The dashboard forms
+    expose a datetime-local `scheduled_at` (posts gate it on `can_publish`, like
+    status); the post list shows a "Scheduled · <time>" badge.
     **Multilingual (Phase 8.1, django-parler):** translated fields live on a
     per-model translation table — Post(title/excerpt/body), Page(title/body),
     Category(name/description), Tag(name). `slug`/`status`/`published_at`/`author`/
@@ -85,7 +133,18 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     and a Pillow thumbnail (built on first save). Uploads validated in `forms.py`
     (allowed types in `constants.py`; SVG rejected as an XSS vector). Browse/upload/
     delete views are permission-gated (`media.*_mediaasset`). Files served at
-    `/media/` (Django in dev, web server in prod).
+    `/media/` (Django in dev, web server in prod). **In-editor picker (F11):** the
+    post/page/service editors mix in `MediaPickerContextMixin`, which feeds recent
+    library images (`MediaRepository.images`) to a focus-trapped Alpine modal
+    (`dashboard/_media_picker.html`) — shown only to users with
+    `media.view_mediaasset`. Picking an image inserts `<img src alt>` into Trix via
+    `window.cmstackInsertImage` (`frontend/src/admin.js`); nh3 keeps `img` on save.
+    **Swappable storage (F11):** `config.storages.build_storages(env)` builds Django
+    `STORAGES` — local disk by default, or an S3-compatible bucket when
+    `USE_S3_MEDIA=1` (`storages.backends.s3.S3Storage`; `endpoint_url` covers
+    MinIO/R2). Every `FileField`/`ImageField` (media, avatars, OG/featured images)
+    follows the `default` storage, so the swap needs no model change. Optional dep
+    `django-storages[s3]` is in `requirements/prod.txt`.
   - `apps.dashboard` — the custom admin panel (own UI, NOT the
     Django admin), mounted at `/dashboard/`. Every view extends `AdminAccessMixin`
     (login + `accounts.access_admin`) plus a per-view permission tuple. Posts use
@@ -190,6 +249,73 @@ active_theme`, changed under Dashboard → Appearance (`manage_settings`). The
     `INSTALLED_APPS`; the public site key is rendered client-side, the private key stays
     server-side. Empty defaults are NOT the library's built-in test keys, so `manage.py
 check` stays clean (0 silenced) — no `SILENCED_SYSTEM_CHECKS` needed.
+  - `apps.menus` — managed navigation (F9). `Menu` (referenced by `slug`) +
+    `MenuItem` (links a Post/Page/Category or a custom URL; `get_url()`/`get_label()`
+    resolve the target). **Arbitrary-depth nesting:** `MenuItem.parent` (self-FK) to
+    ANY depth; `menus.services.get_menu_items(slug)` → render-ready recursive **tree**
+    `[{label,url,children}]` (children always present, possibly empty) assembled in
+    Python from ONE flat fetch (`MenuRepository.flat_for_tree`) + translations
+    prefetch, so there's **no N+1 at any depth**. The `{% menu_items "slug" as items %}`
+    tag (`menus/templatetags/menu_tags.py`) exposes it. The shared `_site_header.html`
+    (`primary`) renders **accessible recursive flyout dropdowns** (`_menu_node.html` +
+    the `.nav-group`/`.nav-submenu` raw-CSS primitive in `styles.css`: reveals on hover
+    AND `:focus-within`, works with **no JS**, `aria-haspopup` + `role=menu`); the
+    mobile drawer indents the tree; `_site_footer.html` (`footer`) flattens it. Both
+    fall back to built-in links when no managed menu exists. **Per-locale labels:**
+    `MenuItem.label` is a **parler translated field** (like Post/Page/etc.);
+    `get_label()` resolves active-language label → any translated label → linked
+    object's translated title → custom URL. The admin builder (dashboard,
+    manage_settings-gated): create/delete menus, add/edit/delete items with a parent
+    select scoped to the menu and **cycle-protected** (never self or a descendant —
+    enforced in the queryset via `MenuItemRepository.descendant_ids`/`eligible_parents`
+    AND re-checked in `clean()`), a depth-indented tree manage view, and reorder within
+    a sibling group two ways: **drag-and-drop** (SortableJS progressive enhancement in
+    `admin.js` → JSON `MenuItemReorderView` → `repository.reorder`) with the
+    keyboard-accessible up/down `position`-swap POST as the **no-JS fallback**. The item
+    form edits labels one language at a time via `?language=` tabs
+    (`DashboardTranslatableFormMixin`). (Full F9 scope is delivered — REFACTOR_PLAN §7.)
+  - `apps.api` — public REST API (DRF, F12) at `/api/v1/` (outside i18n). ReadOnly
+    viewsets for posts/pages/services/categories/tags (published-only, parler-aware
+    serializers, `?lang=` override, list/detail split); the post viewset also takes
+    gated writes (`ModelViewSet`): `Token`+`Session`+`OAuth2Authentication`,
+    `DjangoModelPermissionsOrAnonReadOnly` (anon read, model-perm-gated write),
+    owner-scoped writes, publish gated server-side via `gate_publish_state`.
+    Persistence runs through `content.services.api_create_post/api_update_post` →
+    repository (no ORM in viewsets/serializers). `manage.py create_api_token <user>`
+    mints tokens. `/health/` (liveness) + `/health/ready/` (DB probe) live here too.
+    **OAuth 2.1 (F12, django-oauth-toolkit):** an OAuth2 provider (PKCE required,
+    `read`/`write` scopes) is mounted at `/oauth/` (authorize/token/revoke, outside
+    i18n); `OAuth2Authentication` is added to the API + MCP auth floor ALONGSIDE
+    token+session (NOT replacing them). OAuth is **authentication only** — the existing
+    permissions/owner-scoping/per-tool re-verification still gate everything (no authz
+    bypass, adversarially verified). The API write surface adds an additive
+    `OAuth2ReadWriteScopeFloor` (only bites OAuth requests; token/session pass through).
+    `manage.py create_oauth_app <user>` mints a local client (secret shown once, hashed
+    at rest). `oauth2_provider` is in `INSTALLED_APPS`; `oauth2_provider.*` is untyped
+    for mypy but covered by the global `ignore_missing_imports`.
+  - `apps.mcp` — MCP server (F12). `tools.py` is a registry of 13 management tools
+    (posts CRUD+publish, pages/categories/tags/media/users lists, comments.moderate,
+    settings.get); each declares the permission(s) it needs **and a `write` flag** (the
+    5 state-mutating tools are `write=True`). The executor (`services.call_tool`)
+    **re-verifies the permissions server-side** against the calling user before
+    delegating to the existing app services/repositories (same rules as the UI).
+    **Three transports, one registry + authz:** `POST /api/mcp/` (`tools/list`+
+    `tools/call` JSON) and `GET /api/mcp/sse` (`text/event-stream` — emits
+    `tools/list` on connect and a `tools/call` result event for `?name=&arguments=`;
+    anonymous rejected) share the HTTP auth floor (`Token`+`Session`+`OAuth2`,
+    `IsAuthenticated`); plus **stdio** — `manage.py mcp_stdio --user <name>` speaks
+    line-delimited JSON-RPC 2.0 (`initialize`/`ping`/`tools/list`/`tools/call`) over
+    stdin/stdout for local desktop clients. The stdio dispatch is an I/O-free service
+    (`services.handle_jsonrpc(user, request)`); the command is a thin stdin/stdout
+    loop that runs every tool as the named user, so `call_tool`'s per-tool re-check is
+    the authorization (local trust + that user's perms; no bearer token → not
+    scope-gated). **OAuth
+    scope is per-TOOL, not HTTP-method** (MCP writes ride POST/GET): when the caller is
+    OAuth-authenticated, `call_tool`/`stream_events` deny a `write` tool unless the
+    token carries the `write` scope (an empty-scope token is also denied — gating keys
+    off `OAuth2Authentication`, not scope-truthiness); token/session auth is never
+    scope-gated. (Full F12 scope delivered — REFACTOR_PLAN §7; a stdio transport is the
+    only remaining deliberate omission.)
   - `apps.search` — public site search over published Posts and Pages (Phase 9.2).
     `services.search_content(query, language_code)` is the single entry point: it
     searches the translated title/body (+ Post excerpt) of the **active language's**
@@ -215,11 +341,17 @@ rules, NOT `@layer`, unless they include their own `@tailwind` directives.
 
 - `frontend/` — Vite + Tailwind + Alpine source; builds to `frontend/dist`
   (with `.vite/manifest.json`), wired into templates via `django-vite`.
-  **Type system (Phase 10.1):** self-hosted variable fonts via Fontsource
-  (`@fontsource-variable/space-grotesk` = `font-display`, `geist` = `font-sans`,
-  `geist-mono` = `font-mono`), imported in `src/main.js`, bundled by Vite (no CDN),
-  `font-display: swap`. Tailwind `fontFamily` maps the three; `h1–h4` get
-  `font-display` via `@layer base`. **Motion:** a self-contained scroll-reveal
+  **Type system (DESIGN_SYSTEM convergence):** self-hosted variable fonts via
+  Fontsource (`@fontsource-variable/newsreader` = `font-display` serif for
+  headings/prose, `inter` = `font-sans` UI body, `geist-mono` = `font-mono`),
+  imported in `src/main.js`, bundled by Vite (no CDN), `font-display: swap`.
+  Tailwind `fontFamily` maps the three; `h1–h4` + `.dp-prose` get `font-display`.
+  **Design tokens:** the full semantic set (`--bg`/`--surface`/`--surface-2`/
+  `--text`/`--text-muted`/`--text-subtle`/`--primary`/`--accent`/`--border`/
+  `--ring`/state colors) lives on `:root` (light) and `.dark` in `styles.css`,
+  bridged into Tailwind (`bg-surface`, `text-muted`, `border-border`, …);
+  `darkMode:"class"`. Legacy `paper`/`ink`/`accent` utilities are aliased onto the
+  new tokens during the UI migration. Themes re-scope tokens via `_theme_palette.html`. **Motion:** a self-contained scroll-reveal
   primitive — add `class="reveal"` to any element and `src/main.js`'s
   IntersectionObserver fades it in once. Robust by construction: the hidden
   start-state is raw CSS (never purged) gated on BOTH `html.js` (set by main.js)

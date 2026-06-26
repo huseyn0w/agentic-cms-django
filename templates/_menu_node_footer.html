@@ -1,0 +1,11 @@
+{% comment %}
+  Recursive footer rendering (F9). Footers are flat: every node — at any depth —
+  renders as an inline sibling link, so the whole tree is reachable. `node` =
+  {label,url,children}.
+
+  Usage: {% include "_menu_node_footer.html" with node=item %}
+{% endcomment %}
+<a class="transition-colors hover:text-text" href="{{ node.url }}">{{ node.label }}</a>
+{% for child in node.children %}
+  {% include "_menu_node_footer.html" with node=child %}
+{% endfor %}

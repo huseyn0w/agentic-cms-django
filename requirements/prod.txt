@@ -1,1 +1,4 @@
 -r base.txt
+
+# Optional S3-compatible media storage (enable with USE_S3_MEDIA=1). Pulls boto3.
+django-storages[s3]==1.14.4

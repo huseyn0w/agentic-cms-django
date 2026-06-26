@@ -1,33 +1,52 @@
 # Cmstack-Django
 
-An open-source CMS built on Python/Django — lighter, faster, SEO-first,
-and easy to read, understand, and extend.
+An open-source CMS built on Python/Django — lighter, faster, SEO-first, and easy to
+read, understand, and extend. It ships its own admin panel, a swappable theme + plugin
+system, multilingual content, a first-class SEO/GEO layer, a public REST API, and an MCP
+server so you can manage the site from an AI assistant.
 
-> **Status:** Phases 1–7 complete (Foundation, Accounts, Content, Media, Admin, Themes, Plugins).
-> **Phase 8 (SEO/GEO) complete** — multilingual + hreflang, SEO core, JSON-LD, sitemap/robots/llms,
-> and the GEO-optimized Service page type. See the roadmap below.
+> **Status:** feature-complete core. Content, media, the custom admin, themes, plugins,
+> multilingual (en/de), SEO/GEO (JSON-LD, sitemap, robots, `llms.txt`, Service pages),
+> comments, search, menus, soft-delete/trash, revision restore, scheduled publishing,
+> author pages, in-editor media picker, REST API + MCP — all built and tested. CI runs
+> ruff + black + mypy + pytest (with a PostgreSQL full-text-search job) + a Playwright
+> e2e job. Lighthouse ≥ 95 across performance / accessibility / best-practices / SEO.
+
+This is the Django implementation in a family of parallel CMS stacks that share two
+read-only specs: [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md) (capability parity across
+stacks) and [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md) (the shared visual language).
 
 ## Stack
 
 - Python 3.12, Django 5.1
 - PostgreSQL (default; ORM kept DB-agnostic so MySQL works on shared hosting)
 - Tailwind CSS 3 + Alpine.js, bundled with Vite via `django-vite`
-- Rich-text editor: Trix (admin), with all HTML sanitized server-side
-- Auth + social login: django-allauth (username/email login + Google)
-- Multilingual content: django-parler (per-language translation tables, hreflang)
-- Rich-text sanitization: nh3 (server-side, on every save)
-- Tests: pytest + pytest-django · Lint/format: ruff + black · Types: mypy
+- Rich-text editor: Trix (admin), all HTML sanitized server-side with **nh3** on every save
+- Auth + social login: **django-allauth** (username/email login + Google)
+- Multilingual content: **django-parler** (per-language translation tables, hreflang)
+- Public read/write API: **Django REST Framework**; AI management surface: a small **MCP** server
+- Tests: **pytest** + pytest-django + Playwright (e2e) · Lint/format: **ruff** + **black** ·
+  Types: **mypy** (django-stubs)
 - Local infra: Docker + docker compose · Prod: gunicorn + nginx + whitenoise
+
+## Requirements
+
+- Docker + docker compose (the quick path), **or** Python 3.12 + Node 20 + a PostgreSQL you
+  point `DATABASE_URL` at.
 
 ## Quick start (Docker)
 
 ```bash
-cp .env.example .env          # adjust if you like; defaults work out of the box
+cp .env.example .env          # defaults work out of the box
 docker compose up --build
 ```
 
-Then open <http://localhost:8000> — you should see the styled Cmstack-Django landing page.
+Open <http://localhost:8000> — the styled landing page renders the CMS's own recent posts.
 The web container waits for Postgres, runs migrations, and serves the app on port 8000.
+
+```bash
+docker compose exec web python manage.py createsuperuser   # an admin to sign in with
+```
 
 ## Local development (without Docker)
 
@@ -35,369 +54,205 @@ The web container waits for Postgres, runs migrations, and serves the app on por
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements/dev.txt
 
-# Frontend assets (Tailwind + Alpine via Vite)
-cd frontend && npm install && npm run build && cd ..
+cd frontend && npm install && npm run build && cd ..   # Tailwind + Alpine via Vite
 
-# Run against a local Postgres, or export DATABASE_URL
+# point DATABASE_URL at a local Postgres, or export POSTGRES_* (see .env.example)
 python manage.py migrate
 python manage.py runserver
 ```
 
-For live frontend reloads, run the Vite dev server and enable dev mode:
+For live frontend reloads, run the Vite dev server and set `DJANGO_VITE_DEV_MODE=True`:
 
 ```bash
-cd frontend && npm run dev           # serves on :5173 with HMR
-# in .env: DJANGO_VITE_DEV_MODE=True
+cd frontend && npm run dev      # HMR on :5173
 ```
+
+## Architecture
+
+Cmstack-Django is idiomatic Django organized as focused apps (one app = one bounded
+concern). Beyond that it enforces a strict, one-directional layering so views stay thin
+and business logic stays testable:
+
+```
+view → service → repository → manager / QuerySet → model
+                    └── side effects: service → Django signal → receiver
+```
+
+Two non-negotiable rules hold in every app:
+
+1. **Views are the HTTP boundary only.** `apps/*/views.py` contain zero business logic and
+   zero ORM access — they parse the request, call a service, and map the result to a
+   response (status, redirect, template).
+2. **Services never touch the ORM.** `apps/*/services.py` orchestrate use-cases purely
+   through `apps/<app>/repositories.py`; data access lives in repositories, which call
+   model managers / querysets. Side effects (emails, notifications) are emitted as Django
+   signals and handled by receivers, not inlined into the service.
+
+Entity behaviour (invariants, state transitions like `Post.trash()` /
+`Comment.approve()` / `Post.restore_revision()`) lives on the models and is called by
+services — that is domain logic, not "ORM in a service".
+
+**Design patterns — used only where they remove real duplication, never speculatively:**
+
+- **Repository** — every app's data access (`*/repositories.py`).
+- **Service / use-case** — every app's orchestration (`*/services.py`), returning outcome
+  enums where the view needs to branch (e.g. `comments.submit_comment`).
+- **Observer** — Django signals decouple side effects (comment-notification + contact
+  emails) from the services that trigger them (`apps/comments/signals.py`,
+  `apps/core/signals.py`).
+- **Strategy** — search picks a backend at query time (PostgreSQL `SearchVector` vs a
+  DB-agnostic `icontains` fallback); storage swaps local disk ↔ S3 via Django `STORAGES`.
+- **Registry** — themes and plugins are runtime registries resolved per render, so neither
+  needs a restart to switch.
 
 ## Project layout
 
 ```
-config/            # Django project: settings split (base/dev/prod/test), urls, wsgi/asgi
-  settings/
-apps/              # Django apps, one per bounded concern
-  accounts/        # custom User, roles (Groups), permissions, allauth + Google
-  content/         # posts, pages, services, categories, tags, revisions, sanitization
-  media/           # media library: uploads, validation, thumbnails
-  dashboard/       # custom admin panel (own UI)
+config/            # Django project: settings split (base/dev/prod/test/test_postgres/test_e2e)
+apps/              # one Django app per bounded concern, each with views/services/repositories
+  accounts/        # custom User, roles (Groups), permissions, allauth + Google, author pages
+  content/         # posts/pages/services, taxonomy, revisions, soft-delete, scheduling, likes
+  media/           # media library: uploads, validation, thumbnails, in-editor picker, storage
+  dashboard/       # the custom admin panel (own UI, not the Django admin)
   themes/          # theme registry + runtime template loader
   plugins/         # hook registry + plugin enable/disable
-  seo/             # SEO/GEO: settings, meta/JSON-LD, sitemap, robots, llms.txt
-  comments/        # threaded, moderated comments on posts
-  search/          # public full-text search over posts and pages
-  core/            # landing page, SiteSettings, shared bits
-themes/            # the themes themselves (default, midnight), each a template set
-plugins/           # the plugins themselves (e.g. reading_time), each a Django app
+  seo/             # SEO/GEO: settings, meta/JSON-LD, sitemap, robots, llms.txt, Service pages
+  comments/        # threaded, moderated comments on posts (+ reCAPTCHA when configured)
+  search/          # public search over published posts/pages (Postgres FTS or fallback)
+  menus/           # managed navigation menus (header/footer)
+  api/             # public REST API (read + gated write) + health probes
+  mcp/             # MCP server — manage the site from an AI assistant
+  core/            # landing page, SiteSettings, contact form, shared bits
+themes/            # the themes themselves (default, midnight) — each a template set
+plugins/           # the plugins themselves (e.g. reading_time) — each a Django app
 frontend/          # Vite + Tailwind + Alpine source (builds to frontend/dist)
-templates/         # project-level base templates
-docker/            # entrypoint and container helpers
+templates/         # project-level base templates + shared shell partials
+tests/e2e/         # Playwright browser journeys (auth, content, SEO, i18n, theme)
 requirements/      # base / dev / prod dependency sets
+.github/workflows/ # CI pipeline
 ```
 
-## Common commands
+## Features
 
-| Task              | Command                                                        |
-| ----------------- | -------------------------------------------------------------- |
-| Dev up            | `docker compose up`                                            |
-| Migrate           | `docker compose exec web python manage.py migrate`             |
-| Create admin user | `docker compose exec web python manage.py createsuperuser`     |
-| Tests             | `docker compose exec web pytest` (or `pytest` in a local venv) |
-| Single test       | `pytest apps/core/tests/test_home.py::test_home_status_ok`     |
-| Lint / format     | `ruff check .` · `black .`                                     |
-| Frontend build    | `cd frontend && npm run build` (watch: `npm run dev`)          |
+**Accounts, roles & permissions.** django-allauth login (username or email, or Google).
+Roles are Django **Groups** synced idempotently from `apps/accounts/roles.py` on every
+`post_migrate`: Administrator, Editor, Author, Contributor, Subscriber. Everything uses
+standard Django permissions, so `has_perm`, `@permission_required`, and
+`PermissionRequiredMixin` all work. Public **author pages** (`/authors/<id>/`, gated to
+published authors, email never rendered, `ProfilePage`/`Person` JSON-LD) and a
+self-service profile editor at `/account/`.
 
-## Accounts, roles & permissions
+**Content.** Posts, pages, hierarchical categories, tags, and per-type revisions. Bodies
+are sanitized with nh3 on every save, so stored HTML is always safe (`|safe` at render is
+deliberate). Soft-delete with trash/restore + permanent-delete; per-language revision
+history with a difflib diff and one-click restore; scheduled (future) publishing via a
+`publish_scheduled` cron command; post likes. Public at `/blog/…`, `/pages/<slug>/`,
+`/services/<slug>/`; drafts 404 for anonymous visitors but preview for editors.
 
-Authentication is handled by [django-allauth](https://docs.allauth.org): users sign in
-with username **or** email and password, or via Google (set `GOOGLE_CLIENT_ID` /
-`GOOGLE_CLIENT_SECRET`). Auth pages live under `/accounts/` (`/accounts/login/`,
-`/accounts/signup/`, …) and use a styled Cmstack-Django layout.
+**Media.** `MediaAsset` stores files + extracted metadata + a Pillow thumbnail; uploads
+are validated (SVG rejected as an XSS vector). An in-editor picker drops library images
+into Trix. Storage is swappable — local disk by default, S3-compatible (MinIO/R2) when
+`USE_S3_MEDIA=1` — with no model change.
 
-Roles are implemented as Django **Groups**, kept in sync by a
-`post_migrate` hook (`apps/accounts/signals.py`) from a single definition in
-`apps/accounts/roles.py`:
+**Admin panel.** A bespoke dashboard at `/dashboard/` (not the Django admin), gated by
+`accounts.access_admin`. Dark-mode toggle (no FOUC), accessible confirm dialogs, toast
+notifications, table bulk actions, breadcrumbs, accessible pagination, and per-language
+editing tabs. Authors/Contributors are scoped to their own posts.
 
-| Role          | Capabilities (grows as later phases add models)                     |
-| ------------- | ------------------------------------------------------------------- |
-| Administrator | All content/media/comment permissions + manage users & settings     |
-| Editor        | All content/media + comment moderation; no user/settings management |
-| Author        | Create / edit / publish own posts, upload media                     |
-| Contributor   | Draft posts only (no publish, no media)                             |
-| Subscriber    | Authenticated reader; default role for new signups                  |
+**Themes & plugins.** Themes live in `themes/<slug>/` and are resolved at runtime by a
+template loader (no restart to switch); a theme recolors the site by overriding CSS-variable
+tokens only — it never forks the shell. Plugins are Django apps registered through a small
+hook registry (`do_action` / `apply_filters` / `render_hook`), toggled at runtime.
 
-Permissions are standard Django permissions, so `user.has_perm(...)`,
-`@permission_required`, and `PermissionRequiredMixin` all work. The sync is idempotent
-and only assigns permissions whose models exist, so the table fills in across phases.
+**SEO / GEO.** A first-class SEO/GEO app: per-content meta + Open Graph/Twitter, JSON-LD
+(`Organization`, `WebSite`, `Article`, `BreadcrumbList`, `Person`, `Service`, `FAQPage`),
+`sitemap.xml` with hreflang alternates, dynamic `robots.txt` with per-bot answer-engine
+policy, and `llms.txt` / `llms-full.txt`. A GEO-optimized **Service** page type pairs a
+definitional summary + Q&A with `Service` + `FAQPage` schema — the format answer engines
+quote.
 
-## Content
+**Comments, search & menus.** Threaded, moderated comments (pending by default; optional
+login-required; invisible reCAPTCHA when keys are set). Public search over published
+posts/pages — PostgreSQL full-text search where available, a DB-agnostic fallback
+elsewhere. Managed header/footer navigation menus with a keyboard-accessible builder.
 
-The `content` app provides the core CMS data model:
+**REST API & MCP.** A DRF read API at `/api/v1/` (published-only, parler-aware, `?lang=`),
+gated post writes (token + model-permission, owner-scoped, publish gated server-side),
+and `/health/` + `/health/ready/` probes. An **MCP** server at `POST /api/mcp/` exposes a
+13-tool registry (posts CRUD + publish, list endpoints, comment moderation, settings) that
+re-verifies each tool's permission server-side — so you can drive the CMS from Claude.
+Mint tokens with `python manage.py create_api_token <user>`.
 
-- **Posts** — title, auto unique slug, author, excerpt, sanitized rich-text body,
-  featured image, draft/published status, categories (M2M) and tags (M2M). Publishing
-  stamps `published_at`; `Post.objects.published()` is the public queryset.
-- **Pages** — standalone, optionally hierarchical (e.g. About, Contact).
-- **Categories** (hierarchical) and **Tags**.
-- **Revisions** — every save of a post/page snapshots a `PostRevision`/`PageRevision`.
+## Commands
 
-**Security:** all rich-text bodies are sanitized server-side with
-[nh3](https://nh3.readthedocs.io) on every save (`apps/content/utils.py`), so stored
-HTML is always safe regardless of what the editor or request sends. Templates render
-the body with `|safe` precisely because it was cleaned at write time.
+| Task               | Command                                                              |
+| ------------------ | ------------------------------------------------------------------- |
+| Dev up             | `docker compose up`                                                  |
+| Migrate            | `docker compose exec web python manage.py migrate`                  |
+| Create admin user  | `docker compose exec web python manage.py createsuperuser`         |
+| Publish scheduled  | `python manage.py publish_scheduled` (run from cron, e.g. minutely) |
+| Mint an API token  | `python manage.py create_api_token <user>`                          |
+| Tests              | `pytest` (or `docker compose exec web pytest`)                       |
+| Single test        | `pytest apps/core/tests/test_home.py::test_home_status_ok`          |
+| Lint / format / types | `ruff check .` · `black .` · `mypy apps config`                  |
+| Frontend build     | `cd frontend && npm run build` (watch: `npm run dev`)               |
 
-Public URLs: `/blog/` (list), `/blog/<slug>/` (post), `/blog/category/<slug>/`,
-`/blog/tag/<slug>/`, `/pages/<slug>/`. Drafts return 404 to anonymous visitors but are
-previewable by users with `content.change_post` / `content.change_page`.
+## Testing
 
-> Content is editable via the interim Django admin (`/admin/`) for now; the bespoke
-> admin panel (dashboard, WYSIWYG editor, media picker, menus, settings)
-> is **Phase 5**. The Django admin here is developer scaffolding, not the final admin UX.
-
-## Media library
-
-The `media` app manages uploads (`apps/media/`):
-
-- **`MediaAsset`** — stores the file plus extracted metadata (MIME type, size, image
-  width/height) and an auto-generated **thumbnail** (Pillow, max 400×400). Metadata and
-  thumbnail are computed on first save.
-- **Upload validation** — allowed types are JPG, PNG, GIF, WebP, PDF, capped at 10 MB.
-  **SVG is rejected by design** (it can carry embedded scripts → stored-XSS risk).
-- **Permission-gated views** — `/library/` (browse grid), `/library/upload/`,
-  `/library/<id>/delete/`, each behind `LoginRequiredMixin` + the matching
-  `media.*_mediaasset` permission. Editors/Admins get full access; Authors can upload but
-  not delete; Contributors have no media access.
-
-Uploaded files live under `MEDIA_ROOT` and are served at `/media/` (by Django in dev, by
-the web server / object storage in production). Interim management is also available in the
-Django admin; the polished picker integrates with the post editor in Phase 5.
-
-## Admin panel
-
-Cmstack-Django ships its own admin (the `dashboard` app) — not the bare
-Django admin — at **`/dashboard/`**, gated by the `accounts.access_admin` capability:
-
-- **Dashboard** — at-a-glance counts and recent posts.
-- **Posts / Pages** — full CRUD with a **Trix** rich-text editor (output sanitized by nh3),
-  slug, excerpt, taxonomy, featured image, and draft/publish. Authors and Contributors are
-  **scoped to their own content**; Contributors can only save drafts (publishing is gated
-  on `content.publish_post`).
-- **Categories / Tags** — manage taxonomy.
-- **Media** — the media library (Phase 4), linked from the admin nav.
-- **Users** — list and assign roles (gated by `accounts.manage_users`).
-- **Settings** — site name, tagline, posts-per-page (gated by `accounts.manage_settings`).
-
-Every view is permission-gated, and the sidebar only shows sections the user may access.
-The legacy Django admin remains at `/admin/` as a superuser fallback.
-
-> **Frontend rebuilds & Docker:** the dev container surfaces the image's built assets
-> through an anonymous volume. After changing anything in `frontend/`, rebuild with
-> `docker compose up -d --build --renew-anon-volumes` (or `docker compose down -v` first)
-> so the new assets are picked up. A fresh `docker compose up --build` always works.
-
-## Themes
-
-The public site is rendered through a **swappable theme** resolved at runtime. A theme is
-a directory under `themes/` with a `theme.json` and an optional `templates/` set that
-overrides any project/app template:
-
-```
-themes/
-  default/   theme.json                      # the base look (no overrides needed)
-  midnight/  theme.json  templates/public_base.html   # a dark recolor
+```bash
+pytest                                    # full unit/integration suite (SQLite, fast)
+pytest --cov=apps --cov-report=term-missing   # with coverage (~96%)
 ```
 
-- A custom template loader (`apps/themes/loaders.py`) is registered ahead of the
-  filesystem/app loaders, so the **active theme's** templates win. Resolution is dynamic,
-  so switching themes takes effect immediately — no restart.
-- The palette is driven by **CSS variables** (`--color-paper/ink/accent`), so a theme can
-  recolor the whole public site just by overriding those variables in its `public_base.html`
-  — which is exactly what `midnight` does.
-- The active theme is stored on `SiteSettings.active_theme` and changed from the admin under
-  **Appearance** (gated by `accounts.manage_settings`).
+End-to-end browser journeys (Playwright) are excluded from the default run. They drive a
+real headless Chromium against a live server serving the built bundle:
 
-To add a theme: create `themes/<slug>/theme.json`, add template overrides under
-`themes/<slug>/templates/`, rebuild the frontend (Tailwind scans `themes/`), and activate it
-in **Dashboard → Appearance**.
+```bash
+playwright install chromium
+cd frontend && npm run build && cd ..
+pytest tests/e2e -m e2e --ds=config.settings.test_e2e
+```
 
-## Plugins
+The PostgreSQL full-text-search branch is only exercised on Postgres; CI runs the suite a
+second time with `--ds=config.settings.test_postgres` against a Postgres service to cover
+it. Lighthouse is measured against a built, Postgres-backed server (home and post detail
+both score ≥ 95 on performance / accessibility / best-practices / SEO).
 
-Cmstack-Django is extended through a small **hook registry** (`apps/plugins/hooks.py`) —
-actions and filters — plus Django's own signals, never arbitrary code
-injection. A plugin is a Django app under `plugins/` that registers hooks in its
-`AppConfig.ready()`:
+## Internationalization
 
-- **Filters** transform a value: `apply_filters("post_content", body, post=...)`.
-- **Actions** run side effects: `do_action("name", ...)`.
-- **Region hooks** inject template HTML: `{% hook "public_footer" %}`.
+`LANGUAGES = en, de`. Translated fields live in per-language parler tables; the slug,
+status, author and taxonomy FKs stay shared, so one record has one stable slug and the URL
+language prefix differentiates languages. Public + core URLs are wrapped in
+`i18n_patterns(prefix_default_language=False)`: the default language keeps clean URLs
+(`/blog/<slug>/`), others are prefixed (`/de/blog/<slug>/`). hreflang alternates and a
+header language switcher are emitted only where the per-language URLs differ. The dashboard
+edits one language at a time via `?language=xx` tabs.
 
-Hooks are ordered by priority and are **plugin-scoped**: a callback's plugin is inferred
-from its module, and callbacks of a disabled plugin are skipped at call time — so plugins
-toggle on/off at runtime (no restart) from **Dashboard → Plugins** (gated by
-`accounts.manage_settings`). Enable state lives on the `Plugin` model.
+## Continuous integration
 
-The bundled example, **`plugins/reading_time`**, registers a `post_content` filter that
-prepends a "☕ N min read" badge to every post. Disable it in the admin and it vanishes.
+`.github/workflows/ci.yml` runs on every push/PR:
 
-To write a plugin: create `plugins/<name>/` with an `apps.py` (an `AppConfig` carrying
-`plugin_description` / `plugin_version` and a `ready()` that imports its `hooks`), add it to
-`INSTALLED_APPS`, and register filters/actions with the `apps.plugins.hooks` helpers.
+- **lint** — `ruff check` + `black --check` + `mypy apps config`
+- **test** — `pytest` + coverage on SQLite (90% floor)
+- **test-postgres** — the suite on PostgreSQL to exercise the full-text-search branch
+- **frontend** — the Vite production build
+- **e2e** — Playwright journeys against a live server with the built bundle
 
-## Internationalization (multilingual content)
+## Deployment
 
-Content is multilingual via [django-parler](https://django-parler.readthedocs.io). Posts,
-pages, categories and tags keep their **text** (title, body, excerpt, name, description) in
-per-language translation tables, while structural fields (slug, status, publish date, author,
-taxonomy) are shared — so each record has **one stable slug** and the URL's language prefix
-selects the language.
+Production runs gunicorn behind nginx with whitenoise serving the collected static +
+built frontend assets. Settings are chosen by `DJANGO_SETTINGS_MODULE`
+(`config.settings.prod` is hardened); all configuration is environment-driven (`.env`,
+documented in `.env.example`) — never commit secrets. Media can stay on local disk or move
+to an S3-compatible bucket (`USE_S3_MEDIA=1`). The ORM is kept DB-agnostic so MySQL works
+for shared hosting.
 
-- **Languages:** configured in `LANGUAGES` (ships with English + German; English is the
-  default). `LANGUAGE_CODE = "en"`.
-- **URLs:** the default language keeps clean URLs (`/blog/<slug>/`); every other language is
-  served under its prefix (`/de/blog/<slug>/`), wired with `i18n_patterns`. The admin,
-  dashboard, auth and media URLs are not language-prefixed.
-- **hreflang:** every public page advertises `rel="alternate" hreflang="…"` links for each
-  language plus `x-default`, and a language switcher in the header — so search and answer
-  engines can discover and serve the right language version.
-- **Editing:** in the dashboard editor a language tab strip (`?language=xx`) lets you write
-  each language's translation independently; missing translations fall back to the default
-  language so a half-translated site still renders. Rich-text is nh3-sanitized per language
-  on every save.
+## Roadmap & parity
 
-To add a language, add it to `LANGUAGES` in the settings and translate content from the
-dashboard — no migration needed (parler stores languages as rows, not columns).
-
-## SEO (on-site)
-
-The `seo` app renders a complete, server-side `<head>` for every public page and lets you
-control it per page and site-wide:
-
-- **Per-content SEO** — each post and page has a meta title and meta description (translated
-  per language), a canonical URL, a “hide from search engines” (noindex) toggle, and a social
-  share image, edited in a collapsible **SEO & sharing** panel in the editor. Title/description
-  fall back to the content's own title/excerpt when left blank.
-- **`<head>` output** — `<title>`, meta description, canonical link, robots directive,
-  Open Graph and Twitter Card tags, `og:locale`, plus site verification and Google
-  Analytics/Tag Manager snippets — all from one `{% seo_head %}` tag. The admin and login
-  pages opt out, so analytics and indexing only apply to the public site.
-- **Site-wide SEO settings** (Dashboard → SEO) — Open Graph defaults and share image, default
-  meta description, Twitter handle, GA/GTM IDs (format-validated), Google/Bing verification
-  tokens, and a **Discourage search engines** switch that applies a site-wide `noindex`
-  (handy for staging).
-
-- **Structured data (JSON-LD)** — every public page carries `Organization` and `WebSite`
-  schema; posts add `Article` (with `Person` author and `Organization` publisher) and a
-  `BreadcrumbList`. This is how answer engines (ChatGPT, Perplexity, Google AI Overviews)
-  extract who you are and what a page is about. Organization identity (logo + social
-  profiles → `sameAs`) is set in Dashboard → SEO. Values are escaped so structured data
-  can't be used to inject markup.
-
-- **Crawler & machine-readable surface** — `/sitemap.xml` (published, non-noindex content
-  with hreflang alternates), a dynamic `/robots.txt` that disallows private areas and carries
-  an explicit **allow/deny policy for answer-engine crawlers** (GPTBot, OAI-SearchBot,
-  ClaudeBot, PerplexityBot, Google-Extended, CCBot, …), toggled by **Allow AI crawlers** in
-  Dashboard → SEO, and `/llms.txt` + `/llms-full.txt` — a concise link index and a full-text
-  dump of the site for LLMs to read directly. The **Discourage search engines** switch turns
-  robots.txt into a site-wide `Disallow: /`.
-
-> In production, set the site's domain (Django “Sites” framework / `SITE_ID`) so `sitemap.xml`
-> emits absolute URLs on your real host (covered in the Phase 12 deployment guide).
-
-- **GEO-optimized Service pages** — a first-class **Service** content type at `/services/`
-  built for the format answer engines quote: a crisp definitional summary, a rich description,
-  citable **pricing** and **area-served** facts, and a **Q&A** block — emitting `Service` and
-  `FAQPage` JSON-LD so assistants can extract what you offer, where, and answer common questions.
-  Managed in Dashboard → Services (multilingual, with its own SEO fields).
-
-## Comments
-
-Posts support **threaded, moderated comments** (`comments` app):
-
-- Visitors comment from the post page; logged-in users comment under their account name,
-  guests provide a name (email optional). Replies thread under their parent.
-- Every comment starts **pending** and only appears publicly once **approved** — moderated
-  in Dashboard → Comments (approve / mark spam / delete), gated by the
-  `comments.moderate_comment` permission (Administrators and Editors by default).
-- Comment bodies are plain text, always rendered escaped (no HTML is interpreted), so
-  comments can't inject markup.
-- Two switches in Dashboard → Settings: **Allow comments** (site-wide) and **Require login
-  to comment**.
-
-**Spam protection (reCAPTCHA v3):** set `RECAPTCHA_PUBLIC_KEY` and `RECAPTCHA_PRIVATE_KEY`
-(both) to enable an invisible reCAPTCHA on the comment form. Leave either blank and the
-captcha is simply not added — the comment flow works exactly as before, so dev and CI need
-no keys. Get keys ("reCAPTCHA v3") at <https://www.google.com/recaptcha/admin>.
-
-## Search
-
-Visitors search published **posts and pages** from the header search box or directly at
-`/search/?q=…` (the `search` app):
-
-- On **PostgreSQL** it uses native full-text search with relevance ranking
-  (`SearchVector` / `SearchQuery` / `SearchRank`); on any other database (MySQL on shared
-  hosting, SQLite) it falls back to a portable `icontains` match — the engine is chosen
-  automatically at query time.
-- Multilingual-aware: it searches the **current language's** translation only, so a German
-  term doesn't surface an English-only article. The results page is language-prefixed like
-  the rest of the public site (`/de/search/`).
-- Results exclude drafts and any content marked **hide from search engines** (`noindex`),
-  matching the sitemap/crawler surface. The list is paginated; the query is reflected
-  safely (autoescaped) and capped in length.
-
-## Configuration
-
-All configuration is via environment variables (see [.env.example](.env.example)); no
-secrets are committed. `DJANGO_SETTINGS_MODULE` selects the settings module
-(`config.settings.dev` or `config.settings.prod`); the test suite always uses
-`config.settings.test` (in-memory SQLite, no external services).
-
-## Roadmap
-
-1. **Foundation** — Docker, Django skeleton, settings split, pytest, ruff/black, Tailwind+Vite ✅
-2. **Accounts** — custom user, roles (Groups), granular permissions, allauth + Google login ✅
-3. **Content** — posts, pages, categories, tags, revisions, server-side sanitized rich text ✅
-4. **Media** — media library, validated uploads, Pillow thumbnails, permission-gated ✅
-5. **Admin panel** — custom dashboard (own UI), Trix editor, ownership scoping ✅
-6. **Themes** — swappable template sets resolved at runtime, CSS-variable palette, admin switcher ✅
-7. **Plugins** — hook registry (actions/filters/regions) + signals, runtime enable/disable, example plugin ✅
-8. **SEO/GEO** ✅ — Open Graph, JSON-LD entity/service schema, sitemap,
-   robots.txt with AI-crawler policy, `llms.txt`, hreflang, multilingual, GEO-optimized
-   page type (see [SEO & GEO](#seo--geo-generative-engine-optimization)).
-   ✅ 8.1 multilingual content (django-parler) + hreflang + language switcher ·
-   ✅ 8.2 SEO core (per-content meta/OG/Twitter, canonical, robots, SEO settings) ·
-   ✅ 8.3 JSON-LD (Organization, WebSite, Article, Person, BreadcrumbList) ·
-   ✅ 8.4 sitemap.xml (hreflang), AI-crawler robots.txt, llms.txt / llms-full.txt ·
-   ✅ 8.5 GEO Service page type (Service + FAQPage schema, Q&A, area/pricing facts)
-9. Comments, search, recaptcha spam protection — ✅ 9.1 threaded moderated comments ·
-   ✅ 9.2 site search (Postgres full-text + `icontains` fallback, multilingual, `/search/`) ·
-   ✅ 9.3 reCAPTCHA v3 spam protection on the comment form (graceful when unset)
-10. Public site rendering + the luxury frontend — 🚧 10.1 design foundation
-    (self-hosted variable-font type system, scroll-reveal motion primitive,
-    palette-only themes so the shell never drifts) · 🚧 10.2 editorial landing page
-    (hero, feature bento, real-content showcase, shared header/footer partials) ·
-    🚧 10.3 blog reading experience (long-form prose typography, editorial index,
-    polished comment thread)
-11. AI integration — MCP server (FastMCP)
-12. Production deployment (VPS + shared hosting) + demo seed data
-
-## SEO & GEO (Generative Engine Optimization)
-
-> **Status: planned for Phase 8.** This section documents the target so it isn't lost.
-
-Cmstack-Django is **SEO-first and GEO-first**: the goal is not only to rank in Google but to
-be **parsed, understood, and cited by AI answer engines** (ChatGPT, Claude, Gemini,
-Perplexity, Google AI Overviews) so that when someone asks an assistant for a service you
-offer, your site is surfaced as a recommendation.
-
-Getting recommended by an AI engine has two halves. Cmstack-Django owns the first; the second
-is strategy/off-site and is supported by tooling, not a single page:
-
-**1. On-site — what Cmstack-Django will build (Phase 8), so every page is AI-ingestible:**
-
-- **AI crawler access** — `robots.txt` that explicitly allows the answer-engine bots
-  (`GPTBot`, `OAI-SearchBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `CCBot`),
-  configurable per site, plus a clean `sitemap.xml`.
-- **`llms.txt` / `llms-full.txt`** — a concise, machine-readable index of the site and its
-  key pages/services that LLMs can read directly (as the reference CMS already did).
-- **Structured data (JSON-LD)** — `Organization`, `LocalBusiness`, `Service`, `Product`,
-  `FAQPage`, `Article`, `BreadcrumbList`, `Person` (author/E-E-A-T). This is how engines
-  extract _which services you provide_ and attach them to your entity.
-- **A GEO-optimized "Service" page type** — a first-class template that pairs a service
-  description with `Service` + `FAQPage` schema, crisp definitional sentences, Q&A blocks,
-  pricing/area-served fields, and citable facts — the format answer engines quote verbatim.
-- **Semantic, fast, server-rendered HTML** — correct heading hierarchy, canonical URLs,
-  Open Graph/Twitter cards, hreflang for multilingual, and quick first-byte (no JS needed
-  to read content), because engines reward extractable, fast pages.
-- **Citable content patterns** — clear answers near the top, stats, FAQs, last-updated
-  dates, and author identity to build the trust signals engines weigh.
-
-**2. Off-site — what actually earns the recommendation (strategy, not a page):**
-
-AI engines recommend brands they encounter repeatedly on sources they trust (reviews,
-directories, comparison articles, Reddit/forums, reputable publications). On-site GEO makes
-you _eligible and quotable_; visibility comes from being cited across the open web for your
-service + location. This is a content-and-outreach program, measured by checking whether the
-assistants actually cite you — handled by a dedicated **SEO/GEO strategy** workflow that
-audits a specific live site, measures baseline AI visibility, and returns a prioritized plan.
+Capability parity with the reference CMS and the sibling stacks is tracked in
+[`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md); the shared visual language is
+[`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md). The reference implementation (Laravel) is
+[Laravella-CMS](https://github.com/huseyn0w/Laravella-CMS).
 
 ## License
 
