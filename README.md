@@ -31,20 +31,44 @@ stacks) and [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md) (the shared visual lang
 
 ## Requirements
 
-- Docker + docker compose (the quick path), **or** Python 3.12 + Node 20 + a PostgreSQL you
-  point `DATABASE_URL` at.
+- Docker + docker compose. GNU Make (preinstalled on macOS/Linux) drives the one-command
+  `make dev` flow below.
+- Or fully local: Python 3.12 + Node 20 + a PostgreSQL you point `DATABASE_URL` at.
 
-## Quick start (Docker)
+## Quick start (`make`)
+
+One command builds and starts the stack (the container entrypoint waits for
+Postgres and applies migrations on boot), creates a local admin, and follows the logs:
 
 ```bash
-cp .env.example .env          # defaults work out of the box
-docker compose up --build
+cp .env.example .env   # defaults work out of the box
+make dev               # build + start (auto-migrates) + create admin, then tail logs
 ```
 
 Open <http://localhost:8000> — the styled landing page renders the CMS's own recent posts.
-The web container waits for Postgres, runs migrations, and serves the app on port 8000.
+Sign in at `/dashboard/` with the admin `make dev` created
+(`admin` / `admin12345`; override via `make superuser SU_USER=… SU_PASS=…`).
+
+Run `make help` to list every target. The common ones:
+
+| Target | What it does |
+| --- | --- |
+| `make dev` | One-command local dev: build + start (auto-migrates), create admin, follow logs |
+| `make up` | Build and start the stack (entrypoint runs migrations) |
+| `make superuser` | Create an idempotent local admin |
+| `make migrate` | Apply migrations manually |
+| `make shell` | Open a shell in the web container |
+| `make test` | Run the test suite (`pytest`) |
+| `make down` | Stop the containers (keeps the DB volume) |
+| `make reset` | Wipe the DB volume and re-bootstrap from scratch |
+
+## Quick start (Docker, manual)
+
+Prefer raw commands? The equivalent without `make`:
 
 ```bash
+cp .env.example .env          # defaults work out of the box
+docker compose up --build     # waits for Postgres, migrates, serves on :8000
 docker compose exec web python manage.py createsuperuser   # an admin to sign in with
 ```
 
@@ -66,6 +90,11 @@ For live frontend reloads, run the Vite dev server and set `DJANGO_VITE_DEV_MODE
 ```bash
 cd frontend && npm run dev      # HMR on :5173
 ```
+
+> **Ports.** This repo lives beside sibling `cmstack-*` stacks. Host ports are
+> deduplicated so they can all run at once — this stack uses **web 8000 / postgres 5433**,
+> overridable via `WEB_PORT` / `DB_PORT` in `.env`. See [`../PORTS.md`](../PORTS.md) for the
+> cross-stack allocation.
 
 ## Architecture
 
