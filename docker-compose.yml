@@ -5,6 +5,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-cmstack_django}
       POSTGRES_USER: ${POSTGRES_USER:-cmstack_django}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cmstack_django}
+    # Host port 5433 keeps this Postgres off cmstack-ts's 5432 (see ../PORTS.md);
+    # the in-container port stays 5432 (the web service connects via POSTGRES_HOST=db).
+    ports:
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -37,7 +41,7 @@ services:
       # Keep the image's built assets; don't let the bind mount hide them.
       - /app/frontend/dist
     ports:
-      - "8000:8000"
+      - "${WEB_PORT:-8000}:8000"
     depends_on:
       db:
         condition: service_healthy
