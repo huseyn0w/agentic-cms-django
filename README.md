@@ -60,6 +60,7 @@ Run `make help` to list every target. The common ones:
 | `make shell` | Open a shell in the web container |
 | `make test` | Run the test suite (`pytest`) |
 | `make down` | Stop the containers (keeps the DB volume) |
+| `make kill` | Release the stack's host port (:8000) — downs its own containers and warns on a foreign holder; runs automatically before `make up`/`make dev` |
 | `make reset` | Wipe the DB volume and re-bootstrap from scratch |
 
 ## Quick start (Docker, manual)

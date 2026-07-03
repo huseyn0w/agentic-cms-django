@@ -27,6 +27,7 @@ urlpatterns = [
     ),
     # Pages
     path("pages/", views.PageListView.as_view(), name="page_list"),
+    path("pages/bulk/", views.PageBulkActionView.as_view(), name="page_bulk_action"),
     path("pages/trash/", views.PageTrashListView.as_view(), name="page_trash"),
     path("pages/new/", views.PageCreateView.as_view(), name="page_create"),
     path("pages/<int:pk>/edit/", views.PageUpdateView.as_view(), name="page_edit"),
@@ -50,16 +51,19 @@ urlpatterns = [
     path("services/<int:pk>/delete/", views.ServiceDeleteView.as_view(), name="service_delete"),
     # Categories
     path("categories/", views.CategoryListView.as_view(), name="category_list"),
+    path("categories/bulk/", views.CategoryBulkActionView.as_view(), name="category_bulk_action"),
     path("categories/new/", views.CategoryCreateView.as_view(), name="category_create"),
     path("categories/<int:pk>/edit/", views.CategoryUpdateView.as_view(), name="category_edit"),
     path("categories/<int:pk>/delete/", views.CategoryDeleteView.as_view(), name="category_delete"),
     # Tags
     path("tags/", views.TagListView.as_view(), name="tag_list"),
+    path("tags/bulk/", views.TagBulkActionView.as_view(), name="tag_bulk_action"),
     path("tags/new/", views.TagCreateView.as_view(), name="tag_create"),
     path("tags/<int:pk>/edit/", views.TagUpdateView.as_view(), name="tag_edit"),
     path("tags/<int:pk>/delete/", views.TagDeleteView.as_view(), name="tag_delete"),
     # Users
     path("users/", views.UserListView.as_view(), name="user_list"),
+    path("users/bulk/", views.UserBulkActionView.as_view(), name="user_bulk_action"),
     path("users/<int:pk>/edit/", views.UserUpdateView.as_view(), name="user_edit"),
     # Appearance / themes
     path("appearance/", views.ThemeListView.as_view(), name="themes"),
@@ -97,6 +101,7 @@ urlpatterns = [
     ),
     # Comments (moderation)
     path("comments/", views.CommentListView.as_view(), name="comment_list"),
+    path("comments/bulk/", views.CommentBulkActionView.as_view(), name="comment_bulk_action"),
     path(
         "comments/<int:pk>/<str:action>/",
         views.CommentModerateView.as_view(),

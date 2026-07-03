@@ -5,12 +5,12 @@
 {% block main %}
 <div class="mb-10 flex items-end justify-between">
   <div>
-    <h1 class="text-3xl font-semibold tracking-tight text-ink">Media library</h1>
-    <p class="mt-2 text-sm text-ink/60">{{ paginator.count }} item{{ paginator.count|pluralize }}</p>
+    <h1 class="text-3xl font-semibold tracking-tight text-text">Media library</h1>
+    <p class="mt-2 text-sm text-text-muted">{{ paginator.count }} item{{ paginator.count|pluralize }}</p>
   </div>
   {% if perms.media.add_mediaasset %}
     <a href="{% url 'media:upload' %}"
-       class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform duration-200 hover:-translate-y-0.5">
+       class="dp-btn dp-btn-primary">
       Upload
     </a>
   {% endif %}
@@ -18,40 +18,40 @@
 
 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
   {% for asset in assets %}
-    <figure class="group overflow-hidden rounded-xl border border-ink/10 bg-surface" data-testid="media-asset">
-      <div class="flex aspect-square items-center justify-center bg-paper">
+    <figure class="group overflow-hidden rounded-xl border border-border bg-surface" data-testid="media-asset">
+      <div class="flex aspect-square items-center justify-center bg-bg">
         {% if asset.thumbnail %}
           <img src="{{ asset.thumbnail.url }}" alt="{{ asset.alt_text }}"
                class="h-full w-full object-cover" loading="lazy" />
         {% else %}
-          <span class="px-2 text-center text-xs uppercase tracking-wide text-ink/40">
+          <span class="px-2 text-center text-xs uppercase tracking-wide text-text-subtle">
             {{ asset.extension|default:"file" }}
           </span>
         {% endif %}
       </div>
-      <figcaption class="flex items-center justify-between gap-2 px-3 py-2 text-xs text-ink/60">
+      <figcaption class="flex items-center justify-between gap-2 px-3 py-2 text-xs text-text-muted">
         <span class="truncate">{{ asset }}</span>
         {% if perms.media.delete_mediaasset %}
           <form method="post" action="{% url 'media:delete' asset.pk %}">
             {% csrf_token %}
-            <button type="submit" class="text-ink/30 transition-colors hover:text-accent" title="Delete">✕</button>
+            <button type="submit" class="text-text-subtle transition-colors hover:text-primary" title="Delete">✕</button>
           </form>
         {% endif %}
       </figcaption>
     </figure>
   {% empty %}
-    <p class="col-span-full text-ink/60">No media yet. Upload your first file.</p>
+    <p class="col-span-full text-text-muted">No media yet. Upload your first file.</p>
   {% endfor %}
 </div>
 
 {% if is_paginated %}
-  <nav class="mt-12 flex items-center justify-between text-sm text-ink/60">
+  <nav class="mt-12 flex items-center justify-between text-sm text-text-muted">
     {% if page_obj.has_previous %}
-      <a class="hover:text-ink" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+      <a class="hover:text-text" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
     {% else %}<span></span>{% endif %}
     <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-      <a class="hover:text-ink" href="?page={{ page_obj.next_page_number }}">Next →</a>
+      <a class="hover:text-text" href="?page={{ page_obj.next_page_number }}">Next →</a>
     {% else %}<span></span>{% endif %}
   </nav>
 {% endif %}

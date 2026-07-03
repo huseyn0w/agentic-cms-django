@@ -28,9 +28,36 @@
   --error: 180 39 31;
   --error-bg: 247 231 229;
 
+  /* Radius tokens (DESIGN_SYSTEM §4). */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
   /* Motion (DESIGN_SYSTEM §6). Strong ease-out-expo. */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+
+  /* Spacing scale — 4px base (DESIGN_SYSTEM §4). */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Container widths (DESIGN_SYSTEM §4). */
+  --container-prose: 720px;
+  --container-content: 1080px;
+  --container-wide: 1280px;
 
   /* Back-compat aliases for the (few) places that still read the old var names
      and for theme palette files that set --color-*. Mapped to the new tokens. */
@@ -74,12 +101,16 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Headlines carry the display grotesk; body inherits Geist (Tailwind sans). */
+  /* h1–h3 carry the display serif (Newsreader); h4 uses the sans/UI font (Inter)
+     at weight 600 per DESIGN_SYSTEM §3. */
   h1,
   h2,
-  h3,
-  h4 {
+  h3 {
     @apply font-display;
+  }
+
+  h4 {
+    @apply font-sans font-semibold;
   }
 }
 
@@ -94,8 +125,8 @@
     opacity: 0;
     transform: translateY(1.25rem);
     transition:
-      opacity 0.7s var(--ease-out),
-      transform 0.7s var(--ease-out);
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
   }
 
   html.js .reveal.is-visible {
@@ -160,10 +191,10 @@
   @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium;
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
   transition:
-    transform 120ms var(--ease-out),
-    background-color 120ms var(--ease-out),
-    color 120ms var(--ease-out),
-    border-color 120ms var(--ease-out);
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
 }
 
 .dp-btn:active {
@@ -250,6 +281,8 @@
 .dp-prose {
   /* Article body uses the editorial serif (Newsreader) per DESIGN_SYSTEM §3. */
   @apply font-display text-lg leading-relaxed text-text-muted;
+  /* Max measure: 68ch per DESIGN_SYSTEM §3 (prose). */
+  max-width: 68ch;
 }
 .dp-prose > * + * {
   margin-top: 1.4em;

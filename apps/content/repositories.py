@@ -9,7 +9,7 @@ one place. Raising ``Http404`` here is a not-found signal, not business logic.
 
 from __future__ import annotations
 
-from django.db.models import Count, QuerySet
+from django.db.models import Count, Q, QuerySet
 from django.shortcuts import get_object_or_404
 
 from .models import Category, Like, Page, Post, Service, Tag
@@ -52,6 +52,27 @@ class PostRepository:
         return get_object_or_404(
             Post.objects.select_related("author").prefetch_related("categories", "tags"),
             slug=slug,
+        )
+
+    @staticmethod
+    def related_by_taxonomy(post: Post, limit: int = 4) -> QuerySet:
+        """Published posts sharing a category or tag with ``post``, capped.
+
+        Excludes ``post`` itself; de-duplicates a post that shares BOTH a category
+        and a tag (the taxonomy join can fan out) with ``distinct()``; newest
+        first (``published()`` already orders by publish date). Only published,
+        non-trashed posts are considered (the default manager hides trash). Reads
+        the FK ids off the instance to avoid an extra query per relation.
+        """
+        category_ids = list(post.categories.values_list("pk", flat=True))
+        tag_ids = list(post.tags.values_list("pk", flat=True))
+        if not category_ids and not tag_ids:
+            return Post.objects.none()
+        return (
+            PostRepository.published()
+            .filter(Q(categories__in=category_ids) | Q(tags__in=tag_ids))
+            .exclude(pk=post.pk)
+            .distinct()[:limit]
         )
 
     # -- Dashboard (admin) queries -- #
@@ -200,6 +221,11 @@ class PageRepository:
         page.delete()
 
     @staticmethod
+    def live_among(ids) -> QuerySet:
+        """Live (non-trashed) pages among ``ids`` (default manager hides trash)."""
+        return Page.objects.filter(pk__in=ids)
+
+    @staticmethod
     def due_for_publish() -> QuerySet:
         return Page.objects.due_for_publish()
 
@@ -243,6 +269,18 @@ class CategoryRepository:
             .order_by("slug")
         )
 
+    @staticmethod
+    def delete_among(ids) -> int:
+        """Hard-delete categories among ``ids``; return how many categories removed.
+
+        Counts the categories themselves before deleting (``delete()`` returns a
+        total that also includes cascaded M2M rows, which we don't want to report).
+        """
+        qs = Category.objects.filter(pk__in=ids)
+        count = qs.count()
+        qs.delete()
+        return count
+
 
 class TagRepository:
     @staticmethod
@@ -252,6 +290,14 @@ class TagRepository:
     @staticmethod
     def with_post_counts() -> QuerySet:
         return Tag.objects.annotate(post_count=Count("posts")).order_by("slug")
+
+    @staticmethod
+    def delete_among(ids) -> int:
+        """Hard-delete tags among ``ids``; return how many tags were removed."""
+        qs = Tag.objects.filter(pk__in=ids)
+        count = qs.count()
+        qs.delete()
+        return count
 
 
 class RevisionRepository:

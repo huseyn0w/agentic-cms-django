@@ -116,6 +116,21 @@ def seo_head(context, obj=None, og_type: str = "website"):
     if not og_image and seo.default_og_image:
         og_image = _abs(request, seo.default_og_image.url)
 
+    # article:published_time and article:author — only on article pages.
+    article_published_time = ""
+    article_author = ""
+    if og_type == "article" and obj is not None:
+        pub = getattr(obj, "published_at", None) or getattr(obj, "created_at", None)
+        if pub:
+            article_published_time = pub.isoformat()
+        author = getattr(obj, "author", None)
+        if author is not None:
+            author_url = getattr(author, "get_absolute_url", None)
+            if author_url is not None:
+                article_author = _abs(request, author_url())
+            else:
+                article_author = getattr(author, "display_name", "") or str(author)
+
     return {
         "seo": seo,
         "og_type": og_type,
@@ -126,4 +141,6 @@ def seo_head(context, obj=None, og_type: str = "website"):
         "seo_og_image": og_image,
         "seo_site_name": site_name,
         "seo_locale": context.get("i18n_current_language", ""),
+        "seo_article_published_time": article_published_time,
+        "seo_article_author": article_author,
     }

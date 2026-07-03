@@ -48,3 +48,8 @@ class CommentRepository:
     @staticmethod
     def pending_count() -> int:
         return Comment.objects.pending().count()
+
+    @staticmethod
+    def among(ids) -> QuerySet:
+        """Comments among ``ids`` (for bulk moderation)."""
+        return Comment.objects.filter(pk__in=ids)

@@ -7,29 +7,65 @@
        class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">New category</a>
   {% endif %}
 </div>
-<div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
-  <table class="w-full text-sm">
-    <thead class="border-b border-ink/10 text-left text-xs uppercase tracking-wide text-ink/40">
-      <tr><th class="px-5 py-3 font-medium">Name</th><th class="px-5 py-3 font-medium">Parent</th><th class="px-5 py-3 font-medium">Posts</th><th class="px-5 py-3"></th></tr>
-    </thead>
-    <tbody>
-      {% for category in categories %}
-        <tr class="border-b border-ink/5 last:border-0">
-          <td class="px-5 py-3"><a href="{% url 'dashboard:category_edit' category.pk %}" class="font-medium text-ink hover:text-accent">{{ category.name }}</a></td>
-          <td class="px-5 py-3 text-ink/60">{{ category.parent.name|default:"—" }}</td>
-          <td class="px-5 py-3 text-ink/50">{{ category.post_count }}</td>
-          <td class="px-5 py-3 text-right">
-            {% if perms.content.delete_category %}
-              <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" data-dp-confirm="Delete this category?">
-                {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
-              </form>
-            {% endif %}
-          </td>
+
+<div
+  {% if perms.content.delete_category %}x-data="{ selected: [], allIds: [{% for category in categories %}{{ category.pk }}{% if not forloop.last %}, {% endif %}{% endfor %}] }"{% endif %}
+>
+  {% if perms.content.delete_category %}
+    <div x-cloak x-show="selected.length" x-transition
+         class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
+         role="region" aria-label="Bulk actions">
+      <span><span x-text="selected.length"></span> selected</span>
+      <form method="post" action="{% url 'dashboard:category_bulk_action' %}" data-dp-confirm="Delete the selected categories? This can't be undone.">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+        <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
+        <button type="submit" class="dp-btn dp-btn-ghost">Delete</button>
+      </form>
+    </div>
+  {% endif %}
+
+  <div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
+    <table class="w-full text-sm">
+      <thead class="border-b border-ink/10 text-left text-xs uppercase tracking-wide text-ink/40">
+        <tr>
+          {% if perms.content.delete_category %}
+            <th class="w-10 px-5 py-3">
+              <input type="checkbox" aria-label="Select all categories"
+                     @change="selected = $event.target.checked ? allIds.slice() : []"
+                     :checked="selected.length === allIds.length && allIds.length"
+                     class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
+            </th>
+          {% endif %}
+          <th class="px-5 py-3 font-medium">Name</th><th class="px-5 py-3 font-medium">Parent</th><th class="px-5 py-3 font-medium">Posts</th><th class="px-5 py-3"></th>
         </tr>
-      {% empty %}
-        <tr><td colspan="4" class="px-5 py-8 text-center text-ink/50">No categories yet.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+          <tr class="border-b border-ink/5 last:border-0">
+            {% if perms.content.delete_category %}
+              <td class="px-5 py-3">
+                <input type="checkbox" value="{{ category.pk }}" x-model.number="selected"
+                       aria-label="Select {{ category.name }}"
+                       class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
+              </td>
+            {% endif %}
+            <td class="px-5 py-3"><a href="{% url 'dashboard:category_edit' category.pk %}" class="font-medium text-ink hover:text-accent">{{ category.name }}</a></td>
+            <td class="px-5 py-3 text-ink/60">{{ category.parent.name|default:"—" }}</td>
+            <td class="px-5 py-3 text-ink/50">{{ category.post_count }}</td>
+            <td class="px-5 py-3 text-right">
+              {% if perms.content.delete_category %}
+                <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" data-dp-confirm="Delete this category?">
+                  {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="px-5 py-8 text-center text-ink/50">No categories yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

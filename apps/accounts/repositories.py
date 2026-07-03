@@ -30,3 +30,14 @@ class UserRepository:
     @staticmethod
     def count_all() -> int:
         return User.objects.count()
+
+    @staticmethod
+    def set_active_among(ids, active: bool) -> int:
+        """Set ``is_active`` for the users among ``ids``; return how many changed.
+
+        Only rows whose state actually changes are counted (so re-deactivating an
+        already-inactive user isn't reported). ``ids`` is caller-scoped (the
+        service already drops the acting user to avoid self-lockout).
+        """
+        qs = User.objects.filter(pk__in=ids, is_active=not active)
+        return qs.update(is_active=active)

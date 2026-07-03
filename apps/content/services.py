@@ -80,17 +80,24 @@ def get_service_for_view(slug: str, user) -> Service:
     return service
 
 
+def related_posts(post: Post, limit: int = 4) -> QuerySet:
+    """Published posts sharing a category/tag with ``post`` (excludes ``post``)."""
+    return PostRepository.related_by_taxonomy(post, limit=limit)
+
+
 def post_detail_context(post: Post, user, comment_form: CommentForm | None = None) -> dict:
-    """Comment-related context for a post detail page.
+    """Comment- and related-post context for a post detail page.
 
     Returns the comment toggles plus, when comments are enabled, the approved
     top-level comment thread and a form (the caller may inject a bound form to
-    re-render validation errors).
+    re-render validation errors), and a capped "related posts" list by shared
+    taxonomy for the detail block.
     """
     site = SiteSettingsRepository.get()
     ctx: dict = {
         "comments_enabled": site.allow_comments,
         "comments_require_login": site.comments_require_login,
+        "related_posts": related_posts(post),
     }
     if site.allow_comments:
         ctx["comments"] = CommentRepository.approved_top_level(post)

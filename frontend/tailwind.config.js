@@ -83,6 +83,7 @@ export default {
         md: "10px",
         lg: "16px",
         xl: "24px",
+        full: "var(--radius-full, 9999px)",
       },
     },
   },

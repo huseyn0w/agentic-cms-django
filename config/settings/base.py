@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
     "django_recaptcha",
     "rest_framework",
     "rest_framework.authtoken",
@@ -182,20 +183,34 @@ ACCOUNT_RATE_LIMITS = {
     "reset_password": "5/h/ip",
 }
 
-# Google sign-in. Credentials come from the environment (never committed); the
-# provider stays registered even when unset so the rest of auth still works.
+# Social sign-in (Google + GitHub). Credentials come from the environment (never
+# committed); each provider stays registered even when unset so the rest of auth
+# still works. A provider only *activates* when its env keys are present — with no
+# keys its ``APPS`` list is empty, so allauth has no configured OAuth app to log in
+# with and the button stays inert (dev/CI run without any social keys).
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET", default="")
+GITHUB_CLIENT_ID = env("GITHUB_CLIENT_ID", default="")
+GITHUB_CLIENT_SECRET = env("GITHUB_CLIENT_SECRET", default="")
+
+
+def _social_app(client_id: str, secret: str) -> list[dict]:
+    """One configured OAuth app, or an empty list when the env keys are absent."""
+    if client_id and secret:
+        return [{"client_id": client_id, "secret": secret, "key": ""}]
+    return []
+
+
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
-        "APPS": [
-            {
-                "client_id": env("GOOGLE_CLIENT_ID", default=""),
-                "secret": env("GOOGLE_CLIENT_SECRET", default=""),
-                "key": "",
-            }
-        ],
+        "APPS": _social_app(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-    }
+    },
+    "github": {
+        "APPS": _social_app(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET),
+        "SCOPE": ["read:user", "user:email"],
+    },
 }
 
 # New self-service signups are placed in a default role (see apps.accounts.roles).

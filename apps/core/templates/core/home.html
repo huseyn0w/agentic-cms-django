@@ -13,7 +13,7 @@
     <section class="reveal mx-auto max-w-5xl px-6 pb-16 pt-14 sm:pt-20">
       <h1 class="max-w-3xl text-balance text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
         A full-featured CMS,<br class="hidden sm:block" />
-        <span class="text-accent">rebuilt on Django.</span>
+        <span class="text-primary">rebuilt on Django.</span>
       </h1>
       <p class="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-text-muted">
         Lighter, faster, and SEO-first. Readable code, runtime themes and plugins,
@@ -21,46 +21,46 @@
       </p>
       <div class="mt-9 flex flex-wrap items-center gap-3">
         <a href="{% url 'account_signup' %}" class="dp-btn dp-btn-primary">Get started</a>
-        <a href="{% url 'content:post_list' %}" class="dp-btn dp-btn-ghost hover:text-ink">Browse the blog</a>
+        <a href="{% url 'content:post_list' %}" class="dp-btn dp-btn-ghost hover:text-text">Browse the blog</a>
       </div>
     </section>
 
-    {# Features — a 5-cell bento with an emphasized, accent-tinted lead cell. #}
-    <section class="border-t border-ink/10">
+    {# Features — a 5-cell bento with an emphasized, primary-tinted lead cell. #}
+    <section class="border-t border-border">
       <div class="mx-auto max-w-5xl px-6 py-20 sm:py-24">
         <div class="reveal max-w-2xl">
-          <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">What's inside</p>
+          <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">What's inside</p>
           <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
             Everything a modern site needs, nothing it doesn't.
           </h2>
         </div>
         <div class="stagger mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="reveal rounded-2xl bg-accent/10 p-6 ring-1 ring-accent/20 sm:col-span-2 lg:col-span-2">
+          <div class="reveal rounded-2xl bg-primary/10 p-6 ring-1 ring-primary/20 sm:col-span-2 lg:col-span-2">
             <h3 class="text-xl font-semibold tracking-tight">SEO and GEO, first-class</h3>
             <p class="mt-2 max-w-lg leading-relaxed text-text-muted">
               Open Graph, JSON-LD entity and service schema, sitemaps, hreflang, and an
               llms.txt so answer engines can read and quote your pages.
             </p>
           </div>
-          <div class="reveal rounded-2xl border border-ink/10 p-6">
+          <div class="reveal rounded-2xl border border-border p-6">
             <h3 class="text-lg font-semibold tracking-tight">Multilingual by design</h3>
             <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Per-language content with clean prefixed URLs, indexed separately by search engines.
             </p>
           </div>
-          <div class="reveal rounded-2xl border border-ink/10 p-6">
+          <div class="reveal rounded-2xl border border-border p-6">
             <h3 class="text-lg font-semibold tracking-tight">Runtime themes</h3>
             <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Recolor the whole site from a CSS-variable palette. No restart, no rebuild.
             </p>
           </div>
-          <div class="reveal rounded-2xl border border-ink/10 p-6">
+          <div class="reveal rounded-2xl border border-border p-6">
             <h3 class="text-lg font-semibold tracking-tight">Plugins via hooks</h3>
             <p class="mt-2 text-sm leading-relaxed text-text-muted">
               Actions, filters, and template regions you toggle live. No arbitrary code injection.
             </p>
           </div>
-          <div class="reveal rounded-2xl border border-ink/10 p-6">
+          <div class="reveal rounded-2xl border border-border p-6">
             <h3 class="text-lg font-semibold tracking-tight">Your own dashboard</h3>
             <p class="mt-2 text-sm leading-relaxed text-text-muted">
               A full-featured admin with roles and scoped ownership. Plus comments and full-text search.
@@ -72,23 +72,23 @@
 
     {# Real content — the landing showcases the CMS by rendering its own posts. #}
     {% if recent_posts %}
-    <section class="border-t border-ink/10">
+    <section class="border-t border-border">
       <div class="mx-auto max-w-5xl px-6 py-20 sm:py-24">
         <div class="reveal flex items-end justify-between gap-4">
           <div>
-            <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">From the blog</p>
+            <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">From the blog</p>
             <h2 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Written with the editor you'll use.</h2>
           </div>
-          <a href="{% url 'content:post_list' %}" class="hidden shrink-0 text-sm font-medium text-ink/70 underline-offset-4 transition-colors hover:text-ink hover:underline sm:inline">All posts</a>
+          <a href="{% url 'content:post_list' %}" class="hidden shrink-0 text-sm font-medium text-text-muted underline-offset-4 transition-colors hover:text-text hover:underline sm:inline">All posts</a>
         </div>
         <div class="stagger mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {% for post in recent_posts %}
           <article class="reveal group">
-            <p class="font-mono text-xs uppercase tracking-wide text-ink/40">
+            <p class="font-mono text-xs uppercase tracking-wide text-text-subtle">
               {% if post.published_at %}{{ post.published_at|date:"M j, Y" }}{% endif %}
             </p>
             <h3 class="mt-2 text-xl font-semibold leading-snug tracking-tight">
-              <a href="{{ post.get_absolute_url }}" class="transition-colors group-hover:text-accent" data-testid="recent-post-link">{{ post.title }}</a>
+              <a href="{{ post.get_absolute_url }}" class="transition-colors group-hover:text-primary" data-testid="recent-post-link">{{ post.title }}</a>
             </h3>
             {% if post.excerpt %}
               <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-text-muted">{{ post.excerpt }}</p>
@@ -101,7 +101,7 @@
     {% endif %}
 
     {# Theme system — concrete palette previews, no imagery needed. #}
-    <section class="border-t border-ink/10">
+    <section class="border-t border-border">
       <div class="mx-auto max-w-5xl px-6 py-20 sm:py-24">
         <div class="grid items-center gap-12 lg:grid-cols-2">
           <div class="reveal">
@@ -136,7 +136,7 @@
     </section>
 
     {# Closer #}
-    <section class="border-t border-ink/10">
+    <section class="border-t border-border">
       <div class="reveal mx-auto max-w-5xl px-6 py-24 text-center">
         <h2 class="mx-auto max-w-2xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
           Build your next site on {{ site.site_name }}.
@@ -144,7 +144,7 @@
         <p class="mx-auto mt-4 max-w-md text-text-muted">Open source, self-hosted, and ready to extend.</p>
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="{% url 'account_signup' %}" class="dp-btn dp-btn-primary">Get started</a>
-          <a href="https://github.com/huseyn0w/Laravella-CMS" class="dp-btn dp-btn-ghost hover:text-ink">View on GitHub</a>
+          <a href="https://github.com/huseyn0w/Laravella-CMS" class="dp-btn dp-btn-ghost hover:text-text">View on GitHub</a>
         </div>
       </div>
     </section>

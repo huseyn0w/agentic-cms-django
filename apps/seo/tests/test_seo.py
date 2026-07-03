@@ -112,3 +112,26 @@ def test_analytics_absent_when_unset(client, published_post):
     html = client.get(published_post.get_absolute_url()).content.decode()
     assert "googletagmanager.com/gtag" not in html
     assert "google-site-verification" not in html
+
+
+# --------------------------------------------------------------------------- #
+# Article OG meta (§8 — article:published_time / article:author)
+# --------------------------------------------------------------------------- #
+def test_article_og_published_time_renders_on_post_page(client, published_post):
+    """article:published_time must appear when og:type is article."""
+    html = client.get(published_post.get_absolute_url()).content.decode()
+    assert 'property="og:type" content="article"' in html
+    assert 'property="article:published_time"' in html
+
+
+def test_article_og_author_renders_on_post_page(client, published_post):
+    """article:author must appear on a post detail page."""
+    html = client.get(published_post.get_absolute_url()).content.decode()
+    assert 'property="article:author"' in html
+
+
+def test_article_og_tags_absent_on_non_article_page(client):
+    """article: meta tags must NOT appear on the blog list (og:type=website)."""
+    html = client.get("/blog/").content.decode()
+    assert 'property="article:published_time"' not in html
+    assert 'property="article:author"' not in html

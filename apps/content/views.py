@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django.contrib import messages
 from django.contrib.auth.views import redirect_to_login
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import DetailView, ListView
@@ -72,11 +72,19 @@ class PostDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         """Submit a comment posted to the post's own URL; map the outcome to HTTP."""
         self.object = self.get_object()
-        outcome, form = comment_services.submit_comment(self.object, request.user, request.POST)
+        outcome, form = comment_services.submit_comment(
+            self.object, request.user, request.POST, request
+        )
         if outcome == comment_services.DISABLED:
             raise Http404
         if outcome == comment_services.LOGIN_REQUIRED:
             return redirect_to_login(self.object.get_absolute_url())
+        if outcome == comment_services.RATE_LIMITED:
+            return HttpResponse(
+                "Too many comments submitted. Please try again in a minute.",
+                status=429,
+                content_type="text/plain",
+            )
         if outcome == comment_services.CREATED:
             messages.success(
                 request, "Thanks! Your comment was submitted and is awaiting moderation."

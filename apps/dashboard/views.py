@@ -338,6 +338,23 @@ class PageDeleteView(AdminAccessMixin, View):
         return redirect("dashboard:page_list")
 
 
+class PageBulkActionView(AdminAccessMixin, View):
+    """Apply a bulk action to the selected pages (currently: move to trash)."""
+
+    permission_required = ("accounts.access_admin", "content.delete_page")
+    http_method_names = ["post"]
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        if request.POST.get("action") == "trash" and ids:
+            count = services.bulk_trash_pages(ids)
+            if count:
+                messages.success(request, f"{count} page{pluralize(count)} moved to trash.")
+            else:
+                messages.info(request, "No pages were trashed.")
+        return redirect("dashboard:page_list")
+
+
 class PageTrashListView(AdminAccessMixin, SectionMixin, ListView):
     permission_required = ("accounts.access_admin", "content.delete_page")
     template_name = "dashboard/page_trash.html"
@@ -503,6 +520,24 @@ class CategoryDeleteView(AdminAccessMixin, DeleteView):  # type: ignore[misc]
     http_method_names = ["post"]
 
 
+class CategoryBulkActionView(AdminAccessMixin, View):
+    """Bulk-delete the selected categories (no soft-delete for taxonomy)."""
+
+    permission_required = ("accounts.access_admin", "content.delete_category")
+    http_method_names = ["post"]
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        if request.POST.get("action") == "delete" and ids:
+            count = services.bulk_delete_categories(ids)
+            if count:
+                noun = "category" if count == 1 else "categories"
+                messages.success(request, f"{count} {noun} deleted.")
+            else:
+                messages.info(request, "No categories were deleted.")
+        return redirect("dashboard:category_list")
+
+
 class TagListView(AdminAccessMixin, SectionMixin, ListView):
     permission_required = ("accounts.access_admin", "content.view_tag")
     template_name = "dashboard/tag_list.html"
@@ -539,6 +574,23 @@ class TagDeleteView(AdminAccessMixin, DeleteView):  # type: ignore[misc]
     model = Tag
     success_url = reverse_lazy("dashboard:tag_list")
     http_method_names = ["post"]
+
+
+class TagBulkActionView(AdminAccessMixin, View):
+    """Bulk-delete the selected tags (no soft-delete for taxonomy)."""
+
+    permission_required = ("accounts.access_admin", "content.delete_tag")
+    http_method_names = ["post"]
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        if request.POST.get("action") == "delete" and ids:
+            count = services.bulk_delete_tags(ids)
+            if count:
+                messages.success(request, f"{count} tag{pluralize(count)} deleted.")
+            else:
+                messages.info(request, "No tags were deleted.")
+        return redirect("dashboard:tag_list")
 
 
 # --------------------------------------------------------------------------- #
@@ -579,6 +631,30 @@ class UserUpdateView(AdminAccessMixin, SectionMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "User updated.")
         return super().form_valid(form)
+
+
+class UserBulkActionView(AdminAccessMixin, View):
+    """Bulk activate/deactivate the selected users.
+
+    Users have no delete surface here, so the reversible ``is_active`` toggle is
+    the bulk action. The acting user is dropped from the target set in the service
+    (self-lockout guard), so a manager can't deactivate themselves.
+    """
+
+    permission_required = ("accounts.access_admin", "accounts.manage_users")
+    http_method_names = ["post"]
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        action = request.POST.get("action")
+        if action in ("activate", "deactivate") and ids:
+            count = services.bulk_set_users_active(request.user, ids, active=action == "activate")
+            verb = "activated" if action == "activate" else "deactivated"
+            if count:
+                messages.success(request, f"{count} user{pluralize(count)} {verb}.")
+            else:
+                messages.info(request, f"No users were {verb}.")
+        return redirect("dashboard:user_list")
 
 
 # --------------------------------------------------------------------------- #
@@ -708,6 +784,28 @@ class CommentModerateView(AdminAccessMixin, View):
         except ValueError as exc:
             raise Http404 from exc
         messages.success(request, message)
+        return redirect("dashboard:comment_list")
+
+
+class CommentBulkActionView(AdminAccessMixin, View):
+    """Bulk moderation of the selected comments (approve / spam / delete)."""
+
+    permission_required = ("accounts.access_admin", "comments.moderate_comment")
+    http_method_names = ["post"]
+
+    _VERBS = {"approve": "approved", "spam": "marked as spam", "delete": "deleted"}
+
+    def post(self, request):
+        ids = request.POST.getlist("ids")
+        action = request.POST.get("action")
+        if action in self._VERBS and ids:
+            count = services.bulk_moderate_comments(ids, action)
+            if count:
+                messages.success(
+                    request, f"{count} comment{pluralize(count)} {self._VERBS[action]}."
+                )
+            else:
+                messages.info(request, "No comments were updated.")
         return redirect("dashboard:comment_list")
 
 

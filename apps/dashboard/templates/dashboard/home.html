@@ -3,9 +3,9 @@
 {% block content %}
 <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
   {% for label, value in stats.items %}
-    <div class="rounded-2xl border border-ink/10 bg-surface p-5">
-      <p class="text-3xl font-semibold tracking-tight text-ink">{{ value }}</p>
-      <p class="mt-1 text-sm capitalize text-ink/50">{{ label }}</p>
+    <div class="rounded-2xl border border-border bg-surface p-5">
+      <p class="text-3xl font-semibold tracking-tight text-text">{{ value }}</p>
+      <p class="mt-1 text-sm capitalize text-text-muted">{{ label }}</p>
     </div>
   {% endfor %}
 </div>
@@ -15,24 +15,24 @@
     <h2 class="text-lg font-semibold tracking-tight">Recent posts</h2>
     {% if perms.content.add_post %}
       <a href="{% url 'dashboard:post_create' %}"
-         class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
+         class="dp-btn dp-btn-primary">
         New post
       </a>
     {% endif %}
   </div>
 
-  <div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
+  <div class="overflow-hidden rounded-2xl border border-border bg-surface">
     {% for post in recent_posts %}
       <a href="{% url 'dashboard:post_edit' post.pk %}"
-         class="flex items-center justify-between gap-4 border-b border-ink/5 px-5 py-3 last:border-0 hover:bg-paper/60">
-        <span class="truncate font-medium text-ink">{{ post.title }}</span>
-        <span class="shrink-0 text-xs text-ink/50">
+         class="flex items-center justify-between gap-4 border-b border-border/50 px-5 py-3 last:border-0 hover:bg-surface-2">
+        <span class="truncate font-medium text-text">{{ post.title }}</span>
+        <span class="shrink-0 text-xs text-text-muted">
           {{ post.get_status_display }}
           {% if post.author %}· {{ post.author.display_name }}{% endif %}
         </span>
       </a>
     {% empty %}
-      <p class="px-5 py-6 text-sm text-ink/50">No posts yet.</p>
+      <p class="px-5 py-6 text-sm text-text-muted">No posts yet.</p>
     {% endfor %}
   </div>
 </section>

@@ -1,22 +1,27 @@
 {% comment %}
   Toast notifications for Django messages (U5). A polite live region announces
-  each message; toasts auto-dismiss after a few seconds and can be closed early.
+  each message; toasts auto-dismiss after 4s and can be closed early.
+  Error toasts use role="alert" and never auto-dismiss (§5).
   Server-rendered, so they show without JS too — Alpine only adds dismissal.
 {% endcomment %}
-<div class="pointer-events-none fixed right-4 top-4 z-50 flex w-full max-w-sm flex-col gap-2" aria-live="polite" aria-atomic="false">
+<div class="pointer-events-none fixed bottom-4 right-4 z-50 flex w-full max-w-sm flex-col gap-2" role="status" aria-live="polite" aria-atomic="false">
   {% if messages %}
     {% for message in messages %}
+      {% if 'error' in message.tags %}
+      {# Errors: role=alert (assertive), no auto-dismiss #}
       <div
         x-data="{ show: true }"
         x-show="show"
-        x-init="setTimeout(() => show = false, 6000)"
-        x-transition.opacity.duration.200ms
-        class="pointer-events-auto flex items-start gap-3 rounded-md border px-4 py-3 text-sm shadow-md
-          {% if 'success' in message.tags %}border-success bg-success-bg text-success
-          {% elif 'error' in message.tags %}border-error bg-error-bg text-error
-          {% elif 'warning' in message.tags %}border-warning bg-warning-bg text-warning
-          {% else %}border-border bg-surface-2 text-text{% endif %}"
-        role="status"
+        x-transition:enter="transition ease-out motion-safe:duration-200"
+        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in motion-safe:duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-2"
+        class="pointer-events-auto flex items-start gap-3 rounded-md border border-error bg-error-bg px-4 py-3 text-sm text-error shadow-md"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
       >
         <span class="flex-1">{{ message }}</span>
         <button
@@ -28,6 +33,37 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
+      {% else %}
+      {# Info / success / warning: role=status (polite), auto-dismiss at 4s #}
+      <div
+        x-data="{ show: true }"
+        x-show="show"
+        x-init="setTimeout(() => show = false, 4000)"
+        x-transition:enter="transition ease-out motion-safe:duration-200"
+        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in motion-safe:duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-2"
+        class="pointer-events-auto flex items-start gap-3 rounded-md border px-4 py-3 text-sm shadow-md
+          {% if 'success' in message.tags %}border-success bg-success-bg text-success
+          {% elif 'warning' in message.tags %}border-warning bg-warning-bg text-warning
+          {% else %}border-border bg-surface-2 text-text{% endif %}"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span class="flex-1">{{ message }}</span>
+        <button
+          type="button"
+          @click="show = false"
+          class="-mr-1 shrink-0 rounded p-0.5 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Dismiss notification"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      {% endif %}
     {% endfor %}
   {% endif %}
 </div>

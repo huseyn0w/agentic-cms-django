@@ -11,7 +11,7 @@
   {% url 'content:service_list' as service_list_url %}
   {% include "_breadcrumbs.html" with section_label="Services" section_url=service_list_url current=service.title %}
   {% if not service.is_published %}
-    <p class="mb-6 inline-block rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+    <p class="mb-6 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
       Draft preview
     </p>
   {% endif %}
@@ -20,36 +20,36 @@
     <h1 class="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{{ service.title }}</h1>
     {% if service.summary %}
       {# Lead definitional sentence — the line answer engines quote. #}
-      <p class="mt-4 text-xl leading-relaxed text-ink/70">{{ service.summary }}</p>
+      <p class="mt-4 text-xl leading-relaxed text-text-muted">{{ service.summary }}</p>
     {% endif %}
   </header>
 
   {% if service.price or service.area_served %}
-    <dl class="mb-10 grid gap-px overflow-hidden rounded-2xl border border-ink/10 bg-ink/10 sm:grid-cols-2">
+    <dl class="mb-10 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
       {% if service.price %}
-        <div class="bg-paper p-5"><dt class="text-xs uppercase tracking-wide text-ink/40">Pricing</dt>
-          <dd class="mt-1 text-lg font-medium text-ink">{{ service.price }}</dd></div>
+        <div class="bg-bg p-5"><dt class="text-xs uppercase tracking-wide text-text-subtle">Pricing</dt>
+          <dd class="mt-1 text-lg font-medium text-text">{{ service.price }}</dd></div>
       {% endif %}
       {% if service.area_served %}
-        <div class="bg-paper p-5"><dt class="text-xs uppercase tracking-wide text-ink/40">Area served</dt>
-          <dd class="mt-1 text-lg font-medium text-ink">{{ service.area_served }}</dd></div>
+        <div class="bg-bg p-5"><dt class="text-xs uppercase tracking-wide text-text-subtle">Area served</dt>
+          <dd class="mt-1 text-lg font-medium text-text">{{ service.area_served }}</dd></div>
       {% endif %}
     </dl>
   {% endif %}
 
   {% if service.description %}
-    <div class="space-y-5 text-lg leading-relaxed text-ink/80">{{ service.description|safe }}</div>
+    <div class="space-y-5 text-lg leading-relaxed text-text-muted">{{ service.description|safe }}</div>
   {% endif %}
 
   {% with faqs=service.faq_items %}
     {% if faqs %}
-      <section class="mt-12 border-t border-ink/10 pt-8" aria-labelledby="faq-heading">
+      <section class="mt-12 border-t border-border pt-8" aria-labelledby="faq-heading">
         <h2 id="faq-heading" class="text-2xl font-semibold tracking-tight">Frequently asked questions</h2>
         <dl class="mt-6 space-y-6">
           {% for question, answer in faqs %}
             <div>
-              <dt class="font-medium text-ink">{{ question }}</dt>
-              <dd class="mt-1 text-ink/70">{{ answer }}</dd>
+              <dt class="font-medium text-text">{{ question }}</dt>
+              <dd class="mt-1 text-text-muted">{{ answer }}</dd>
             </div>
           {% endfor %}
         </dl>

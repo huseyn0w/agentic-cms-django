@@ -24,6 +24,22 @@ def test_google_provider_configured():
     assert reverse("google_login")
 
 
+def test_github_provider_installed_and_wired():
+    # GitHub is a first-class social provider (§5): its allauth app is installed
+    # and its SOCIALACCOUNT_PROVIDERS entry + login URL exist, mirroring Google.
+    assert "allauth.socialaccount.providers.github" in settings.INSTALLED_APPS
+    assert "github" in settings.SOCIALACCOUNT_PROVIDERS
+    assert reverse("github_login")
+
+
+def test_github_provider_gated_on_env_keys():
+    # Like Google, GitHub credentials come from the environment and are never
+    # committed. With no env keys set (dev/CI/tests), the provider is registered
+    # but carries no configured OAuth app, so it stays inactive/frictionless.
+    github = settings.SOCIALACCOUNT_PROVIDERS["github"]
+    assert github.get("APPS", []) == []
+
+
 def test_logout_requires_post(client):
     # GET must not log out (ACCOUNT_LOGOUT_ON_GET is False): an authenticated user
     # gets a confirmation page, and only POST actually ends the session.

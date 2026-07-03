@@ -8,8 +8,10 @@
     {% for url, title, code, status in language_tabs %}
       <a
         href="{{ url }}"
+        id="tab-{{ code }}"
         role="tab"
         aria-selected="{% if status == 'current' %}true{% else %}false{% endif %}"
+        aria-controls="tabpanel-{{ code }}"
         {% if status == 'current' %}aria-current="page"{% endif %}
         class="-mb-px rounded-t-md border-b-2 px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
           {% if status == 'current' %}border-primary font-semibold text-text{% else %}border-transparent text-text-muted hover:text-text{% endif %}"
@@ -19,4 +21,9 @@
       </a>
     {% endfor %}
   </div>
+  {# The content form below these tabs acts as the active tabpanel. Templates
+     that include this partial should wrap their form body in:
+       <div id="tabpanel-<current_code>" role="tabpanel" aria-labelledby="tab-<current_code>" tabindex="0">
+     The active tab's code is available via the "current" status in language_tabs.
+     For convenience, the active code is set here as a template variable hint. #}
 {% endif %}

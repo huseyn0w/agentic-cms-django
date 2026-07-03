@@ -180,6 +180,23 @@ def trash_page(pk: int) -> None:
     PageRepository.get_for_admin(pk).trash()
 
 
+def _clean_ids(ids) -> list[int]:
+    """Coerce request-supplied ids to ints, dropping non-numeric garbage.
+
+    Shared by every bulk action so a tampered id can never reach an int pk lookup
+    and 500 the view — mirrors ``bulk_trash_posts``.
+    """
+    return [int(i) for i in ids if str(i).isdigit()]
+
+
+def bulk_trash_pages(ids) -> int:
+    """Trash every live page among ``ids``; return the count."""
+    pages = list(PageRepository.live_among(_clean_ids(ids)))
+    for page in pages:
+        page.trash()
+    return len(pages)
+
+
 def restore_page(pk: int) -> None:
     PageRepository.get_trashed(pk).restore()
 
@@ -231,6 +248,16 @@ def list_categories():
 
 def list_tags():
     return TagRepository.with_post_counts()
+
+
+def bulk_delete_categories(ids) -> int:
+    """Hard-delete the selected categories (no soft-delete); return the count."""
+    return CategoryRepository.delete_among(_clean_ids(ids))
+
+
+def bulk_delete_tags(ids) -> int:
+    """Hard-delete the selected tags (no soft-delete); return the count."""
+    return TagRepository.delete_among(_clean_ids(ids))
 
 
 # --------------------------------------------------------------------------- #
@@ -332,6 +359,17 @@ def get_user(pk: int):
     return UserRepository.get(pk)
 
 
+def bulk_set_users_active(acting_user, ids, active: bool) -> int:
+    """Activate/deactivate the selected users; return how many changed.
+
+    The acting user is always dropped from the target set so a manager can never
+    deactivate themselves in bulk (the same self-lockout guard the single-user
+    edit view enforces).
+    """
+    clean_ids = [i for i in _clean_ids(ids) if i != acting_user.pk]
+    return UserRepository.set_active_among(clean_ids, active)
+
+
 # --------------------------------------------------------------------------- #
 # Comments
 # --------------------------------------------------------------------------- #
@@ -356,6 +394,20 @@ def get_comment(pk: int):
 def moderate_comment(comment, action: str) -> str:
     """Apply a moderation action; raises ValueError on an unknown action."""
     return _moderate(comment, action)
+
+
+def bulk_moderate_comments(ids, action: str) -> int:
+    """Apply a moderation ``action`` (approve/spam/delete) to the selected comments.
+
+    Returns how many comments were affected. Reuses the single-comment
+    ``moderate`` transition per row so bulk and single actions stay identical;
+    raises ``ValueError`` on an unknown action (view → 404), same as the single
+    path.
+    """
+    comments = list(CommentRepository.among(_clean_ids(ids)))
+    for comment in comments:
+        _moderate(comment, action)
+    return len(comments)
 
 
 # --------------------------------------------------------------------------- #

@@ -11,29 +11,33 @@
   {% url 'content:post_list' as post_list_url %}
   {% include "_breadcrumbs.html" with section_label="Blog" section_url=post_list_url current=post.title %}
   {% if not post.is_published %}
-    <p class="mb-6 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> Draft preview
+    <p class="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+      <span class="h-1.5 w-1.5 rounded-full bg-primary"></span> Draft preview
     </p>
   {% endif %}
 
   <header class="mb-10">
     {% if post.categories.all %}
-      <div class="mb-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.18em] text-accent">
+      <div class="mb-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.18em] text-primary">
         {% for category in post.categories.all %}
-          <a href="{{ category.get_absolute_url }}" class="transition-colors hover:text-ink">{{ category.name }}</a>
+          <a href="{{ category.get_absolute_url }}" class="transition-colors hover:text-text">{{ category.name }}</a>
         {% endfor %}
       </div>
     {% endif %}
     <h1 class="text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl" data-testid="post-title">{{ post.title }}</h1>
     <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-subtle">
-      {% if post.author %}<a class="font-medium text-ink/70 transition-colors hover:text-accent" href="{{ post.author.get_absolute_url }}">{{ post.author.display_name }}</a>{% endif %}
+      {% if post.author %}<a class="font-medium text-text-muted transition-colors hover:text-primary" href="{{ post.author.get_absolute_url }}">{{ post.author.display_name }}</a>{% endif %}
       {% if post.published_at %}<span aria-hidden="true">·</span><time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>{% endif %}
     </p>
   </header>
 
   {% if post.featured_image %}
     <img src="{{ post.featured_image.url }}" alt="{{ post.title }}"
-         class="mb-10 aspect-[16/9] w-full rounded-2xl object-cover" loading="lazy" />
+         class="mb-10 aspect-[16/9] w-full rounded-2xl object-cover"
+         loading="eager" fetchpriority="high"
+         width="{{ post.featured_image_width|default:'1200' }}"
+         height="{{ post.featured_image_height|default:'630' }}"
+         {% if post.featured_image_thumbnail %}srcset="{{ post.featured_image_thumbnail.url }} 800w, {{ post.featured_image.url }} 1200w" sizes="(max-width: 768px) 100vw, 720px"{% endif %} />
   {% endif %}
 
   <div class="dp-prose" data-testid="post-body">
@@ -57,18 +61,39 @@
   </div>
 
   {% if post.tags.all %}
-    <footer class="mt-12 flex flex-wrap gap-x-4 gap-y-2 border-t border-ink/10 pt-6">
+    <footer class="mt-12 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-6">
       {% for tag in post.tags.all %}
-        <a href="{{ tag.get_absolute_url }}" class="text-sm text-text-subtle transition-colors hover:text-accent">#{{ tag.name }}</a>
+        <a href="{{ tag.get_absolute_url }}" class="text-sm text-text-subtle transition-colors hover:text-primary">#{{ tag.name }}</a>
       {% endfor %}
     </footer>
   {% endif %}
 </article>
 
+{% if related_posts %}
+  <section class="reveal mx-auto mt-20 max-w-2xl" aria-labelledby="related-posts-heading">
+    <h2 id="related-posts-heading" class="text-2xl font-semibold tracking-tight">Related posts</h2>
+    <ul class="mt-8 space-y-6">
+      {% for related in related_posts %}
+        <li class="border-b border-border pb-6 last:border-0 last:pb-0">
+          <a href="{{ related.get_absolute_url }}" class="group block">
+            <h3 class="text-lg font-medium text-text transition-colors group-hover:text-primary">{{ related.title }}</h3>
+            {% if related.excerpt %}
+              <p class="mt-1 text-sm text-text-subtle">{{ related.excerpt }}</p>
+            {% endif %}
+            {% if related.published_at %}
+              <time class="mt-1 block text-xs text-text-subtle" datetime="{{ related.published_at|date:'c' }}">{{ related.published_at|date:"F j, Y" }}</time>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+
 {% if comments_enabled %}
   <section id="comments" class="reveal mx-auto mt-20 max-w-2xl" x-data="{ replyTo: '', replyToName: '' }">
     <h2 class="text-2xl font-semibold tracking-tight">
-      Comments{% if comments %} <span class="text-ink/30">{{ comments|length }}</span>{% endif %}
+      Comments{% if comments %} <span class="text-text-subtle">{{ comments|length }}</span>{% endif %}
     </h2>
 
     {% if comments %}
@@ -89,9 +114,9 @@
       <form method="post" action="{{ post.get_absolute_url }}#comments" class="dp-form mt-10 space-y-4">
         {% csrf_token %}
         <h3 class="text-lg font-semibold tracking-tight">Leave a comment</h3>
-        <p x-show="replyTo" x-cloak class="text-sm text-ink/60">
-          Replying to <span x-text="replyToName" class="font-medium text-ink"></span>.
-          <button type="button" class="font-medium text-accent hover:underline" @click="replyTo=''; replyToName=''">Cancel</button>
+        <p x-show="replyTo" x-cloak class="text-sm text-text-muted">
+          Replying to <span x-text="replyToName" class="font-medium text-text"></span>.
+          <button type="button" class="font-medium text-primary hover:underline" @click="replyTo=''; replyToName=''">Cancel</button>
         </p>
         <input type="hidden" name="parent" :value="replyTo" />
         {% if comment_form.name %}
@@ -104,7 +129,7 @@
         {% if comment_form.captcha %}
           {{ comment_form.captcha }}
           {% if comment_form.captcha.errors %}
-            <p class="text-sm text-accent">{{ comment_form.captcha.errors.0 }}</p>
+            <p class="text-sm text-error">{{ comment_form.captcha.errors.0 }}</p>
           {% endif %}
         {% endif %}
         <button type="submit" class="dp-btn dp-btn-primary">Post comment</button>

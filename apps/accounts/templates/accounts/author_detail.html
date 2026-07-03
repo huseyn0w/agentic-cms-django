@@ -12,31 +12,31 @@
          class="h-20 w-20 rounded-full object-cover" loading="lazy" />
   {% endif %}
   <div>
-    <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">Author</p>
-    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{{ author.display_name }}</h1>
-    {% if author.bio %}<p class="mt-3 max-w-2xl text-pretty leading-relaxed text-ink/65">{{ author.bio }}</p>{% endif %}
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-primary">Author</p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-text sm:text-4xl">{{ author.display_name }}</h1>
+    {% if author.bio %}<p class="mt-3 max-w-2xl text-pretty leading-relaxed text-text-muted">{{ author.bio }}</p>{% endif %}
     {% if author.website %}
-      <a class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent underline-offset-4 hover:underline"
+      <a class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
          href="{{ author.website }}" rel="me nofollow noopener" target="_blank">{{ author.website }} <span aria-hidden="true">↗</span></a>
     {% endif %}
   </div>
 </header>
 
-<div class="stagger divide-y divide-ink/10">
+<div class="stagger divide-y divide-border">
   {% for post in posts %}
     <article class="reveal group py-10 first:pt-0">
-      <p class="font-mono text-xs uppercase tracking-wide text-ink/40">
+      <p class="font-mono text-xs uppercase tracking-wide text-text-subtle">
         {% if post.published_at %}{{ post.published_at|date:"M j, Y" }}{% endif %}
       </p>
       <h2 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-        <a class="transition-colors group-hover:text-accent" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        <a class="transition-colors group-hover:text-primary" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
       </h2>
       {% if post.excerpt %}
-        <p class="mt-3 max-w-2xl text-pretty leading-relaxed text-ink/65">{{ post.excerpt }}</p>
+        <p class="mt-3 max-w-2xl text-pretty leading-relaxed text-text-muted">{{ post.excerpt }}</p>
       {% endif %}
     </article>
   {% empty %}
-    <p class="py-10 text-ink/60">No posts published yet.</p>
+    <p class="py-10 text-text-muted">No posts published yet.</p>
   {% endfor %}
 </div>
 

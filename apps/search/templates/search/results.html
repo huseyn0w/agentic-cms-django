@@ -6,7 +6,7 @@
 
 {% block main %}
 <header class="mb-10">
-  <h1 class="text-4xl font-semibold tracking-tight text-ink">Search</h1>
+  <h1 class="text-4xl font-semibold tracking-tight text-text">Search</h1>
   <form method="get" action="{% url 'search:results' %}" role="search" class="mt-6">
     <label for="search-q" class="sr-only">Search the site</label>
     <input
@@ -16,30 +16,30 @@
       value="{{ query }}"
       placeholder="Search posts and pages…"
       autofocus
-      class="w-full rounded-lg border border-ink/15 bg-paper px-4 py-3 text-ink placeholder:text-ink/40 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+      class="w-full rounded-lg border border-border-strong bg-bg px-4 py-3 text-text placeholder:text-text-subtle focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
     />
   </form>
 </header>
 
 {% if query %}
-  <p class="mb-8 text-sm text-ink/50">
-    {{ paginator.count }} result{{ paginator.count|pluralize }} for “{{ query }}”
+  <p class="mb-8 text-sm text-text-muted">
+    {{ paginator.count }} result{{ paginator.count|pluralize }} for "{{ query }}"
   </p>
   <div class="space-y-10">
     {% for result in results %}
       <article class="group" data-testid="search-result">
-        <p class="mb-1 text-xs font-medium uppercase tracking-wide text-accent">{{ result.search_type }}</p>
+        <p class="mb-1 text-xs font-medium uppercase tracking-wide text-primary">{{ result.search_type }}</p>
         <h2 class="text-2xl font-semibold tracking-tight">
-          <a class="transition-colors hover:text-accent" href="{{ result.get_absolute_url }}">{{ result.title }}</a>
+          <a class="transition-colors hover:text-primary" href="{{ result.get_absolute_url }}">{{ result.title }}</a>
         </h2>
         {% if result.search_excerpt %}
-          <p class="mt-2 text-pretty leading-relaxed text-ink/70">{{ result.search_excerpt }}</p>
+          <p class="mt-2 text-pretty leading-relaxed text-text-muted">{{ result.search_excerpt }}</p>
         {% endif %}
-        <a class="mt-2 inline-block text-sm font-medium text-accent underline-offset-4 hover:underline"
+        <a class="mt-2 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
            href="{{ result.get_absolute_url }}">View →</a>
       </article>
     {% empty %}
-      <p class="text-ink/60">No results for “{{ query }}”. Try a different search.</p>
+      <p class="text-text-muted">No results for "{{ query }}". Try a different search.</p>
     {% endfor %}
   </div>
 
@@ -55,6 +55,6 @@
     </nav>
   {% endif %}
 {% else %}
-  <p class="text-ink/60">Enter a term above to search posts and pages.</p>
+  <p class="text-text-muted">Enter a term above to search posts and pages.</p>
 {% endif %}
 {% endblock %}
