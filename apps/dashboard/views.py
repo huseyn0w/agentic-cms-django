@@ -7,8 +7,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
-from django.template.defaultfilters import pluralize
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -87,7 +88,7 @@ class MediaPickerContextMixin:
 class DashboardHomeView(AdminAccessMixin, SectionMixin, TemplateView):
     template_name = "dashboard/home.html"
     section = "home"
-    heading = "Dashboard"
+    heading = _("Dashboard")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -112,7 +113,7 @@ class PostListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "posts"
     paginate_by = 20
     section = "posts"
-    heading = "Posts"
+    heading = _("Posts")
 
     def get_queryset(self):
         return services.list_posts(
@@ -154,11 +155,11 @@ class PostCreateView(
     template_name = "dashboard/post_form.html"
     success_url = reverse_lazy("dashboard:post_list")
     section = "posts"
-    heading = "New post"
+    heading = _("New post")
 
     def form_valid(self, form):
         services.prepare_new_post(form.instance, self.request.user)
-        messages.success(self.request, "Post created.")
+        messages.success(self.request, _("Post created."))
         return super().form_valid(form)
 
 
@@ -176,10 +177,10 @@ class PostUpdateView(
     template_name = "dashboard/post_form.html"
     success_url = reverse_lazy("dashboard:post_list")
     section = "posts"
-    heading = "Edit post"
+    heading = _("Edit post")
 
     def form_valid(self, form):
-        messages.success(self.request, "Post updated.")
+        messages.success(self.request, _("Post updated."))
         return super().form_valid(form)
 
 
@@ -191,7 +192,7 @@ class PostDeleteView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.trash_post(request.user, pk)
-        messages.success(request, "Post moved to trash.")
+        messages.success(request, _("Post moved to trash."))
         return redirect("dashboard:post_list")
 
 
@@ -206,9 +207,17 @@ class PostBulkActionView(AdminAccessMixin, View):
         if request.POST.get("action") == "trash" and ids:
             count = services.bulk_trash_posts(request.user, ids)
             if count:
-                messages.success(request, f"{count} post{pluralize(count)} moved to trash.")
+                messages.success(
+                    request,
+                    ngettext(
+                        "%(count)d post moved to trash.",
+                        "%(count)d posts moved to trash.",
+                        count,
+                    )
+                    % {"count": count},
+                )
             else:
-                messages.info(request, "No posts were trashed.")
+                messages.info(request, _("No posts were trashed."))
         return redirect("dashboard:post_list")
 
 
@@ -218,7 +227,7 @@ class PostTrashListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "posts"
     paginate_by = 20
     section = "posts"
-    heading = "Trash"
+    heading = _("Trash")
 
     def get_queryset(self):
         return services.list_trashed_posts(self.request.user)
@@ -230,7 +239,7 @@ class PostRestoreView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.restore_post(request.user, pk)
-        messages.success(request, "Post restored.")
+        messages.success(request, _("Post restored."))
         return redirect("dashboard:post_trash")
 
 
@@ -240,7 +249,7 @@ class PostDestroyView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.permanently_delete_post(request.user, pk)
-        messages.success(request, "Post permanently deleted.")
+        messages.success(request, _("Post permanently deleted."))
         return redirect("dashboard:post_trash")
 
 
@@ -248,7 +257,7 @@ class PostRevisionListView(AdminAccessMixin, SectionMixin, TemplateView):
     permission_required = ("accounts.access_admin", "content.change_post")
     template_name = "dashboard/revisions.html"
     section = "posts"
-    heading = "Revision history"
+    heading = _("Revision history")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -266,7 +275,7 @@ class PostRevisionRestoreView(AdminAccessMixin, View):
 
     def post(self, request, pk: int, revision_pk: int):
         services.restore_post_revision(request.user, pk, revision_pk)
-        messages.success(request, "Revision restored.")
+        messages.success(request, _("Revision restored."))
         return redirect("dashboard:post_edit", pk=pk)
 
 
@@ -279,7 +288,7 @@ class PageListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "pages"
     paginate_by = 20
     section = "pages"
-    heading = "Pages"
+    heading = _("Pages")
 
     def get_queryset(self):
         return services.list_pages()
@@ -298,11 +307,11 @@ class PageCreateView(
     template_name = "dashboard/page_form.html"
     success_url = reverse_lazy("dashboard:page_list")
     section = "pages"
-    heading = "New page"
+    heading = _("New page")
 
     def form_valid(self, form):
         services.prepare_new_page(form.instance, self.request.user)
-        messages.success(self.request, "Page created.")
+        messages.success(self.request, _("Page created."))
         return super().form_valid(form)
 
 
@@ -319,10 +328,10 @@ class PageUpdateView(
     template_name = "dashboard/page_form.html"
     success_url = reverse_lazy("dashboard:page_list")
     section = "pages"
-    heading = "Edit page"
+    heading = _("Edit page")
 
     def form_valid(self, form):
-        messages.success(self.request, "Page updated.")
+        messages.success(self.request, _("Page updated."))
         return super().form_valid(form)
 
 
@@ -334,7 +343,7 @@ class PageDeleteView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.trash_page(pk)
-        messages.success(request, "Page moved to trash.")
+        messages.success(request, _("Page moved to trash."))
         return redirect("dashboard:page_list")
 
 
@@ -349,9 +358,17 @@ class PageBulkActionView(AdminAccessMixin, View):
         if request.POST.get("action") == "trash" and ids:
             count = services.bulk_trash_pages(ids)
             if count:
-                messages.success(request, f"{count} page{pluralize(count)} moved to trash.")
+                messages.success(
+                    request,
+                    ngettext(
+                        "%(count)d page moved to trash.",
+                        "%(count)d pages moved to trash.",
+                        count,
+                    )
+                    % {"count": count},
+                )
             else:
-                messages.info(request, "No pages were trashed.")
+                messages.info(request, _("No pages were trashed."))
         return redirect("dashboard:page_list")
 
 
@@ -361,7 +378,7 @@ class PageTrashListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "pages"
     paginate_by = 20
     section = "pages"
-    heading = "Trash"
+    heading = _("Trash")
 
     def get_queryset(self):
         return services.list_trashed_pages()
@@ -373,7 +390,7 @@ class PageRestoreView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.restore_page(pk)
-        messages.success(request, "Page restored.")
+        messages.success(request, _("Page restored."))
         return redirect("dashboard:page_trash")
 
 
@@ -383,7 +400,7 @@ class PageDestroyView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.permanently_delete_page(pk)
-        messages.success(request, "Page permanently deleted.")
+        messages.success(request, _("Page permanently deleted."))
         return redirect("dashboard:page_trash")
 
 
@@ -391,7 +408,7 @@ class PageRevisionListView(AdminAccessMixin, SectionMixin, TemplateView):
     permission_required = ("accounts.access_admin", "content.change_page")
     template_name = "dashboard/revisions.html"
     section = "pages"
-    heading = "Revision history"
+    heading = _("Revision history")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -407,7 +424,7 @@ class PageRevisionRestoreView(AdminAccessMixin, View):
 
     def post(self, request, pk: int, revision_pk: int):
         services.restore_page_revision(pk, revision_pk)
-        messages.success(request, "Revision restored.")
+        messages.success(request, _("Revision restored."))
         return redirect("dashboard:page_edit", pk=pk)
 
 
@@ -420,7 +437,7 @@ class ServiceListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "services"
     paginate_by = 20
     section = "services"
-    heading = "Services"
+    heading = _("Services")
 
     def get_queryset(self):
         return services.list_services()
@@ -439,11 +456,11 @@ class ServiceCreateView(
     template_name = "dashboard/service_form.html"
     success_url = reverse_lazy("dashboard:service_list")
     section = "services"
-    heading = "New service"
+    heading = _("New service")
 
     def form_valid(self, form):
         services.prepare_new_service(form.instance, self.request.user)
-        messages.success(self.request, "Service created.")
+        messages.success(self.request, _("Service created."))
         return super().form_valid(form)
 
 
@@ -460,10 +477,10 @@ class ServiceUpdateView(
     template_name = "dashboard/service_form.html"
     success_url = reverse_lazy("dashboard:service_list")
     section = "services"
-    heading = "Edit service"
+    heading = _("Edit service")
 
     def form_valid(self, form):
-        messages.success(self.request, "Service updated.")
+        messages.success(self.request, _("Service updated."))
         return super().form_valid(form)
 
 
@@ -483,7 +500,7 @@ class CategoryListView(AdminAccessMixin, SectionMixin, ListView):
     template_name = "dashboard/category_list.html"
     context_object_name = "categories"
     section = "categories"
-    heading = "Categories"
+    heading = _("Categories")
 
     def get_queryset(self):
         return services.list_categories()
@@ -498,7 +515,7 @@ class CategoryCreateView(
     template_name = "dashboard/taxonomy_form.html"
     success_url = reverse_lazy("dashboard:category_list")
     section = "categories"
-    heading = "New category"
+    heading = _("New category")
 
 
 class CategoryUpdateView(
@@ -510,7 +527,7 @@ class CategoryUpdateView(
     template_name = "dashboard/taxonomy_form.html"
     success_url = reverse_lazy("dashboard:category_list")
     section = "categories"
-    heading = "Edit category"
+    heading = _("Edit category")
 
 
 class CategoryDeleteView(AdminAccessMixin, DeleteView):  # type: ignore[misc]
@@ -531,10 +548,17 @@ class CategoryBulkActionView(AdminAccessMixin, View):
         if request.POST.get("action") == "delete" and ids:
             count = services.bulk_delete_categories(ids)
             if count:
-                noun = "category" if count == 1 else "categories"
-                messages.success(request, f"{count} {noun} deleted.")
+                messages.success(
+                    request,
+                    ngettext(
+                        "%(count)d category deleted.",
+                        "%(count)d categories deleted.",
+                        count,
+                    )
+                    % {"count": count},
+                )
             else:
-                messages.info(request, "No categories were deleted.")
+                messages.info(request, _("No categories were deleted."))
         return redirect("dashboard:category_list")
 
 
@@ -543,7 +567,7 @@ class TagListView(AdminAccessMixin, SectionMixin, ListView):
     template_name = "dashboard/tag_list.html"
     context_object_name = "tags"
     section = "tags"
-    heading = "Tags"
+    heading = _("Tags")
 
     def get_queryset(self):
         return services.list_tags()
@@ -556,7 +580,7 @@ class TagCreateView(AdminAccessMixin, SectionMixin, DashboardTranslatableFormMix
     template_name = "dashboard/taxonomy_form.html"
     success_url = reverse_lazy("dashboard:tag_list")
     section = "tags"
-    heading = "New tag"
+    heading = _("New tag")
 
 
 class TagUpdateView(AdminAccessMixin, SectionMixin, DashboardTranslatableFormMixin, UpdateView):
@@ -566,7 +590,7 @@ class TagUpdateView(AdminAccessMixin, SectionMixin, DashboardTranslatableFormMix
     template_name = "dashboard/taxonomy_form.html"
     success_url = reverse_lazy("dashboard:tag_list")
     section = "tags"
-    heading = "Edit tag"
+    heading = _("Edit tag")
 
 
 class TagDeleteView(AdminAccessMixin, DeleteView):  # type: ignore[misc]
@@ -587,9 +611,17 @@ class TagBulkActionView(AdminAccessMixin, View):
         if request.POST.get("action") == "delete" and ids:
             count = services.bulk_delete_tags(ids)
             if count:
-                messages.success(request, f"{count} tag{pluralize(count)} deleted.")
+                messages.success(
+                    request,
+                    ngettext(
+                        "%(count)d tag deleted.",
+                        "%(count)d tags deleted.",
+                        count,
+                    )
+                    % {"count": count},
+                )
             else:
-                messages.info(request, "No tags were deleted.")
+                messages.info(request, _("No tags were deleted."))
         return redirect("dashboard:tag_list")
 
 
@@ -602,7 +634,7 @@ class UserListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "users"
     paginate_by = 25
     section = "users"
-    heading = "Users"
+    heading = _("Users")
 
     def get_queryset(self):
         return services.list_users()
@@ -615,7 +647,7 @@ class UserUpdateView(AdminAccessMixin, SectionMixin, UpdateView):
     template_name = "dashboard/user_form.html"
     success_url = reverse_lazy("dashboard:user_list")
     section = "users"
-    heading = "Edit user"
+    heading = _("Edit user")
 
     def get_object(self, queryset=None):
         return services.get_user(self.kwargs["pk"])
@@ -624,12 +656,12 @@ class UserUpdateView(AdminAccessMixin, SectionMixin, UpdateView):
         # Guard against self-lockout: managers can't change their own roles or
         # active state here (would let them drop their own admin access).
         if request.user.is_authenticated and self.get_object() == request.user:
-            messages.error(request, "You can't edit your own roles here.")
+            messages.error(request, _("You can't edit your own roles here."))
             return redirect("dashboard:user_list")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, "User updated.")
+        messages.success(self.request, _("User updated."))
         return super().form_valid(form)
 
 
@@ -648,12 +680,31 @@ class UserBulkActionView(AdminAccessMixin, View):
         ids = request.POST.getlist("ids")
         action = request.POST.get("action")
         if action in ("activate", "deactivate") and ids:
-            count = services.bulk_set_users_active(request.user, ids, active=action == "activate")
-            verb = "activated" if action == "activate" else "deactivated"
+            activating = action == "activate"
+            count = services.bulk_set_users_active(request.user, ids, active=activating)
             if count:
-                messages.success(request, f"{count} user{pluralize(count)} {verb}.")
+                if activating:
+                    text = ngettext(
+                        "%(count)d user activated.",
+                        "%(count)d users activated.",
+                        count,
+                    )
+                else:
+                    text = ngettext(
+                        "%(count)d user deactivated.",
+                        "%(count)d users deactivated.",
+                        count,
+                    )
+                messages.success(request, text % {"count": count})
             else:
-                messages.info(request, f"No users were {verb}.")
+                messages.info(
+                    request,
+                    (
+                        _("No users were activated.")
+                        if activating
+                        else _("No users were deactivated.")
+                    ),
+                )
         return redirect("dashboard:user_list")
 
 
@@ -664,7 +715,7 @@ class ThemeListView(AdminAccessMixin, SectionMixin, TemplateView):
     permission_required = ("accounts.access_admin", "accounts.manage_settings")
     template_name = "dashboard/themes.html"
     section = "appearance"
-    heading = "Appearance"
+    heading = _("Appearance")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -679,9 +730,9 @@ class ThemeActivateView(AdminAccessMixin, View):
 
     def post(self, request, slug: str):
         if services.activate_theme(slug):
-            messages.success(request, f"Theme “{slug}” activated.")
+            messages.success(request, _("Theme “%(slug)s” activated.") % {"slug": slug})
         else:
-            messages.error(request, "Unknown theme.")
+            messages.error(request, _("Unknown theme."))
         return redirect("dashboard:themes")
 
 
@@ -692,7 +743,7 @@ class PluginListView(AdminAccessMixin, SectionMixin, TemplateView):
     permission_required = ("accounts.access_admin", "accounts.manage_settings")
     template_name = "dashboard/plugins.html"
     section = "plugins"
-    heading = "Plugins"
+    heading = _("Plugins")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -708,10 +759,16 @@ class PluginToggleView(AdminAccessMixin, View):
         now_enabled = not services.is_plugin_enabled(slug)
         if services.set_plugin_enabled(slug, now_enabled):
             messages.success(
-                request, f"Plugin “{slug}” {'enabled' if now_enabled else 'disabled'}."
+                request,
+                (
+                    _("Plugin “%(slug)s” enabled.")
+                    if now_enabled
+                    else _("Plugin “%(slug)s” disabled.")
+                )
+                % {"slug": slug},
             )
         else:
-            messages.error(request, "Unknown plugin.")
+            messages.error(request, _("Unknown plugin."))
         return redirect("dashboard:plugins")
 
 
@@ -724,13 +781,13 @@ class SettingsView(AdminAccessMixin, SectionMixin, UpdateView):
     template_name = "dashboard/settings.html"
     success_url = reverse_lazy("dashboard:settings")
     section = "settings"
-    heading = "Settings"
+    heading = _("Settings")
 
     def get_object(self, queryset=None):
         return services.load_site_settings()
 
     def form_valid(self, form):
-        messages.success(self.request, "Settings saved.")
+        messages.success(self.request, _("Settings saved."))
         return super().form_valid(form)
 
 
@@ -740,13 +797,13 @@ class SeoSettingsView(AdminAccessMixin, SectionMixin, UpdateView):
     template_name = "dashboard/seo_settings.html"
     success_url = reverse_lazy("dashboard:seo_settings")
     section = "seo"
-    heading = "SEO"
+    heading = _("SEO")
 
     def get_object(self, queryset=None):
         return services.load_seo_settings()
 
     def form_valid(self, form):
-        messages.success(self.request, "SEO settings saved.")
+        messages.success(self.request, _("SEO settings saved."))
         return super().form_valid(form)
 
 
@@ -759,7 +816,7 @@ class CommentListView(AdminAccessMixin, SectionMixin, ListView):
     context_object_name = "comments"
     paginate_by = 30
     section = "comments"
-    heading = "Comments"
+    heading = _("Comments")
 
     def get_queryset(self):
         self.status = self.request.GET.get("status")
@@ -793,7 +850,29 @@ class CommentBulkActionView(AdminAccessMixin, View):
     permission_required = ("accounts.access_admin", "comments.moderate_comment")
     http_method_names = ["post"]
 
-    _VERBS = {"approve": "approved", "spam": "marked as spam", "delete": "deleted"}
+    _VERBS = ("approve", "spam", "delete")
+
+    @staticmethod
+    def _result_message(action: str, count: int) -> str:
+        if action == "approve":
+            template = ngettext(
+                "%(count)d comment approved.",
+                "%(count)d comments approved.",
+                count,
+            )
+        elif action == "spam":
+            template = ngettext(
+                "%(count)d comment marked as spam.",
+                "%(count)d comments marked as spam.",
+                count,
+            )
+        else:  # delete
+            template = ngettext(
+                "%(count)d comment deleted.",
+                "%(count)d comments deleted.",
+                count,
+            )
+        return template % {"count": count}
 
     def post(self, request):
         ids = request.POST.getlist("ids")
@@ -801,11 +880,9 @@ class CommentBulkActionView(AdminAccessMixin, View):
         if action in self._VERBS and ids:
             count = services.bulk_moderate_comments(ids, action)
             if count:
-                messages.success(
-                    request, f"{count} comment{pluralize(count)} {self._VERBS[action]}."
-                )
+                messages.success(request, self._result_message(action, count))
             else:
-                messages.info(request, "No comments were updated.")
+                messages.info(request, _("No comments were updated."))
         return redirect("dashboard:comment_list")
 
 
@@ -817,7 +894,7 @@ class MenuListView(AdminAccessMixin, SectionMixin, ListView):
     template_name = "dashboard/menu_list.html"
     context_object_name = "menus"
     section = "menus"
-    heading = "Menus"
+    heading = _("Menus")
 
     def get_queryset(self):
         return services.list_menus()
@@ -829,10 +906,10 @@ class MenuCreateView(AdminAccessMixin, SectionMixin, CreateView):
     form_class = MenuForm
     template_name = "dashboard/menu_form.html"
     section = "menus"
-    heading = "New menu"
+    heading = _("New menu")
 
     def get_success_url(self):
-        messages.success(self.request, "Menu created.")
+        messages.success(self.request, _("Menu created."))
         return reverse_lazy("dashboard:menu_manage", args=[self.object.pk])
 
 
@@ -842,7 +919,7 @@ class MenuDeleteView(AdminAccessMixin, View):
 
     def post(self, request, pk: int):
         services.delete_menu(pk)
-        messages.success(request, "Menu deleted.")
+        messages.success(request, _("Menu deleted."))
         return redirect("dashboard:menu_list")
 
 
@@ -850,7 +927,7 @@ class MenuManageView(AdminAccessMixin, SectionMixin, TemplateView):
     permission_required = ("accounts.access_admin", "accounts.manage_settings")
     template_name = "dashboard/menu_manage.html"
     section = "menus"
-    heading = "Edit menu"
+    heading = _("Edit menu")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -868,7 +945,7 @@ class MenuItemCreateView(
     form_class = MenuItemForm
     template_name = "dashboard/menu_item_form.html"
     section = "menus"
-    heading = "Add menu item"
+    heading = _("Add menu item")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -882,7 +959,7 @@ class MenuItemCreateView(
 
     def form_valid(self, form):
         services.prepare_new_menu_item(form.instance, services.get_menu(self.kwargs["pk"]))
-        messages.success(self.request, "Item added.")
+        messages.success(self.request, _("Item added."))
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -897,7 +974,7 @@ class MenuItemUpdateView(
     form_class = MenuItemForm
     template_name = "dashboard/menu_item_form.html"
     section = "menus"
-    heading = "Edit menu item"
+    heading = _("Edit menu item")
 
     def get_object(self, queryset=None):
         item = services.get_menu_item(services.get_menu(self.kwargs["pk"]), self.kwargs["item_pk"])
@@ -917,7 +994,7 @@ class MenuItemUpdateView(
         return ctx
 
     def form_valid(self, form):
-        messages.success(self.request, "Item updated.")
+        messages.success(self.request, _("Item updated."))
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -930,7 +1007,7 @@ class MenuItemDeleteView(AdminAccessMixin, View):
 
     def post(self, request, pk: int, item_pk: int):
         services.delete_menu_item(services.get_menu(pk), item_pk)
-        messages.success(request, "Item removed.")
+        messages.success(request, _("Item removed."))
         return redirect("dashboard:menu_manage", pk=pk)
 
 

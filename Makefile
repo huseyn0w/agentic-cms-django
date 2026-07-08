@@ -21,13 +21,13 @@ SU_EMAIL ?= admin@cmstack.local
 SU_PASS  ?= admin12345
 
 .DEFAULT_GOAL := help
-.PHONY: help dev up down migrate superuser shell logs test reset kill
+.PHONY: help dev up down reset logs seed seed_demo migrate test kill clean superuser shell
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
-	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-11s\033[0m %s\n", $$1, $$2}'
+	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
-dev: up superuser ## One-shot local dev: build+start (auto-migrates), create admin, follow logs
+dev: up seed ## One-shot local dev: build+start (auto-migrates), create admin, seed demo content, follow logs
 	@echo "web: http://localhost:8000  (admin: $(SU_USER) / $(SU_PASS))"
 	$(COMPOSE) logs -f web
 
@@ -39,6 +39,11 @@ up: kill ## Build and start the stack; the entrypoint runs migrations on boot
 
 migrate: ## Apply migrations manually (also runs automatically on boot)
 	$(WEB) python manage.py migrate --noinput
+
+seed: superuser seed_demo ## Seed idempotent local data (admin superuser + demo content)
+
+seed_demo: ## Seed idempotent demo content (categories, posts, About/Contact pages)
+	$(WEB) python manage.py seed_demo
 
 superuser: ## Create an idempotent local admin superuser
 	@$(COMPOSE) exec -T -e DJANGO_SUPERUSER_PASSWORD=$(SU_PASS) web \
@@ -69,3 +74,6 @@ down: ## Stop all containers (keeps the DB volume)
 reset: ## Wipe the DB volume and re-bootstrap from scratch
 	$(COMPOSE) down -v
 	$(MAKE) dev
+
+clean: ## Stop the stack AND remove the DB volume (destroys data)
+	$(COMPOSE) down -v

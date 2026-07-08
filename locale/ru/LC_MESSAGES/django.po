@@ -1,0 +1,1560 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cmstack-django 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-06 23:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: cmstack <contact@elman.group>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+#: apps/accounts/admin.py:18 apps/accounts/admin.py:22
+msgid "Profile"
+msgstr "Профиль"
+
+#: apps/accounts/models.py:25
+msgid "avatar"
+msgstr "аватар"
+
+#: apps/accounts/models.py:26
+msgid "bio"
+msgstr "биография"
+
+#: apps/accounts/models.py:27
+msgid "website"
+msgstr "веб-сайт"
+
+#: apps/comments/models.py:9
+msgid "Pending"
+msgstr "Ожидает"
+
+#: apps/comments/models.py:10
+msgid "Approved"
+msgstr "Одобрено"
+
+#: apps/comments/models.py:11
+#: apps/dashboard/templates/dashboard/comment_list.html:38
+#: apps/dashboard/templates/dashboard/comment_list.html:77
+msgid "Spam"
+msgstr "Спам"
+
+#: apps/comments/models.py:32 apps/content/models.py:255
+msgid "post"
+msgstr "пост"
+
+#: apps/comments/models.py:38
+msgid "in reply to"
+msgstr "в ответ на"
+
+#: apps/comments/models.py:47
+msgid "user"
+msgstr "пользователь"
+
+#: apps/comments/models.py:53 apps/content/models.py:46
+#: apps/content/models.py:79 apps/menus/models.py:22
+msgid "name"
+msgstr "имя"
+
+#: apps/comments/models.py:54
+msgid "email"
+msgstr "эл. почта"
+
+#: apps/comments/models.py:55 apps/comments/models.py:64
+msgid "comment"
+msgstr "комментарий"
+
+#: apps/comments/models.py:57 apps/content/models.py:243
+#: apps/content/models.py:351 apps/content/models.py:450
+msgid "status"
+msgstr "статус"
+
+#: apps/comments/models.py:59 apps/content/models.py:26
+#: apps/content/models.py:560 apps/media/models.py:44 apps/menus/models.py:29
+msgid "created at"
+msgstr "создано"
+
+#: apps/comments/models.py:65
+msgid "comments"
+msgstr "комментарии"
+
+#: apps/comments/services.py:74
+msgid "Comment approved."
+msgstr "Комментарий одобрен."
+
+#: apps/comments/services.py:75
+msgid "Comment marked as spam."
+msgstr "Комментарий помечен как спам."
+
+#: apps/comments/services.py:76
+msgid "Comment deleted."
+msgstr "Комментарий удалён."
+
+#: apps/content/models.py:27 apps/media/models.py:45
+msgid "updated at"
+msgstr "обновлено"
+
+#: apps/content/models.py:34
+#: apps/dashboard/templates/dashboard/post_list.html:12
+msgid "Draft"
+msgstr "Черновик"
+
+#: apps/content/models.py:35
+#: apps/dashboard/templates/dashboard/post_list.html:13
+msgid "Published"
+msgstr "Опубликовано"
+
+#: apps/content/models.py:47 apps/content/models.py:420
+msgid "description"
+msgstr "описание"
+
+#: apps/content/models.py:49 apps/content/models.py:81
+#: apps/content/models.py:228 apps/content/models.py:338
+#: apps/content/models.py:435 apps/menus/models.py:24
+msgid "slug"
+msgstr "слаг"
+
+#: apps/content/models.py:52 apps/content/models.py:356
+msgid "parent"
+msgstr "родитель"
+
+#: apps/content/models.py:62
+msgid "category"
+msgstr "категория"
+
+#: apps/content/models.py:63 apps/content/models.py:248
+msgid "categories"
+msgstr "категории"
+
+#: apps/content/models.py:86
+msgid "tag"
+msgstr "метка"
+
+#: apps/content/models.py:87 apps/content/models.py:250
+msgid "tags"
+msgstr "метки"
+
+#: apps/content/models.py:170
+msgid "deleted at"
+msgstr "удалено"
+
+#: apps/content/models.py:199
+msgid "scheduled for"
+msgstr "запланировано на"
+
+#: apps/content/models.py:202
+msgid "Auto-publish at this time. Keep the status as Draft until then."
+msgstr ""
+"Автоматически опубликовать в это время. До тех пор статус остаётся "
+"«Черновик»."
+
+#: apps/content/models.py:222 apps/content/models.py:333
+#: apps/content/models.py:413 apps/content/models.py:522
+#: apps/media/models.py:29
+msgid "title"
+msgstr "заголовок"
+
+#: apps/content/models.py:223
+msgid "excerpt"
+msgstr "отрывок"
+
+#: apps/content/models.py:224 apps/content/models.py:334
+#: apps/content/models.py:523
+msgid "body"
+msgstr "текст"
+
+#: apps/content/models.py:225 apps/content/models.py:335
+#: apps/content/models.py:432
+msgid "meta title"
+msgstr "мета-заголовок"
+
+#: apps/content/models.py:226 apps/content/models.py:336
+#: apps/content/models.py:433
+msgid "meta description"
+msgstr "мета-описание"
+
+#: apps/content/models.py:229 apps/content/models.py:339
+#: apps/content/models.py:453
+msgid "canonical URL"
+msgstr "канонический URL"
+
+#: apps/content/models.py:230 apps/content/models.py:340
+#: apps/content/models.py:454
+msgid "hide from search engines"
+msgstr "скрыть от поисковых систем"
+
+#: apps/content/models.py:231 apps/content/models.py:341
+#: apps/content/models.py:455
+msgid "share image"
+msgstr "изображение для шеринга"
+
+#: apps/content/models.py:234 apps/content/models.py:344
+#: apps/content/models.py:438 apps/content/models.py:526
+msgid "author"
+msgstr "автор"
+
+#: apps/content/models.py:240
+msgid "featured image"
+msgstr "изображение записи"
+
+#: apps/content/models.py:245 apps/content/models.py:353
+#: apps/content/models.py:452
+msgid "published at"
+msgstr "опубликовано"
+
+#: apps/content/models.py:256
+msgid "posts"
+msgstr "посты"
+
+#: apps/content/models.py:349
+msgid "template"
+msgstr "шаблон"
+
+#: apps/content/models.py:366
+msgid "page"
+msgstr "страница"
+
+#: apps/content/models.py:367
+msgid "pages"
+msgstr "страницы"
+
+#: apps/content/models.py:415
+msgid "summary"
+msgstr "краткое описание"
+
+#: apps/content/models.py:418
+msgid "One or two plain sentences answering “what is this service?”."
+msgstr ""
+"Одно-два простых предложения, отвечающих на вопрос «что это за услуга?»."
+
+#: apps/content/models.py:422
+msgid "area served"
+msgstr "обслуживаемая область"
+
+#: apps/content/models.py:425
+msgid "e.g. “United States” or “Berlin and surrounding areas”."
+msgstr "например, «Россия» или «Москва и область»."
+
+#: apps/content/models.py:428
+msgid "FAQ"
+msgstr "ЧаВо"
+
+#: apps/content/models.py:430
+msgid ""
+"Q&A blocks. One per pair:\n"
+"Q: question\n"
+"A: answer"
+msgstr ""
+"Блоки вопрос-ответ. По одному на пару:\n"
+"Q: вопрос\n"
+"A: ответ"
+
+#: apps/content/models.py:444
+msgid "price"
+msgstr "цена"
+
+#: apps/content/models.py:447
+msgid "Freeform, e.g. “From $499” or “€90/hour”."
+msgstr "Произвольный текст, например «От 499 $» или «90 €/час»."
+
+#: apps/content/models.py:460
+msgid "service"
+msgstr "услуга"
+
+#: apps/content/models.py:461
+msgid "services"
+msgstr "услуги"
+
+#: apps/content/models.py:521
+msgid "language"
+msgstr "язык"
+
+#: apps/content/models.py:563
+msgid "like"
+msgstr "лайк"
+
+#: apps/content/models.py:564
+msgid "likes"
+msgstr "лайки"
+
+#: apps/core/models.py:13
+msgid "site name"
+msgstr "название сайта"
+
+#: apps/core/models.py:14
+msgid "tagline"
+msgstr "слоган"
+
+#: apps/core/models.py:15
+msgid "posts per page"
+msgstr "постов на странице"
+
+#: apps/core/models.py:16
+msgid "active theme"
+msgstr "активная тема"
+
+#: apps/core/models.py:18
+msgid "allow comments"
+msgstr "разрешить комментарии"
+
+#: apps/core/models.py:19
+msgid "require login to comment"
+msgstr "требовать вход для комментариев"
+
+#: apps/core/models.py:22 apps/core/models.py:23
+msgid "site settings"
+msgstr "настройки сайта"
+
+#: apps/dashboard/forms.py:60 apps/dashboard/forms.py:100
+#: apps/dashboard/forms.py:136
+msgid "Leave blank to generate from the title."
+msgstr "Оставьте пустым, чтобы создать из заголовка."
+
+#: apps/dashboard/forms.py:61
+msgid "Overrides the page title in search results (≤70 chars)."
+msgstr "Заменяет заголовок страницы в результатах поиска (≤70 символов)."
+
+#: apps/dashboard/forms.py:62
+msgid "Shown in search results; falls back to the excerpt."
+msgstr "Показывается в результатах поиска; при отсутствии берётся отрывок."
+
+#: apps/dashboard/forms.py:137
+msgid "One pair per block — a line starting “Q:” then a line starting “A:”."
+msgstr ""
+"По одной паре на блок — строка, начинающаяся с «Q:», затем строка с «A:»."
+
+#: apps/dashboard/forms.py:152
+msgid "Used in templates, e.g. “primary” (header) or “footer”."
+msgstr "Используется в шаблонах, например «primary» (шапка) или «footer»."
+
+#: apps/dashboard/forms.py:163
+msgid "Nest this item under another item in this menu (any depth)."
+msgstr "Вложить этот пункт под другой пункт этого меню (любой уровень)."
+
+#: apps/dashboard/forms.py:164 apps/menus/models.py:70
+msgid "Leave blank to use the linked item's title."
+msgstr "Оставьте пустым, чтобы использовать заголовок связанного элемента."
+
+#: apps/dashboard/forms.py:165
+msgid "Used only for the “Custom URL” link type."
+msgstr "Используется только для типа ссылки «Произвольный URL»."
+
+#: apps/dashboard/forms.py:187
+msgid "— Top level —"
+msgstr "— Верхний уровень —"
+
+#: apps/dashboard/forms.py:193
+msgid "Required for this link type."
+msgstr "Обязательно для этого типа ссылки."
+
+#: apps/dashboard/forms.py:201
+msgid "An item can't be nested under itself or its children."
+msgstr "Пункт нельзя вложить под самого себя или своих потомков."
+
+#: apps/dashboard/forms.py:233
+#: apps/dashboard/templates/dashboard/user_form.html:10
+#: apps/dashboard/templates/dashboard/user_list.html:47
+msgid "Roles"
+msgstr "Роли"
+
+#: apps/dashboard/forms.py:272
+msgid "Expected a Measurement ID like G-XXXXXXXXXX."
+msgstr "Ожидается идентификатор отслеживания вида G-XXXXXXXXXX."
+
+#: apps/dashboard/forms.py:278
+msgid "Expected a container ID like GTM-XXXXXXX."
+msgstr "Ожидается идентификатор контейнера вида GTM-XXXXXXX."
+
+#: apps/dashboard/forms.py:288
+#, python-format
+msgid "“%(url)s” must be a full http(s) URL."
+msgstr "«%(url)s» должен быть полным http(s)-адресом."
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:37
+msgid "Please confirm"
+msgstr "Пожалуйста, подтвердите"
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:40
+#: apps/dashboard/templates/dashboard/menu_form.html:15
+msgid "Cancel"
+msgstr "Отмена"
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:41
+msgid "Confirm"
+msgstr "Подтвердить"
+
+#: apps/dashboard/templates/dashboard/_language_tabs.html:21
+msgid "No translation yet"
+msgstr "Перевода пока нет"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:10
+msgid "Insert image from library"
+msgstr "Вставить изображение из библиотеки"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:19
+msgid "Media library"
+msgstr "Медиатека"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:23
+msgid "Insert image"
+msgstr "Вставить изображение"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:26
+msgid "Close"
+msgstr "Закрыть"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:13
+msgid "Drag to reorder"
+msgstr "Перетащите для изменения порядка"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:25
+msgid "Move up"
+msgstr "Вверх"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:30
+msgid "Move down"
+msgstr "Вниз"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:33
+msgid "Remove this item?"
+msgstr "Удалить этот пункт?"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:35
+#: apps/dashboard/templates/dashboard/category_list.html:24
+#: apps/dashboard/templates/dashboard/category_list.html:60
+#: apps/dashboard/templates/dashboard/comment_list.html:44
+#: apps/dashboard/templates/dashboard/comment_list.html:80
+#: apps/dashboard/templates/dashboard/menu_list.html:34
+#: apps/dashboard/templates/dashboard/service_list.html:36
+#: apps/dashboard/templates/dashboard/tag_list.html:24
+#: apps/dashboard/templates/dashboard/tag_list.html:59
+msgid "Delete"
+msgstr "Удалить"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:5
+#: apps/dashboard/templates/dashboard/_pagination.html:6
+msgid "Previous"
+msgstr "Назад"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:7
+#, python-format
+msgid "Page %(number)s of %(total)s"
+msgstr "Страница %(number)s из %(total)s"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:9
+#: apps/dashboard/templates/dashboard/_pagination.html:10
+msgid "Next"
+msgstr "Далее"
+
+#: apps/dashboard/templates/dashboard/_toasts.html:32
+#: apps/dashboard/templates/dashboard/_toasts.html:62
+msgid "Dismiss notification"
+msgstr "Закрыть уведомление"
+
+#: apps/dashboard/templates/dashboard/category_list.html:8
+#: apps/dashboard/views.py:518
+msgid "New category"
+msgstr "Новая категория"
+
+#: apps/dashboard/templates/dashboard/category_list.html:19
+#: apps/dashboard/templates/dashboard/comment_list.html:25
+#: apps/dashboard/templates/dashboard/page_list.html:25
+#: apps/dashboard/templates/dashboard/post_list.html:34
+#: apps/dashboard/templates/dashboard/tag_list.html:19
+#: apps/dashboard/templates/dashboard/user_list.html:15
+msgid "selected"
+msgstr "выбрано"
+
+#: apps/dashboard/templates/dashboard/category_list.html:20
+msgid "Delete the selected categories? This can’t be undone."
+msgstr "Удалить выбранные категории? Это действие необратимо."
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+#: apps/dashboard/templates/dashboard/menu_list.html:16
+#: apps/dashboard/templates/dashboard/tag_list.html:41
+msgid "Name"
+msgstr "Название"
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+msgid "Parent"
+msgstr "Родитель"
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+#: apps/dashboard/templates/dashboard/home.html:10
+#: apps/dashboard/templates/dashboard/tag_list.html:41
+#: apps/dashboard/views.py:116 templates/dashboard/base.html:38
+msgid "Posts"
+msgstr "Посты"
+
+#: apps/dashboard/templates/dashboard/category_list.html:59
+msgid "Delete this category?"
+msgstr "Удалить эту категорию?"
+
+#: apps/dashboard/templates/dashboard/category_list.html:66
+msgid "No categories yet."
+msgstr "Категорий пока нет."
+
+#: apps/dashboard/templates/dashboard/comment_list.html:7
+msgid "All"
+msgstr "Все"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:12
+#, python-format
+msgid "%(counter)s pending"
+msgstr "%(counter)s в ожидании"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:32
+#: apps/dashboard/templates/dashboard/comment_list.html:73
+msgid "Approve"
+msgstr "Одобрить"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:40
+msgid "Delete the selected comments? This can’t be undone."
+msgstr "Удалить выбранные комментарии? Это действие необратимо."
+
+#: apps/dashboard/templates/dashboard/comment_list.html:67
+msgid "on"
+msgstr "к"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:68
+#, python-format
+msgid "in reply to #%(pid)s"
+msgstr "в ответ на #%(pid)s"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:79
+msgid "Delete this comment?"
+msgstr "Удалить этот комментарий?"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:85
+msgid "No comments."
+msgstr "Комментариев нет."
+
+#: apps/dashboard/templates/dashboard/home.html:11 apps/dashboard/views.py:291
+#: templates/dashboard/base.html:39
+msgid "Pages"
+msgstr "Страницы"
+
+#: apps/dashboard/templates/dashboard/home.html:12
+#: templates/dashboard/base.html:43
+msgid "Media"
+msgstr "Медиа"
+
+#: apps/dashboard/templates/dashboard/home.html:13 apps/dashboard/views.py:637
+#: templates/dashboard/base.html:45
+msgid "Users"
+msgstr "Пользователи"
+
+#: apps/dashboard/templates/dashboard/home.html:22
+msgid "Recent posts"
+msgstr "Недавние посты"
+
+#: apps/dashboard/templates/dashboard/home.html:26
+#: apps/dashboard/templates/dashboard/post_list.html:21
+#: apps/dashboard/templates/dashboard/post_list.html:104
+#: apps/dashboard/views.py:158
+msgid "New post"
+msgstr "Новый пост"
+
+#: apps/dashboard/templates/dashboard/home.html:42
+msgid "No posts yet."
+msgstr "Постов пока нет."
+
+#: apps/dashboard/templates/dashboard/menu_form.html:14
+#: apps/dashboard/templates/dashboard/taxonomy_form.html:15
+msgid "Save"
+msgstr "Сохранить"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:6
+msgid "Menu:"
+msgstr "Меню:"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:7
+msgid "Back to menu"
+msgstr "Назад к меню"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:18
+msgid "Save item"
+msgstr "Сохранить пункт"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:8
+#: apps/dashboard/views.py:909
+msgid "New menu"
+msgstr "Новое меню"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:17
+msgid "Slug"
+msgstr "Слаг"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:18
+msgid "Items"
+msgstr "Пункты"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:32
+msgid "Delete this menu and its items?"
+msgstr "Удалить это меню и его пункты?"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:39
+msgid "No menus yet. Create “primary” for the header or “footer”."
+msgstr "Меню пока нет. Создайте «primary» для шапки или «footer»."
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:11
+msgid "All menus"
+msgstr "Все меню"
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:13
+msgid "Add item"
+msgstr "Добавить пункт"
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:30
+msgid "No items yet. Add the first one."
+msgstr "Пунктов пока нет. Добавьте первый."
+
+#: apps/dashboard/templates/dashboard/page_form.html:17
+#: apps/dashboard/templates/dashboard/post_form.html:21
+#: apps/dashboard/templates/dashboard/post_form.html:23
+msgid "Content"
+msgstr "Содержимое"
+
+#: apps/dashboard/templates/dashboard/page_form.html:24
+#: apps/dashboard/templates/dashboard/post_form.html:30
+#: apps/dashboard/templates/dashboard/service_form.html:30
+msgid "SEO &amp; sharing"
+msgstr "SEO и шеринг"
+
+#: apps/dashboard/templates/dashboard/page_form.html:40
+msgid "Save page"
+msgstr "Сохранить страницу"
+
+#: apps/dashboard/templates/dashboard/page_form.html:44
+#: apps/dashboard/templates/dashboard/post_form.html:52
+#: apps/dashboard/views.py:260 apps/dashboard/views.py:411
+msgid "Revision history"
+msgstr "История изменений"
+
+#: apps/dashboard/templates/dashboard/page_list.html:7
+#: apps/dashboard/templates/dashboard/page_list.html:72
+#: apps/dashboard/templates/dashboard/post_list.html:18
+#: apps/dashboard/templates/dashboard/post_list.html:95
+#: apps/dashboard/views.py:230 apps/dashboard/views.py:381
+msgid "Trash"
+msgstr "Корзина"
+
+#: apps/dashboard/templates/dashboard/page_list.html:12
+#: apps/dashboard/views.py:310
+msgid "New page"
+msgstr "Новая страница"
+
+#: apps/dashboard/templates/dashboard/page_list.html:26
+msgid "Move the selected pages to trash?"
+msgstr "Переместить выбранные страницы в корзину?"
+
+#: apps/dashboard/templates/dashboard/page_list.html:30
+#: apps/dashboard/templates/dashboard/post_list.html:39
+msgid "Move to trash"
+msgstr "В корзину"
+
+#: apps/dashboard/templates/dashboard/page_list.html:47
+#: apps/dashboard/templates/dashboard/page_trash.html:14
+#: apps/dashboard/templates/dashboard/post_list.html:56
+#: apps/dashboard/templates/dashboard/post_trash.html:14
+#: apps/dashboard/templates/dashboard/revisions.html:44
+#: apps/dashboard/templates/dashboard/service_list.html:18
+msgid "Title"
+msgstr "Заголовок"
+
+#: apps/dashboard/templates/dashboard/page_list.html:48
+#: apps/dashboard/templates/dashboard/post_list.html:57
+#: apps/dashboard/templates/dashboard/service_list.html:19
+msgid "Status"
+msgstr "Статус"
+
+#: apps/dashboard/templates/dashboard/page_list.html:49
+#: apps/dashboard/templates/dashboard/post_list.html:59
+#: apps/dashboard/templates/dashboard/service_list.html:20
+msgid "Updated"
+msgstr "Обновлено"
+
+#: apps/dashboard/templates/dashboard/page_list.html:70
+msgid "Move this page to trash?"
+msgstr "Переместить эту страницу в корзину?"
+
+#: apps/dashboard/templates/dashboard/page_list.html:78
+msgid "No pages yet."
+msgstr "Страниц пока нет."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:6
+msgid "Trashed pages can be restored or permanently deleted."
+msgstr "Страницы из корзины можно восстановить или удалить навсегда."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:7
+msgid "Back to pages"
+msgstr "Назад к страницам"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:15
+#: apps/dashboard/templates/dashboard/post_list.html:58
+#: apps/dashboard/templates/dashboard/post_trash.html:15
+msgid "Author"
+msgstr "Автор"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:16
+#: apps/dashboard/templates/dashboard/post_trash.html:16
+msgid "Trashed"
+msgstr "В корзине"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:30
+#: apps/dashboard/templates/dashboard/post_trash.html:30
+#: apps/dashboard/templates/dashboard/revisions.html:27
+msgid "Restore"
+msgstr "Восстановить"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:33
+msgid "Permanently delete this page? This cannot be undone."
+msgstr "Удалить эту страницу навсегда? Это действие необратимо."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:35
+#: apps/dashboard/templates/dashboard/post_trash.html:35
+msgid "Delete permanently"
+msgstr "Удалить навсегда"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:41
+#: apps/dashboard/templates/dashboard/post_trash.html:41
+msgid "Trash is empty."
+msgstr "Корзина пуста."
+
+#: apps/dashboard/templates/dashboard/plugins.html:5
+msgid "Enable or disable installed plugins. Changes take effect immediately."
+msgstr ""
+"Включайте или отключайте установленные плагины. Изменения вступают в силу "
+"сразу."
+
+#: apps/dashboard/templates/dashboard/plugins.html:17
+msgid "Enabled"
+msgstr "Включено"
+
+#: apps/dashboard/templates/dashboard/plugins.html:19
+msgid "Disabled"
+msgstr "Отключено"
+
+#: apps/dashboard/templates/dashboard/plugins.html:24
+msgid "Disable"
+msgstr "Отключить"
+
+#: apps/dashboard/templates/dashboard/plugins.html:24
+msgid "Enable"
+msgstr "Включить"
+
+#: apps/dashboard/templates/dashboard/plugins.html:30
+msgid "No plugins installed."
+msgstr "Плагины не установлены."
+
+#: apps/dashboard/templates/dashboard/post_form.html:48
+msgid "Save post"
+msgstr "Сохранить пост"
+
+#: apps/dashboard/templates/dashboard/post_list.html:7
+msgid "Search posts…"
+msgstr "Поиск постов…"
+
+#: apps/dashboard/templates/dashboard/post_list.html:11
+msgid "All statuses"
+msgstr "Все статусы"
+
+#: apps/dashboard/templates/dashboard/post_list.html:35
+msgid "Move the selected posts to trash?"
+msgstr "Переместить выбранные посты в корзину?"
+
+#: apps/dashboard/templates/dashboard/post_list.html:80
+msgid "Scheduled"
+msgstr "Запланировано"
+
+#: apps/dashboard/templates/dashboard/post_list.html:93
+msgid "Move this post to trash?"
+msgstr "Переместить этот пост в корзину?"
+
+#: apps/dashboard/templates/dashboard/post_list.html:104
+msgid "No posts yet"
+msgstr "Постов пока нет"
+
+#: apps/dashboard/templates/dashboard/post_list.html:104
+msgid "Write your first article to see it here."
+msgstr "Напишите свою первую статью, чтобы она появилась здесь."
+
+#: apps/dashboard/templates/dashboard/post_list.html:106
+msgid "No posts found"
+msgstr "Посты не найдены"
+
+#: apps/dashboard/templates/dashboard/post_list.html:106
+msgid "Try a different search or status filter."
+msgstr "Попробуйте другой поисковый запрос или фильтр по статусу."
+
+#: apps/dashboard/templates/dashboard/post_trash.html:6
+msgid "Trashed posts can be restored or permanently deleted."
+msgstr "Посты из корзины можно восстановить или удалить навсегда."
+
+#: apps/dashboard/templates/dashboard/post_trash.html:7
+msgid "Back to posts"
+msgstr "Назад к постам"
+
+#: apps/dashboard/templates/dashboard/post_trash.html:33
+msgid "Permanently delete this post? This cannot be undone."
+msgstr "Удалить этот пост навсегда? Это действие необратимо."
+
+#: apps/dashboard/templates/dashboard/revisions.html:7
+msgid "Back to editor"
+msgstr "Назад к редактору"
+
+#: apps/dashboard/templates/dashboard/revisions.html:25
+msgid "Restore this revision? Current content is snapshotted first."
+msgstr "Восстановить эту версию? Текущее содержимое будет сначала сохранено."
+
+#: apps/dashboard/templates/dashboard/revisions.html:32
+msgid "No revisions yet."
+msgstr "Версий пока нет."
+
+#: apps/dashboard/templates/dashboard/revisions.html:41
+msgid "Diff"
+msgstr "Различия"
+
+#: apps/dashboard/templates/dashboard/revisions.html:41
+#, python-format
+msgid "— revision (%(lang)s) vs current"
+msgstr "— версия (%(lang)s) против текущей"
+
+#: apps/dashboard/templates/dashboard/revisions.html:51
+msgid "(unchanged)"
+msgstr "(без изменений)"
+
+#: apps/dashboard/templates/dashboard/revisions.html:59
+msgid ""
+"Select a revision from the history to see what restoring it would change."
+msgstr ""
+"Выберите версию из истории, чтобы увидеть, что изменит её восстановление."
+
+#: apps/dashboard/templates/dashboard/seo_settings.html:14
+msgid "Save SEO settings"
+msgstr "Сохранить настройки SEO"
+
+#: apps/dashboard/templates/dashboard/service_form.html:20
+msgid "Description"
+msgstr "Описание"
+
+#: apps/dashboard/templates/dashboard/service_form.html:48
+msgid "Save service"
+msgstr "Сохранить услугу"
+
+#: apps/dashboard/templates/dashboard/service_list.html:9
+#: apps/dashboard/views.py:459
+msgid "New service"
+msgstr "Новая услуга"
+
+#: apps/dashboard/templates/dashboard/service_list.html:34
+msgid "Delete this service?"
+msgstr "Удалить эту услугу?"
+
+#: apps/dashboard/templates/dashboard/service_list.html:42
+msgid "No services yet."
+msgstr "Услуг пока нет."
+
+#: apps/dashboard/templates/dashboard/settings.html:11
+msgid "Save settings"
+msgstr "Сохранить настройки"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:8
+#: apps/dashboard/views.py:583
+msgid "New tag"
+msgstr "Новая метка"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:20
+msgid "Delete the selected tags? This can’t be undone."
+msgstr "Удалить выбранные метки? Это действие необратимо."
+
+#: apps/dashboard/templates/dashboard/tag_list.html:58
+msgid "Delete this tag?"
+msgstr "Удалить эту метку?"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:65
+msgid "No tags yet."
+msgstr "Меток пока нет."
+
+#: apps/dashboard/templates/dashboard/themes.html:5
+msgid "Choose the theme used to render the public site."
+msgstr "Выберите тему для отображения публичного сайта."
+
+#: apps/dashboard/templates/dashboard/themes.html:19
+#: apps/dashboard/templates/dashboard/user_form.html:21
+#: apps/dashboard/templates/dashboard/user_list.html:48
+msgid "Active"
+msgstr "Активна"
+
+#: apps/dashboard/templates/dashboard/themes.html:26
+#: apps/dashboard/templates/dashboard/user_list.html:27
+msgid "Activate"
+msgstr "Активировать"
+
+#: apps/dashboard/templates/dashboard/themes.html:32
+msgid "No themes found."
+msgstr "Темы не найдены."
+
+#: apps/dashboard/templates/dashboard/user_form.html:7
+#, python-format
+msgid "Editing <span class=\"font-medium text-ink\">%(username)s</span>"
+msgstr ""
+"Редактирование <span class=\"font-medium text-ink\">%(username)s</span>"
+
+#: apps/dashboard/templates/dashboard/user_form.html:25
+msgid "Save user"
+msgstr "Сохранить пользователя"
+
+#: apps/dashboard/templates/dashboard/user_list.html:17
+msgid "Deactivate the selected users?"
+msgstr "Деактивировать выбранных пользователей?"
+
+#: apps/dashboard/templates/dashboard/user_list.html:21
+msgid "Deactivate"
+msgstr "Деактивировать"
+
+#: apps/dashboard/templates/dashboard/user_list.html:45
+msgid "User"
+msgstr "Пользователь"
+
+#: apps/dashboard/templates/dashboard/user_list.html:46
+msgid "Email"
+msgstr "Эл. почта"
+
+#: apps/dashboard/views.py:91 templates/_site_header.html:59
+#: templates/_site_header.html:132 templates/dashboard/base.html:4
+#: templates/dashboard/base.html:37 templates/dashboard/base.html:61
+msgid "Dashboard"
+msgstr "Панель управления"
+
+#: apps/dashboard/views.py:162
+msgid "Post created."
+msgstr "Пост создан."
+
+#: apps/dashboard/views.py:180
+msgid "Edit post"
+msgstr "Редактировать пост"
+
+#: apps/dashboard/views.py:183
+msgid "Post updated."
+msgstr "Пост обновлён."
+
+#: apps/dashboard/views.py:195
+msgid "Post moved to trash."
+msgstr "Пост перемещён в корзину."
+
+#: apps/dashboard/views.py:213
+#, python-format
+msgid "%(count)d post moved to trash."
+msgid_plural "%(count)d posts moved to trash."
+msgstr[0] "%(count)d пост перемещён в корзину."
+msgstr[1] "%(count)d поста перемещено в корзину."
+msgstr[2] "%(count)d постов перемещено в корзину."
+
+#: apps/dashboard/views.py:220
+msgid "No posts were trashed."
+msgstr "Ни один пост не был перемещён в корзину."
+
+#: apps/dashboard/views.py:242
+msgid "Post restored."
+msgstr "Пост восстановлен."
+
+#: apps/dashboard/views.py:252
+msgid "Post permanently deleted."
+msgstr "Пост удалён навсегда."
+
+#: apps/dashboard/views.py:278 apps/dashboard/views.py:427
+msgid "Revision restored."
+msgstr "Версия восстановлена."
+
+#: apps/dashboard/views.py:314
+msgid "Page created."
+msgstr "Страница создана."
+
+#: apps/dashboard/views.py:331
+msgid "Edit page"
+msgstr "Редактировать страницу"
+
+#: apps/dashboard/views.py:334
+msgid "Page updated."
+msgstr "Страница обновлена."
+
+#: apps/dashboard/views.py:346
+msgid "Page moved to trash."
+msgstr "Страница перемещена в корзину."
+
+#: apps/dashboard/views.py:364
+#, python-format
+msgid "%(count)d page moved to trash."
+msgid_plural "%(count)d pages moved to trash."
+msgstr[0] "%(count)d страница перемещена в корзину."
+msgstr[1] "%(count)d страницы перемещено в корзину."
+msgstr[2] "%(count)d страниц перемещено в корзину."
+
+#: apps/dashboard/views.py:371
+msgid "No pages were trashed."
+msgstr "Ни одна страница не была перемещена в корзину."
+
+#: apps/dashboard/views.py:393
+msgid "Page restored."
+msgstr "Страница восстановлена."
+
+#: apps/dashboard/views.py:403
+msgid "Page permanently deleted."
+msgstr "Страница удалена навсегда."
+
+#: apps/dashboard/views.py:440 templates/_site_footer.html:20
+#: templates/_site_header.html:31 templates/_site_header.html:117
+#: templates/dashboard/base.html:40
+msgid "Services"
+msgstr "Услуги"
+
+#: apps/dashboard/views.py:463
+msgid "Service created."
+msgstr "Услуга создана."
+
+#: apps/dashboard/views.py:480
+msgid "Edit service"
+msgstr "Редактировать услугу"
+
+#: apps/dashboard/views.py:483
+msgid "Service updated."
+msgstr "Услуга обновлена."
+
+#: apps/dashboard/views.py:503 templates/dashboard/base.html:41
+msgid "Categories"
+msgstr "Категории"
+
+#: apps/dashboard/views.py:530
+msgid "Edit category"
+msgstr "Редактировать категорию"
+
+#: apps/dashboard/views.py:554
+#, python-format
+msgid "%(count)d category deleted."
+msgid_plural "%(count)d categories deleted."
+msgstr[0] "%(count)d категория удалена."
+msgstr[1] "%(count)d категории удалено."
+msgstr[2] "%(count)d категорий удалено."
+
+#: apps/dashboard/views.py:561
+msgid "No categories were deleted."
+msgstr "Ни одна категория не была удалена."
+
+#: apps/dashboard/views.py:570 templates/dashboard/base.html:42
+msgid "Tags"
+msgstr "Метки"
+
+#: apps/dashboard/views.py:593
+msgid "Edit tag"
+msgstr "Редактировать метку"
+
+#: apps/dashboard/views.py:617
+#, python-format
+msgid "%(count)d tag deleted."
+msgid_plural "%(count)d tags deleted."
+msgstr[0] "%(count)d метка удалена."
+msgstr[1] "%(count)d метки удалено."
+msgstr[2] "%(count)d меток удалено."
+
+#: apps/dashboard/views.py:624
+msgid "No tags were deleted."
+msgstr "Ни одна метка не была удалена."
+
+#: apps/dashboard/views.py:650
+msgid "Edit user"
+msgstr "Редактировать пользователя"
+
+#: apps/dashboard/views.py:659
+msgid "You can't edit your own roles here."
+msgstr "Здесь вы не можете редактировать собственные роли."
+
+#: apps/dashboard/views.py:664
+msgid "User updated."
+msgstr "Пользователь обновлён."
+
+#: apps/dashboard/views.py:688
+#, python-format
+msgid "%(count)d user activated."
+msgid_plural "%(count)d users activated."
+msgstr[0] "%(count)d пользователь активирован."
+msgstr[1] "%(count)d пользователя активировано."
+msgstr[2] "%(count)d пользователей активировано."
+
+#: apps/dashboard/views.py:694
+#, python-format
+msgid "%(count)d user deactivated."
+msgid_plural "%(count)d users deactivated."
+msgstr[0] "%(count)d пользователь деактивирован."
+msgstr[1] "%(count)d пользователя деактивировано."
+msgstr[2] "%(count)d пользователей деактивировано."
+
+#: apps/dashboard/views.py:703
+msgid "No users were activated."
+msgstr "Ни один пользователь не был активирован."
+
+#: apps/dashboard/views.py:705
+msgid "No users were deactivated."
+msgstr "Ни один пользователь не был деактивирован."
+
+#: apps/dashboard/views.py:718 templates/dashboard/base.html:47
+msgid "Appearance"
+msgstr "Оформление"
+
+#: apps/dashboard/views.py:733
+#, python-format
+msgid "Theme “%(slug)s” activated."
+msgstr "Тема «%(slug)s» активирована."
+
+#: apps/dashboard/views.py:735
+msgid "Unknown theme."
+msgstr "Неизвестная тема."
+
+#: apps/dashboard/views.py:746 templates/dashboard/base.html:48
+msgid "Plugins"
+msgstr "Плагины"
+
+#: apps/dashboard/views.py:764
+#, python-format
+msgid "Plugin “%(slug)s” enabled."
+msgstr "Плагин «%(slug)s» включён."
+
+#: apps/dashboard/views.py:766
+#, python-format
+msgid "Plugin “%(slug)s” disabled."
+msgstr "Плагин «%(slug)s» отключён."
+
+#: apps/dashboard/views.py:771
+msgid "Unknown plugin."
+msgstr "Неизвестный плагин."
+
+#: apps/dashboard/views.py:784 templates/dashboard/base.html:50
+msgid "Settings"
+msgstr "Настройки"
+
+#: apps/dashboard/views.py:790
+msgid "Settings saved."
+msgstr "Настройки сохранены."
+
+#: apps/dashboard/views.py:800 templates/dashboard/base.html:49
+msgid "SEO"
+msgstr "SEO"
+
+#: apps/dashboard/views.py:806
+msgid "SEO settings saved."
+msgstr "Настройки SEO сохранены."
+
+#: apps/dashboard/views.py:819 templates/dashboard/base.html:44
+msgid "Comments"
+msgstr "Комментарии"
+
+#: apps/dashboard/views.py:859
+#, python-format
+msgid "%(count)d comment approved."
+msgid_plural "%(count)d comments approved."
+msgstr[0] "%(count)d комментарий одобрен."
+msgstr[1] "%(count)d комментария одобрено."
+msgstr[2] "%(count)d комментариев одобрено."
+
+#: apps/dashboard/views.py:865
+#, python-format
+msgid "%(count)d comment marked as spam."
+msgid_plural "%(count)d comments marked as spam."
+msgstr[0] "%(count)d комментарий помечен как спам."
+msgstr[1] "%(count)d комментария помечено как спам."
+msgstr[2] "%(count)d комментариев помечено как спам."
+
+#: apps/dashboard/views.py:871
+#, python-format
+msgid "%(count)d comment deleted."
+msgid_plural "%(count)d comments deleted."
+msgstr[0] "%(count)d комментарий удалён."
+msgstr[1] "%(count)d комментария удалено."
+msgstr[2] "%(count)d комментариев удалено."
+
+#: apps/dashboard/views.py:885
+msgid "No comments were updated."
+msgstr "Ни один комментарий не был обновлён."
+
+#: apps/dashboard/views.py:897 templates/dashboard/base.html:46
+msgid "Menus"
+msgstr "Меню"
+
+#: apps/dashboard/views.py:912
+msgid "Menu created."
+msgstr "Меню создано."
+
+#: apps/dashboard/views.py:922
+msgid "Menu deleted."
+msgstr "Меню удалено."
+
+#: apps/dashboard/views.py:930
+msgid "Edit menu"
+msgstr "Редактировать меню"
+
+#: apps/dashboard/views.py:948
+msgid "Add menu item"
+msgstr "Добавить пункт меню"
+
+#: apps/dashboard/views.py:962
+msgid "Item added."
+msgstr "Пункт добавлен."
+
+#: apps/dashboard/views.py:977
+msgid "Edit menu item"
+msgstr "Редактировать пункт меню"
+
+#: apps/dashboard/views.py:997
+msgid "Item updated."
+msgstr "Пункт обновлён."
+
+#: apps/dashboard/views.py:1010
+msgid "Item removed."
+msgstr "Пункт удалён."
+
+#: apps/media/forms.py:34
+#, python-format
+msgid "File is too large (%(size)s). Maximum is %(max)s."
+msgstr "Файл слишком большой (%(size)s). Максимум — %(max)s."
+
+#: apps/media/forms.py:45
+msgid ""
+"Unsupported or unsafe file. Allowed: JPEG, PNG, GIF, WebP, PDF (SVG is not "
+"allowed)."
+msgstr ""
+"Неподдерживаемый или небезопасный файл. Разрешено: JPEG, PNG, GIF, WebP, PDF "
+"(SVG не допускается)."
+
+#: apps/media/models.py:25
+msgid "file"
+msgstr "файл"
+
+#: apps/media/models.py:27
+msgid "thumbnail"
+msgstr "миниатюра"
+
+#: apps/media/models.py:30
+msgid "alt text"
+msgstr "альт-текст"
+
+#: apps/media/models.py:32
+msgid "MIME type"
+msgstr "MIME-тип"
+
+#: apps/media/models.py:33
+msgid "file size"
+msgstr "размер файла"
+
+#: apps/media/models.py:34
+msgid "width"
+msgstr "ширина"
+
+#: apps/media/models.py:35
+msgid "height"
+msgstr "высота"
+
+#: apps/media/models.py:39
+msgid "uploaded by"
+msgstr "загружено"
+
+#: apps/media/models.py:48
+msgid "media asset"
+msgstr "медиафайл"
+
+#: apps/media/models.py:49
+msgid "media assets"
+msgstr "медиафайлы"
+
+#: apps/menus/models.py:27
+msgid "Referenced in templates, e.g. “primary” or “footer”."
+msgstr "Используется в шаблонах, например «primary» или «footer»."
+
+#: apps/menus/models.py:32
+msgid "menu"
+msgstr "меню"
+
+#: apps/menus/models.py:33
+msgid "menus"
+msgstr "меню"
+
+#: apps/menus/models.py:41
+msgid "Custom URL"
+msgstr "Произвольный URL"
+
+#: apps/menus/models.py:42
+msgid "Post"
+msgstr "Пост"
+
+#: apps/menus/models.py:43
+msgid "Page"
+msgstr "Страница"
+
+#: apps/menus/models.py:44
+msgid "Category"
+msgstr "Категория"
+
+#: apps/menus/models.py:63
+msgid "Nest this item under a top-level item (one level deep)."
+msgstr "Вложить этот пункт под пункт верхнего уровня (на один уровень)."
+
+#: apps/menus/models.py:67
+msgid "label"
+msgstr "подпись"
+
+#: apps/menus/models.py:74
+msgid "links to"
+msgstr "ссылается на"
+
+#: apps/menus/models.py:76
+msgid "custom URL"
+msgstr "произвольный URL"
+
+#: apps/menus/models.py:86
+msgid "position"
+msgstr "позиция"
+
+#: apps/menus/models.py:91
+msgid "menu item"
+msgstr "пункт меню"
+
+#: apps/menus/models.py:92
+msgid "menu items"
+msgstr "пункты меню"
+
+#: apps/plugins/models.py:13
+msgid "app label"
+msgstr "метка приложения"
+
+#: apps/plugins/models.py:14
+msgid "enabled"
+msgstr "включено"
+
+#: apps/plugins/models.py:17
+msgid "plugin"
+msgstr "плагин"
+
+#: apps/plugins/models.py:18
+msgid "plugins"
+msgstr "плагины"
+
+#: apps/seo/models.py:26
+msgid "Open Graph site name"
+msgstr "название сайта Open Graph"
+
+#: apps/seo/models.py:29
+msgid "Defaults to the site name when blank."
+msgstr "По умолчанию — название сайта, если пусто."
+
+#: apps/seo/models.py:32
+msgid "default share image"
+msgstr "изображение для шеринга по умолчанию"
+
+#: apps/seo/models.py:36
+msgid "Used for Open Graph/Twitter when a page has no image of its own."
+msgstr ""
+"Используется для Open Graph/Twitter, когда у страницы нет своего изображения."
+
+#: apps/seo/models.py:39
+msgid "default meta description"
+msgstr "мета-описание по умолчанию"
+
+#: apps/seo/models.py:42
+msgid "Fallback description for pages that don't set their own."
+msgstr "Запасное описание для страниц без собственного."
+
+#: apps/seo/models.py:45
+msgid "Twitter handle"
+msgstr "имя пользователя Twitter"
+
+#: apps/seo/models.py:48
+msgid "e.g. @yourbrand — used for twitter:site."
+msgstr "например, @yourbrand — используется для twitter:site."
+
+#: apps/seo/models.py:53
+msgid "organization logo"
+msgstr "логотип организации"
+
+#: apps/seo/models.py:57
+msgid "Square-ish logo used in Organization structured data."
+msgstr ""
+"Квадратный логотип, используемый в структурированных данных организации."
+
+#: apps/seo/models.py:60
+msgid "social profile URLs"
+msgstr "URL-адреса профилей в соцсетях"
+
+#: apps/seo/models.py:62
+msgid "One URL per line (Twitter, LinkedIn, …) — emitted as schema.org sameAs."
+msgstr ""
+"По одному URL в строке (Twitter, LinkedIn, …) — выводятся как schema.org "
+"sameAs."
+
+#: apps/seo/models.py:67
+msgid "Google Analytics ID"
+msgstr "идентификатор Google Analytics"
+
+#: apps/seo/models.py:67
+msgid "e.g. G-XXXXXXXXXX"
+msgstr "например, G-XXXXXXXXXX"
+
+#: apps/seo/models.py:70
+msgid "Google Tag Manager ID"
+msgstr "идентификатор Google Tag Manager"
+
+#: apps/seo/models.py:70
+msgid "e.g. GTM-XXXXXXX"
+msgstr "например, GTM-XXXXXXX"
+
+#: apps/seo/models.py:73
+msgid "Google site verification"
+msgstr "подтверждение сайта Google"
+
+#: apps/seo/models.py:76
+msgid "Bing site verification"
+msgstr "подтверждение сайта Bing"
+
+#: apps/seo/models.py:81
+msgid "discourage search engines"
+msgstr "запретить индексацию поисковыми системами"
+
+#: apps/seo/models.py:83
+msgid "Adds a site-wide noindex,nofollow. Use for staging sites only."
+msgstr ""
+"Добавляет noindex,nofollow для всего сайта. Используйте только для тестовых "
+"площадок."
+
+#: apps/seo/models.py:86
+msgid "allow AI answer-engine crawlers"
+msgstr "разрешить сканеры ИИ-поисковиков"
+
+#: apps/seo/models.py:89
+msgid ""
+"Let GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc. crawl the site "
+"(robots.txt). Turn off to ask them not to."
+msgstr ""
+"Разрешить GPTBot, ClaudeBot, PerplexityBot, Google-Extended и др. "
+"сканировать сайт (robots.txt). Отключите, чтобы попросить их не делать этого."
+
+#: apps/seo/models.py:95 apps/seo/models.py:96
+msgid "SEO settings"
+msgstr "настройки SEO"
+
+#: templates/429.html:4 templates/429.html:10
+msgid "Too many requests"
+msgstr "Слишком много запросов"
+
+#: templates/429.html:12
+msgid ""
+"You've made too many attempts in a short window. Please wait a little while "
+"and try again."
+msgstr ""
+"Вы сделали слишком много попыток за короткое время. Пожалуйста, подождите "
+"немного и попробуйте снова."
+
+#: templates/429.html:18
+msgid "Back to home"
+msgstr "На главную"
+
+#: templates/_breadcrumbs.html:10
+msgid "Home"
+msgstr "Главная"
+
+#: templates/_site_footer.html:19 templates/_site_header.html:32
+#: templates/_site_header.html:118
+msgid "Blog"
+msgstr "Блог"
+
+#: templates/_site_footer.html:21
+msgid "Contact"
+msgstr "Контакты"
+
+#: templates/_site_header.html:35 templates/_site_header.html:121
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/_site_header.html:41 templates/_site_header.html:122
+msgid "Search…"
+msgstr "Поиск…"
+
+#: templates/_site_header.html:62 templates/_site_header.html:135
+msgid "Account"
+msgstr "Аккаунт"
+
+#: templates/_site_header.html:65 templates/_site_header.html:138
+#: templates/dashboard/base.html:129
+msgid "Sign out"
+msgstr "Выйти"
+
+#: templates/_site_header.html:68 templates/_site_header.html:141
+msgid "Sign in"
+msgstr "Войти"
+
+#: templates/_site_header.html:79
+msgid "Open menu"
+msgstr "Открыть меню"
+
+#: templates/_site_header.html:108
+msgid "Close menu"
+msgstr "Закрыть меню"
+
+#: templates/base.html:6
+msgid "Cmstack-Django — a lighter, faster, SEO-first CMS"
+msgstr "Cmstack-Django — более лёгкая, быстрая, SEO-ориентированная CMS"
+
+#: templates/base.html:9
+msgid ""
+"Cmstack-Django is an open-source CMS built on Django — lighter, faster, and "
+"SEO-first."
+msgstr ""
+"Cmstack-Django — это CMS с открытым исходным кодом на Django — легче, "
+"быстрее и с приоритетом SEO."
+
+#: templates/base.html:26
+msgid "Skip to content"
+msgstr "Перейти к содержимому"
+
+#: templates/dashboard/base.html:4
+#, python-format
+msgid "%(name)s admin"
+msgstr "администрирование %(name)s"
+
+#: templates/dashboard/base.html:58
+msgid "Toggle menu"
+msgstr "Переключить меню"
+
+#: templates/dashboard/base.html:73 templates/dashboard/base.html:80
+msgid "Language"
+msgstr "Язык"
+
+#: templates/dashboard/base.html:86
+msgid "Go"
+msgstr "Перейти"
+
+#: templates/dashboard/base.html:89
+msgid "Switch to light mode"
+msgstr "Переключить на светлую тему"
+
+#: templates/dashboard/base.html:90
+msgid "Switch to dark mode"
+msgstr "Переключить на тёмную тему"
+
+#: templates/dashboard/base.html:102 templates/dashboard/base.html:127
+msgid "View site ↗"
+msgstr "Открыть сайт ↗"
+
+#: templates/dashboard/base.html:112
+msgid "Account menu"
+msgstr "Меню аккаунта"
+
+#: templates/dashboard/base.html:124
+msgid "Member"
+msgstr "Участник"

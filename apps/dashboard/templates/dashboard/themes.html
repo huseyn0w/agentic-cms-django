@@ -1,7 +1,8 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<p class="mb-6 text-sm text-ink/60">Choose the theme used to render the public site.</p>
+<p class="mb-6 text-sm text-ink/60">{% trans "Choose the theme used to render the public site." %}</p>
 
 <div class="grid gap-4 sm:grid-cols-2">
   {% for theme in themes %}
@@ -15,20 +16,20 @@
           </p>
         </div>
         {% if theme.slug == active_slug %}
-          <span class="shrink-0 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">Active</span>
+          <span class="shrink-0 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">{% trans "Active" %}</span>
         {% endif %}
       </div>
       {% if theme.slug != active_slug %}
         <form method="post" action="{% url 'dashboard:theme_activate' theme.slug %}" class="mt-4">
           {% csrf_token %}
           <button type="submit" class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-            Activate
+            {% trans "Activate" %}
           </button>
         </form>
       {% endif %}
     </div>
   {% empty %}
-    <p class="text-ink/60">No themes found.</p>
+    <p class="text-ink/60">{% trans "No themes found." %}</p>
   {% endfor %}
 </div>
 {% endblock %}

@@ -3,13 +3,14 @@
 sibling group. `data-item-id`/`data-parent-id` let admin.js group rows for
 drag-drop reorder (sibling-scoped); the ↑/↓ forms are the no-JS fallback.
 {% endcomment %}
+{% load i18n %}
 <li class="flex items-center justify-between gap-4 px-5 py-3"
     style="padding-left: {{ depth|add:1 }}.25rem;"
     data-menu-item
     data-item-id="{{ item.pk }}"
     data-parent-id="{{ item.parent_id|default:'' }}">
   <div class="flex min-w-0 items-center gap-2">
-    <span class="dp-drag-handle hidden cursor-grab select-none text-text-subtle" aria-hidden="true" title="Drag to reorder">⠿</span>
+    <span class="dp-drag-handle hidden cursor-grab select-none text-text-subtle" aria-hidden="true" title="{% trans 'Drag to reorder' %}">⠿</span>
     <div class="min-w-0">
       <a href="{% url 'dashboard:menu_item_edit' menu.pk item.pk %}" class="font-medium text-text hover:text-primary">
         {% if depth %}<span class="mr-1 text-text-subtle" aria-hidden="true">↳</span>{% endif %}{{ item.get_label }}
@@ -21,17 +22,17 @@ drag-drop reorder (sibling-scoped); the ↑/↓ forms are the no-JS fallback.
     <form method="post" action="{% url 'dashboard:menu_item_move' menu.pk item.pk 'up' %}">
       {% csrf_token %}
       <button type="submit" class="rounded-md px-2 py-1 text-text-muted hover:bg-surface-2 hover:text-text disabled:opacity-30"
-              aria-label="Move up" {% if is_first %}disabled{% endif %}>↑</button>
+              aria-label="{% trans 'Move up' %}" {% if is_first %}disabled{% endif %}>↑</button>
     </form>
     <form method="post" action="{% url 'dashboard:menu_item_move' menu.pk item.pk 'down' %}">
       {% csrf_token %}
       <button type="submit" class="rounded-md px-2 py-1 text-text-muted hover:bg-surface-2 hover:text-text disabled:opacity-30"
-              aria-label="Move down" {% if is_last %}disabled{% endif %}>↓</button>
+              aria-label="{% trans 'Move down' %}" {% if is_last %}disabled{% endif %}>↓</button>
     </form>
     <form method="post" action="{% url 'dashboard:menu_item_delete' menu.pk item.pk %}"
-          data-dp-confirm="Remove this item?">
+          data-dp-confirm="{% trans 'Remove this item?' %}">
       {% csrf_token %}
-      <button type="submit" class="rounded-md px-2 py-1 text-xs text-error hover:underline">Delete</button>
+      <button type="submit" class="rounded-md px-2 py-1 text-xs text-error hover:underline">{% trans "Delete" %}</button>
     </form>
   </div>
 </li>

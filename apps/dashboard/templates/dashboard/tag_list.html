@@ -1,10 +1,11 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex items-center justify-end">
   {% if perms.content.add_tag %}
     <a href="{% url 'dashboard:tag_create' %}"
-       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">New tag</a>
+       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">{% trans "New tag" %}</a>
   {% endif %}
 </div>
 
@@ -15,12 +16,12 @@
     <div x-cloak x-show="selected.length" x-transition
          class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
          role="region" aria-label="Bulk actions">
-      <span><span x-text="selected.length"></span> selected</span>
-      <form method="post" action="{% url 'dashboard:tag_bulk_action' %}" data-dp-confirm="Delete the selected tags? This can't be undone.">
+      <span><span x-text="selected.length"></span> {% trans "selected" %}</span>
+      <form method="post" action="{% url 'dashboard:tag_bulk_action' %}" data-dp-confirm="{% trans 'Delete the selected tags? This can’t be undone.' %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="delete">
         <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-        <button type="submit" class="dp-btn dp-btn-ghost">Delete</button>
+        <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Delete" %}</button>
       </form>
     </div>
   {% endif %}
@@ -37,7 +38,7 @@
                      class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
             </th>
           {% endif %}
-          <th class="px-5 py-3 font-medium">Name</th><th class="px-5 py-3 font-medium">Posts</th><th class="px-5 py-3"></th>
+          <th class="px-5 py-3 font-medium">{% trans "Name" %}</th><th class="px-5 py-3 font-medium">{% trans "Posts" %}</th><th class="px-5 py-3"></th>
         </tr>
       </thead>
       <tbody>
@@ -54,14 +55,14 @@
             <td class="px-5 py-3 text-ink/50">{{ tag.post_count }}</td>
             <td class="px-5 py-3 text-right">
               {% if perms.content.delete_tag %}
-                <form method="post" action="{% url 'dashboard:tag_delete' tag.pk %}" data-dp-confirm="Delete this tag?">
-                  {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
+                <form method="post" action="{% url 'dashboard:tag_delete' tag.pk %}" data-dp-confirm="{% trans 'Delete this tag?' %}">
+                  {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">{% trans "Delete" %}</button>
                 </form>
               {% endif %}
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="4" class="px-5 py-8 text-center text-ink/50">No tags yet.</td></tr>
+          <tr><td colspan="4" class="px-5 py-8 text-center text-ink/50">{% trans "No tags yet." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

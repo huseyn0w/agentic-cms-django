@@ -1,11 +1,12 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex items-center justify-end">
   {% if perms.content.add_service %}
     <a href="{% url 'dashboard:service_create' %}"
        class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-      New service
+      {% trans "New service" %}
     </a>
   {% endif %}
 </div>
@@ -14,9 +15,9 @@
   <table class="w-full text-sm">
     <thead class="border-b border-ink/10 text-left text-xs uppercase tracking-wide text-ink/40">
       <tr>
-        <th class="px-5 py-3 font-medium">Title</th>
-        <th class="px-5 py-3 font-medium">Status</th>
-        <th class="px-5 py-3 font-medium">Updated</th>
+        <th class="px-5 py-3 font-medium">{% trans "Title" %}</th>
+        <th class="px-5 py-3 font-medium">{% trans "Status" %}</th>
+        <th class="px-5 py-3 font-medium">{% trans "Updated" %}</th>
         <th class="px-5 py-3"></th>
       </tr>
     </thead>
@@ -30,15 +31,15 @@
           <td class="px-5 py-3 text-ink/50">{{ service.updated_at|date:"M j, Y" }}</td>
           <td class="px-5 py-3 text-right">
             {% if perms.content.delete_service %}
-              <form method="post" action="{% url 'dashboard:service_delete' service.pk %}" data-dp-confirm="Delete this service?">
+              <form method="post" action="{% url 'dashboard:service_delete' service.pk %}" data-dp-confirm="{% trans 'Delete this service?' %}">
                 {% csrf_token %}
-                <button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
+                <button type="submit" class="text-xs text-ink/40 hover:text-accent">{% trans "Delete" %}</button>
               </form>
             {% endif %}
           </td>
         </tr>
       {% empty %}
-        <tr><td colspan="4" class="px-5 py-8 text-center text-ink/50">No services yet.</td></tr>
+        <tr><td colspan="4" class="px-5 py-8 text-center text-ink/50">{% trans "No services yet." %}</td></tr>
       {% endfor %}
     </tbody>
   </table>

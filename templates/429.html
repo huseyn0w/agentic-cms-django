@@ -1,20 +1,21 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Too many requests · Cmstack-Django{% endblock %}
+{% block title %}{% trans "Too many requests" %} · Cmstack-Django{% endblock %}
 
 {% block body %}
 <main class="flex min-h-full items-center justify-center px-6 py-16 text-center">
   <div class="max-w-md">
     <p class="mb-3 text-sm font-semibold tracking-[0.2em] text-accent">429</p>
-    <h1 class="mb-4 text-3xl font-semibold tracking-tight text-ink">Too many requests</h1>
+    <h1 class="mb-4 text-3xl font-semibold tracking-tight text-ink">{% trans "Too many requests" %}</h1>
     <p class="mb-8 text-pretty leading-relaxed text-ink/60">
-      You've made too many attempts in a short window. Please wait a little while and try again.
+      {% trans "You've made too many attempts in a short window. Please wait a little while and try again." %}
     </p>
     <a
       href="/"
       class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition-transform duration-200 hover:-translate-y-0.5"
     >
-      Back to home
+      {% trans "Back to home" %}
     </a>
   </div>
 </main>

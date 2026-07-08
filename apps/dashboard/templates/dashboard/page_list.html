@@ -1,14 +1,15 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex items-center justify-end gap-3">
   {% if perms.content.delete_page %}
-    <a href="{% url 'dashboard:page_trash' %}" class="text-sm text-text-muted hover:text-text">Trash</a>
+    <a href="{% url 'dashboard:page_trash' %}" class="text-sm text-text-muted hover:text-text">{% trans "Trash" %}</a>
   {% endif %}
   {% if perms.content.add_page %}
     <a href="{% url 'dashboard:page_create' %}"
        class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-      New page
+      {% trans "New page" %}
     </a>
   {% endif %}
 </div>
@@ -21,12 +22,12 @@
     <div x-cloak x-show="selected.length" x-transition
          class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
          role="region" aria-label="Bulk actions">
-      <span><span x-text="selected.length"></span> selected</span>
-      <form method="post" action="{% url 'dashboard:page_bulk_action' %}" data-dp-confirm="Move the selected pages to trash?">
+      <span><span x-text="selected.length"></span> {% trans "selected" %}</span>
+      <form method="post" action="{% url 'dashboard:page_bulk_action' %}" data-dp-confirm="{% trans 'Move the selected pages to trash?' %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="trash">
         <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-        <button type="submit" class="dp-btn dp-btn-ghost">Move to trash</button>
+        <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Move to trash" %}</button>
       </form>
     </div>
   {% endif %}
@@ -43,9 +44,9 @@
                      class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
             </th>
           {% endif %}
-          <th class="px-5 py-3 font-medium">Title</th>
-          <th class="px-5 py-3 font-medium">Status</th>
-          <th class="px-5 py-3 font-medium">Updated</th>
+          <th class="px-5 py-3 font-medium">{% trans "Title" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Status" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Updated" %}</th>
           <th class="px-5 py-3"></th>
         </tr>
       </thead>
@@ -66,15 +67,15 @@
             <td class="px-5 py-3 text-ink/50">{{ page.updated_at|date:"M j, Y" }}</td>
             <td class="px-5 py-3 text-right">
               {% if perms.content.delete_page %}
-                <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" data-dp-confirm="Move this page to trash?">
+                <form method="post" action="{% url 'dashboard:page_delete' page.pk %}" data-dp-confirm="{% trans 'Move this page to trash?' %}">
                   {% csrf_token %}
-                  <button type="submit" class="text-xs text-ink/40 hover:text-accent">Trash</button>
+                  <button type="submit" class="text-xs text-ink/40 hover:text-accent">{% trans "Trash" %}</button>
                 </form>
               {% endif %}
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="5" class="px-5 py-8 text-center text-ink/50">No pages yet.</td></tr>
+          <tr><td colspan="5" class="px-5 py-8 text-center text-ink/50">{% trans "No pages yet." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

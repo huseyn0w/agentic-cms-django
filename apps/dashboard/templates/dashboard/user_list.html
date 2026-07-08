@@ -1,28 +1,29 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div
   {% if perms.accounts.manage_users %}x-data="{ selected: [], allIds: [{% for u in users %}{% if u.pk != request.user.pk %}{{ u.pk }},{% endif %}{% endfor %}] }"{% endif %}
 >
   {% if perms.accounts.manage_users %}
-    {# The acting user is excluded from allIds so 'select all' can never target
-       themselves; the service also drops them (defence in depth). #}
+    {% comment %} The acting user is excluded from allIds so 'select all' can never target
+       themselves; the service also drops them (defence in depth). {% endcomment %}
     <div x-cloak x-show="selected.length" x-transition
          class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
          role="region" aria-label="Bulk actions">
-      <span><span x-text="selected.length"></span> selected</span>
+      <span><span x-text="selected.length"></span> {% trans "selected" %}</span>
       <div class="flex items-center gap-2">
-        <form method="post" action="{% url 'dashboard:user_bulk_action' %}" data-dp-confirm="Deactivate the selected users?">
+        <form method="post" action="{% url 'dashboard:user_bulk_action' %}" data-dp-confirm="{% trans 'Deactivate the selected users?' %}">
           {% csrf_token %}
           <input type="hidden" name="action" value="deactivate">
           <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-          <button type="submit" class="dp-btn dp-btn-ghost">Deactivate</button>
+          <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Deactivate" %}</button>
         </form>
         <form method="post" action="{% url 'dashboard:user_bulk_action' %}">
           {% csrf_token %}
           <input type="hidden" name="action" value="activate">
           <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-          <button type="submit" class="dp-btn dp-btn-ghost">Activate</button>
+          <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Activate" %}</button>
         </form>
       </div>
     </div>
@@ -40,10 +41,10 @@
                      class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
             </th>
           {% endif %}
-          <th class="px-5 py-3 font-medium">User</th>
-          <th class="px-5 py-3 font-medium">Email</th>
-          <th class="px-5 py-3 font-medium">Roles</th>
-          <th class="px-5 py-3 font-medium">Active</th>
+          <th class="px-5 py-3 font-medium">{% trans "User" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Email" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Roles" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Active" %}</th>
         </tr>
       </thead>
       <tbody>

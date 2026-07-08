@@ -10,6 +10,7 @@ HTTP response — they hold no comment domain rules themselves.
 from __future__ import annotations
 
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
 
 from apps.core.repositories import SiteSettingsRepository
 
@@ -70,9 +71,9 @@ def is_rate_limited(request) -> bool:
 
 # action -> success message for moderation. "delete" handled in moderate().
 _MODERATION_MESSAGES = {
-    "approve": "Comment approved.",
-    "spam": "Comment marked as spam.",
-    "delete": "Comment deleted.",
+    "approve": _("Comment approved."),
+    "spam": _("Comment marked as spam."),
+    "delete": _("Comment deleted."),
 }
 
 

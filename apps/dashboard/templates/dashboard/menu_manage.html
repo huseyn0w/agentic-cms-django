@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -7,9 +8,9 @@
     <p class="font-mono text-xs text-text-muted">{{ menu.slug }}</p>
   </div>
   <div class="flex items-center gap-3">
-    <a href="{% url 'dashboard:menu_list' %}" class="dp-btn dp-btn-ghost text-sm">← All menus</a>
+    <a href="{% url 'dashboard:menu_list' %}" class="dp-btn dp-btn-ghost text-sm">← {% trans "All menus" %}</a>
     <a href="{% url 'dashboard:menu_item_create' menu.pk %}"
-       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">Add item</a>
+       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">{% trans "Add item" %}</a>
   </div>
 </div>
 
@@ -26,7 +27,7 @@ re-checks. Drag-drop is a progressive enhancement — with JS off the arrows wor
     {% for row in items %}
       {% include "dashboard/_menu_item_row.html" with item=row.item depth=row.depth is_first=row.is_first is_last=row.is_last %}
     {% empty %}
-      <li class="px-5 py-8 text-center text-text-muted">No items yet. Add the first one.</li>
+      <li class="px-5 py-8 text-center text-text-muted">{% trans "No items yet. Add the first one." %}</li>
     {% endfor %}
   </ul>
 </div>

@@ -1,9 +1,10 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex items-center justify-between gap-4">
-  <p class="text-sm text-text-muted">Menu: <span class="font-medium text-text">{{ menu.name }}</span></p>
-  <a href="{% url 'dashboard:menu_manage' menu.pk %}" class="dp-btn dp-btn-ghost text-sm">← Back to menu</a>
+  <p class="text-sm text-text-muted">{% trans "Menu:" %} <span class="font-medium text-text">{{ menu.name }}</span></p>
+  <a href="{% url 'dashboard:menu_manage' menu.pk %}" class="dp-btn dp-btn-ghost text-sm">← {% trans "Back to menu" %}</a>
 </div>
 {% include "dashboard/_language_tabs.html" %}
 <form method="post" class="dp-form mx-auto max-w-lg space-y-5">
@@ -14,6 +15,6 @@
   {% for field in form %}
     {% include "dashboard/_field.html" with field=field %}
   {% endfor %}
-  <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">Save item</button>
+  <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">{% trans "Save item" %}</button>
 </form>
 {% endblock %}

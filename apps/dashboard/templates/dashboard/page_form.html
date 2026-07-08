@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 {% include "dashboard/_language_tabs.html" %}
@@ -13,14 +14,14 @@
       {% include "dashboard/_field.html" with field=form.title %}
       {% include "dashboard/_field.html" with field=form.slug %}
       <div>
-        <label for="{{ form.body.id_for_label }}">Content</label>
+        <label for="{{ form.body.id_for_label }}">{% trans "Content" %}</label>
         {{ form.body }}
         <trix-editor input="{{ form.body.id_for_label }}"></trix-editor>
         {% include "dashboard/_media_picker.html" %}
       </div>
 
       <details class="rounded-2xl border border-ink/10 bg-surface p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
-        <summary class="cursor-pointer text-sm font-semibold text-ink">SEO &amp; sharing</summary>
+        <summary class="cursor-pointer text-sm font-semibold text-ink">{% trans "SEO &amp; sharing" %}</summary>
         <div class="mt-4 space-y-5">
           {% include "dashboard/_field.html" with field=form.meta_title %}
           {% include "dashboard/_field.html" with field=form.meta_description %}
@@ -36,11 +37,11 @@
       {% include "dashboard/_field.html" with field=form.parent %}
       {% include "dashboard/_field.html" with field=form.template %}
       <button type="submit" class="w-full rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-        Save page
+        {% trans "Save page" %}
       </button>
       {% if form.instance.pk %}
         <a href="{% url 'dashboard:page_revisions' form.instance.pk %}"
-           class="block text-center text-sm text-text-muted hover:text-text">Revision history</a>
+           class="block text-center text-sm text-text-muted hover:text-text">{% trans "Revision history" %}</a>
       {% endif %}
     </aside>
   </div>

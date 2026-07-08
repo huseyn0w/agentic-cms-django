@@ -3,6 +3,7 @@
   the view edits that language's translation in isolation. "current" is the tab
   being edited, "available" already has a translation, "empty" does not yet.
 {% endcomment %}
+{% load i18n %}
 {% if language_tabs %}
   <div class="mb-6 flex items-center gap-1 border-b border-border" role="tablist" aria-label="Language">
     {% for url, title, code, status in language_tabs %}
@@ -17,13 +18,13 @@
           {% if status == 'current' %}border-primary font-semibold text-text{% else %}border-transparent text-text-muted hover:text-text{% endif %}"
       >
         {{ title }}
-        {% if status == 'empty' %}<span class="ml-1 text-xs text-text-subtle" title="No translation yet">·</span>{% endif %}
+        {% if status == 'empty' %}<span class="ml-1 text-xs text-text-subtle" title="{% trans 'No translation yet' %}">·</span>{% endif %}
       </a>
     {% endfor %}
   </div>
-  {# The content form below these tabs acts as the active tabpanel. Templates
+  {% comment %} The content form below these tabs acts as the active tabpanel. Templates
      that include this partial should wrap their form body in:
        <div id="tabpanel-<current_code>" role="tabpanel" aria-labelledby="tab-<current_code>" tabindex="0">
      The active tab's code is available via the "current" status in language_tabs.
-     For convenience, the active code is set here as a template variable hint. #}
+     For convenience, the active code is set here as a template variable hint. {% endcomment %}
 {% endif %}

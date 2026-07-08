@@ -1,10 +1,11 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex items-center justify-end">
   {% if perms.content.add_category %}
     <a href="{% url 'dashboard:category_create' %}"
-       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">New category</a>
+       class="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">{% trans "New category" %}</a>
   {% endif %}
 </div>
 
@@ -15,12 +16,12 @@
     <div x-cloak x-show="selected.length" x-transition
          class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
          role="region" aria-label="Bulk actions">
-      <span><span x-text="selected.length"></span> selected</span>
-      <form method="post" action="{% url 'dashboard:category_bulk_action' %}" data-dp-confirm="Delete the selected categories? This can't be undone.">
+      <span><span x-text="selected.length"></span> {% trans "selected" %}</span>
+      <form method="post" action="{% url 'dashboard:category_bulk_action' %}" data-dp-confirm="{% trans 'Delete the selected categories? This can’t be undone.' %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="delete">
         <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-        <button type="submit" class="dp-btn dp-btn-ghost">Delete</button>
+        <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Delete" %}</button>
       </form>
     </div>
   {% endif %}
@@ -37,7 +38,7 @@
                      class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
             </th>
           {% endif %}
-          <th class="px-5 py-3 font-medium">Name</th><th class="px-5 py-3 font-medium">Parent</th><th class="px-5 py-3 font-medium">Posts</th><th class="px-5 py-3"></th>
+          <th class="px-5 py-3 font-medium">{% trans "Name" %}</th><th class="px-5 py-3 font-medium">{% trans "Parent" %}</th><th class="px-5 py-3 font-medium">{% trans "Posts" %}</th><th class="px-5 py-3"></th>
         </tr>
       </thead>
       <tbody>
@@ -55,14 +56,14 @@
             <td class="px-5 py-3 text-ink/50">{{ category.post_count }}</td>
             <td class="px-5 py-3 text-right">
               {% if perms.content.delete_category %}
-                <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" data-dp-confirm="Delete this category?">
-                  {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">Delete</button>
+                <form method="post" action="{% url 'dashboard:category_delete' category.pk %}" data-dp-confirm="{% trans 'Delete this category?' %}">
+                  {% csrf_token %}<button type="submit" class="text-xs text-ink/40 hover:text-accent">{% trans "Delete" %}</button>
                 </form>
               {% endif %}
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="5" class="px-5 py-8 text-center text-ink/50">No categories yet.</td></tr>
+          <tr><td colspan="5" class="px-5 py-8 text-center text-ink/50">{% trans "No categories yet." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

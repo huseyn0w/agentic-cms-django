@@ -4,9 +4,10 @@
     current      — required, the current page label (not a link)
     section_label / section_url — optional middle crumb (e.g. "Blog")
 {% endcomment %}
+{% load i18n %}
 <nav aria-label="Breadcrumb" class="mb-6">
   <ol class="flex flex-wrap items-center gap-1.5 font-mono text-xs text-text-muted">
-    <li><a href="/" class="transition-colors hover:text-text">Home</a></li>
+    <li><a href="/" class="transition-colors hover:text-text">{% trans "Home" %}</a></li>
     {% if section_label %}
       <li aria-hidden="true" class="text-text-subtle">/</li>
       <li><a href="{{ section_url }}" class="transition-colors hover:text-text">{{ section_label }}</a></li>

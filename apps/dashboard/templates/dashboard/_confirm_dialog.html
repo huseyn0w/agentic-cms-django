@@ -5,6 +5,7 @@
   dialog handles. Confirming calls the form's native submit() (bypassing the
   interceptor, so no recursion). No-JS/Alpine-down still submits the form.
 {% endcomment %}
+{% load i18n %}
 <div
   x-data="{
     show: false, message: '', form: null,
@@ -33,11 +34,11 @@
     x-trap.noscroll="show"
     class="relative w-full max-w-sm rounded-lg border border-border bg-surface p-6 shadow-md"
   >
-    <h2 id="dp-confirm-title" class="font-display text-lg font-medium text-text">Please confirm</h2>
+    <h2 id="dp-confirm-title" class="font-display text-lg font-medium text-text">{% trans "Please confirm" %}</h2>
     <p id="dp-confirm-message" class="mt-2 text-sm text-text-muted" x-text="message"></p>
     <div class="mt-6 flex justify-end gap-2">
-      <button type="button" @click="cancel()" class="dp-btn dp-btn-ghost">Cancel</button>
-      <button type="button" x-ref="confirmBtn" @click="confirm()" data-testid="confirm-accept" class="dp-btn dp-btn-primary">Confirm</button>
+      <button type="button" @click="cancel()" class="dp-btn dp-btn-ghost">{% trans "Cancel" %}</button>
+      <button type="button" x-ref="confirmBtn" @click="confirm()" data-testid="confirm-accept" class="dp-btn dp-btn-primary">{% trans "Confirm" %}</button>
     </div>
   </div>
 </div>

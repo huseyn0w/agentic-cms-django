@@ -1,22 +1,29 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
   {% for label, value in stats.items %}
     <div class="rounded-2xl border border-border bg-surface p-5">
       <p class="text-3xl font-semibold tracking-tight text-text">{{ value }}</p>
-      <p class="mt-1 text-sm capitalize text-text-muted">{{ label }}</p>
+      <p class="mt-1 text-sm capitalize text-text-muted">
+        {% if label == "posts" %}{% trans "Posts" %}
+        {% elif label == "pages" %}{% trans "Pages" %}
+        {% elif label == "media" %}{% trans "Media" %}
+        {% elif label == "users" %}{% trans "Users" %}
+        {% else %}{{ label }}{% endif %}
+      </p>
     </div>
   {% endfor %}
 </div>
 
 <section class="mt-10">
   <div class="mb-4 flex items-center justify-between">
-    <h2 class="text-lg font-semibold tracking-tight">Recent posts</h2>
+    <h2 class="text-lg font-semibold tracking-tight">{% trans "Recent posts" %}</h2>
     {% if perms.content.add_post %}
       <a href="{% url 'dashboard:post_create' %}"
          class="dp-btn dp-btn-primary">
-        New post
+        {% trans "New post" %}
       </a>
     {% endif %}
   </div>
@@ -32,7 +39,7 @@
         </span>
       </a>
     {% empty %}
-      <p class="px-5 py-6 text-sm text-text-muted">No posts yet.</p>
+      <p class="px-5 py-6 text-sm text-text-muted">{% trans "No posts yet." %}</p>
     {% endfor %}
   </div>
 </section>

@@ -378,14 +378,24 @@ Settings selection: `DJANGO_SETTINGS_MODULE` chooses dev/prod; pytest pins
 Frontend assets: in dev with the Vite server, set `DJANGO_VITE_DEV_MODE=True` for HMR;
 otherwise built assets are served from the manifest (the docker compose default).
 
-Internationalization (Phase 8.1): `LANGUAGES = en, de` (`LANGUAGE_CODE = "en"`, a
+Internationalization (Phase 8.1): `LANGUAGES = en, de, ru` (`LANGUAGE_CODE = "en"`, a
 bare code so it matches parler's lookups). `PARLER_LANGUAGES` is keyed by `SITE_ID`
 (not `None`) — parler's language-tab helper looks it up directly. Public content +
 core URLs are wrapped in `i18n_patterns(prefix_default_language=False)` in
 `config/urls.py`: the default language keeps clean URLs (`/blog/<slug>/`), other
 languages are prefixed (`/de/blog/<slug>/`); `LocaleMiddleware` (after sessions,
 before common) activates the language from the prefix. admin/dashboard/accounts/
-media stay OUTSIDE the i18n patterns. `apps/core/context_processors.py:i18n_alternates`
+media stay OUTSIDE the i18n patterns. **Admin UI language:** the dashboard UI is fully
+translated via Django gettext (`locale/<de|ru>/LC_MESSAGES/django.{po,mo}`, strings wrapped
+with `{% trans %}`/`{% blocktrans %}`/`gettext`). Since the admin is prefix-free and
+`prefix_default_language=False`, `LocaleMiddleware` pins those URLs to the default language,
+so `apps/core/middleware.py:AdminLocaleMiddleware` (registered right after `LocaleMiddleware`)
+re-applies the operator's choice from the standard `django_language` cookie for the
+`/dashboard/` + `/library/` prefixes ONLY (public unprefixed URLs stay on the default
+language). The dashboard topbar switcher (`templates/dashboard/base.html`) POSTs to Django's
+`set_language` (`/i18n/setlang/`) to set that cookie. Regenerate catalogs with
+`makemessages -l de -l ru` + `compilemessages` (needs GNU gettext on PATH).
+`apps/core/context_processors.py:i18n_alternates`
 builds hreflang/x-default alternates + switcher data via `translate_url`, emitting
 them only when the per-language URLs differ (so non-public pages get none); rendered
 in `templates/public_base.html`'s `extra_head` + header switcher. Dashboard create/

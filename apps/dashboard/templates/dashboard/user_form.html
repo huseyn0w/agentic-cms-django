@@ -1,12 +1,13 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <form method="post" class="dp-form mx-auto max-w-lg space-y-6">
   {% csrf_token %}
-  <p class="text-sm text-ink/60">Editing <span class="font-medium text-ink">{{ object.username }}</span></p>
+  <p class="text-sm text-ink/60">{% blocktrans with username=object.username %}Editing <span class="font-medium text-ink">{{ username }}</span>{% endblocktrans %}</p>
 
   <div>
-    <span class="mb-2 block text-sm font-medium text-ink/80">Roles</span>
+    <span class="mb-2 block text-sm font-medium text-ink/80">{% trans "Roles" %}</span>
     <div class="space-y-2">
       {% for checkbox in form.groups %}
         <label class="flex items-center gap-2 text-sm text-ink/80">
@@ -17,11 +18,11 @@
   </div>
 
   <label class="flex items-center gap-2 text-sm text-ink/80">
-    {{ form.is_active }} Active
+    {{ form.is_active }} {% trans "Active" %}
   </label>
 
   <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-    Save user
+    {% trans "Save user" %}
   </button>
 </form>
 {% endblock %}

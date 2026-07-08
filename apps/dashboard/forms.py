@@ -6,6 +6,7 @@ from typing import cast
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.utils.translation import gettext_lazy as _
 from parler.forms import TranslatableModelForm
 
 from apps.content.models import Category, Page, Post, Service, Tag
@@ -56,9 +57,9 @@ class PostForm(TranslatableModelForm):
             "scheduled_at": _schedule_widget(),
         }
         help_texts = {
-            "slug": "Leave blank to generate from the title.",
-            "meta_title": "Overrides the page title in search results (≤70 chars).",
-            "meta_description": "Shown in search results; falls back to the excerpt.",
+            "slug": _("Leave blank to generate from the title."),
+            "meta_title": _("Overrides the page title in search results (≤70 chars)."),
+            "meta_description": _("Shown in search results; falls back to the excerpt."),
         }
 
     def __init__(self, *args, can_publish: bool = True, **kwargs):
@@ -96,7 +97,7 @@ class PageForm(TranslatableModelForm):
             "meta_description": forms.Textarea(attrs={"rows": 2}),
             "scheduled_at": _schedule_widget(),
         }
-        help_texts = {"slug": "Leave blank to generate from the title."}
+        help_texts = {"slug": _("Leave blank to generate from the title.")}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -132,8 +133,8 @@ class ServiceForm(TranslatableModelForm):
             "scheduled_at": _schedule_widget(),
         }
         help_texts = {
-            "slug": "Leave blank to generate from the title.",
-            "faq": "One pair per block — a line starting “Q:” then a line starting “A:”.",
+            "slug": _("Leave blank to generate from the title."),
+            "faq": _("One pair per block — a line starting “Q:” then a line starting “A:”."),
         }
 
     def __init__(self, *args, **kwargs):
@@ -148,7 +149,7 @@ class MenuForm(forms.ModelForm):
         model = Menu
         fields = ["name", "slug"]
         help_texts = {
-            "slug": "Used in templates, e.g. “primary” (header) or “footer”.",
+            "slug": _("Used in templates, e.g. “primary” (header) or “footer”."),
         }
 
 
@@ -159,9 +160,9 @@ class MenuItemForm(TranslatableModelForm):
         model = MenuItem
         fields = ["parent", "label", "link_type", "url", "post", "page", "category"]
         help_texts = {
-            "parent": "Nest this item under another item in this menu (any depth).",
-            "label": "Leave blank to use the linked item's title.",
-            "url": "Used only for the “Custom URL” link type.",
+            "parent": _("Nest this item under another item in this menu (any depth)."),
+            "label": _("Leave blank to use the linked item's title."),
+            "url": _("Used only for the “Custom URL” link type."),
         }
 
     # Which field each link type requires.
@@ -183,13 +184,13 @@ class MenuItemForm(TranslatableModelForm):
         if menu is not None:
             parent_field.queryset = MenuItemRepository.eligible_parents(menu, exclude=instance)
         parent_field.required = False
-        parent_field.empty_label = "— Top level —"
+        parent_field.empty_label = _("— Top level —")
 
     def clean(self):
         cleaned = super().clean()
         required = self._REQUIRED_FOR.get(cleaned.get("link_type"))
         if required and not cleaned.get(required):
-            self.add_error(required, "Required for this link type.")
+            self.add_error(required, _("Required for this link type."))
         # Cycle prevention: a parent may be any item in the same menu except the
         # item itself or any of its descendants. The queryset already excludes
         # those, but re-check here so a forged POST can't slip a cycle through.
@@ -197,7 +198,7 @@ class MenuItemForm(TranslatableModelForm):
         if parent is not None and self.instance.pk and self._menu is not None:
             forbidden = MenuItemRepository.descendant_ids(self._menu, self.instance)
             if parent.pk == self.instance.pk or parent.pk in forbidden:
-                self.add_error("parent", "An item can't be nested under itself or its children.")
+                self.add_error("parent", _("An item can't be nested under itself or its children."))
         return cleaned
 
 
@@ -229,7 +230,7 @@ class UserRoleForm(forms.ModelForm):
         queryset=Group.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        label="Roles",
+        label=_("Roles"),
     )
 
     class Meta:
@@ -268,13 +269,13 @@ class SeoSettingsForm(forms.ModelForm):
     def clean_google_analytics_id(self) -> str:
         value = self.cleaned_data["google_analytics_id"].strip()
         if value and not re.fullmatch(r"G-[A-Z0-9]+", value):
-            raise forms.ValidationError("Expected a Measurement ID like G-XXXXXXXXXX.")
+            raise forms.ValidationError(_("Expected a Measurement ID like G-XXXXXXXXXX."))
         return value
 
     def clean_google_tag_manager_id(self) -> str:
         value = self.cleaned_data["google_tag_manager_id"].strip()
         if value and not re.fullmatch(r"GTM-[A-Z0-9]+", value):
-            raise forms.ValidationError("Expected a container ID like GTM-XXXXXXX.")
+            raise forms.ValidationError(_("Expected a container ID like GTM-XXXXXXX."))
         return value
 
     def clean_social_profiles(self) -> str:
@@ -283,5 +284,7 @@ class SeoSettingsForm(forms.ModelForm):
         cleaned = [ln for ln in lines if ln]
         for url in cleaned:
             if not url.startswith(("http://", "https://")):
-                raise forms.ValidationError(f"“{url}” must be a full http(s) URL.")
+                raise forms.ValidationError(
+                    _("“%(url)s” must be a full http(s) URL.") % {"url": url}
+                )
         return "\n".join(cleaned)

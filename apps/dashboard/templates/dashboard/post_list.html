@@ -1,23 +1,24 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
   <form method="get" class="flex items-center gap-2">
-    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search posts…"
+    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="{% trans 'Search posts…' %}"
            class="rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none focus-visible:ring-2 focus-visible:ring-ring" />
     <select name="status" onchange="this.form.submit()"
             class="rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none focus-visible:ring-2 focus-visible:ring-ring">
-      <option value="">All statuses</option>
-      <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
-      <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Published</option>
+      <option value="">{% trans "All statuses" %}</option>
+      <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>{% trans "Draft" %}</option>
+      <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>{% trans "Published" %}</option>
     </select>
   </form>
   <div class="flex items-center gap-3">
     {% if perms.content.delete_post %}
-      <a href="{% url 'dashboard:post_trash' %}" class="text-sm text-text-muted hover:text-text">Trash</a>
+      <a href="{% url 'dashboard:post_trash' %}" class="text-sm text-text-muted hover:text-text">{% trans "Trash" %}</a>
     {% endif %}
     {% if perms.content.add_post %}
-      <a href="{% url 'dashboard:post_create' %}" class="dp-btn dp-btn-primary">New post</a>
+      <a href="{% url 'dashboard:post_create' %}" class="dp-btn dp-btn-primary">{% trans "New post" %}</a>
     {% endif %}
   </div>
 </div>
@@ -30,12 +31,12 @@
     <div x-cloak x-show="selected.length" x-transition
          class="mb-3 flex items-center justify-between gap-4 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm"
          role="region" aria-label="Bulk actions">
-      <span><span x-text="selected.length"></span> selected</span>
-      <form method="post" action="{% url 'dashboard:post_bulk_action' %}" data-dp-confirm="Move the selected posts to trash?">
+      <span><span x-text="selected.length"></span> {% trans "selected" %}</span>
+      <form method="post" action="{% url 'dashboard:post_bulk_action' %}" data-dp-confirm="{% trans 'Move the selected posts to trash?' %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="trash">
         <template x-for="id in selected" :key="id"><input type="hidden" name="ids" :value="id"></template>
-        <button type="submit" class="dp-btn dp-btn-ghost">Move to trash</button>
+        <button type="submit" class="dp-btn dp-btn-ghost">{% trans "Move to trash" %}</button>
       </form>
     </div>
   {% endif %}
@@ -52,10 +53,10 @@
                      class="rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-ring" />
             </th>
           {% endif %}
-          <th class="px-5 py-3 font-medium">Title</th>
-          <th class="px-5 py-3 font-medium">Status</th>
-          <th class="px-5 py-3 font-medium">Author</th>
-          <th class="px-5 py-3 font-medium">Updated</th>
+          <th class="px-5 py-3 font-medium">{% trans "Title" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Status" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Author" %}</th>
+          <th class="px-5 py-3 font-medium">{% trans "Updated" %}</th>
           <th class="px-5 py-3"></th>
         </tr>
       </thead>
@@ -76,7 +77,7 @@
               {% if post.is_scheduled %}
                 <span class="inline-flex items-center rounded-full bg-warning-bg px-2.5 py-0.5 text-xs font-medium text-warning"
                       title="Scheduled for {{ post.scheduled_at|date:'M j, Y H:i' }}">
-                  Scheduled · {{ post.scheduled_at|date:"M j, H:i" }}
+                  {% trans "Scheduled" %} · {{ post.scheduled_at|date:"M j, H:i" }}
                 </span>
               {% else %}
                 <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {% if post.is_published %}bg-success-bg text-success{% else %}bg-surface-2 text-text-muted{% endif %}">
@@ -89,9 +90,9 @@
             <td class="px-5 py-3 text-right">
               {% if perms.content.delete_post %}
                 <form method="post" action="{% url 'dashboard:post_delete' post.pk %}"
-                      data-dp-confirm="Move this post to trash?">
+                      data-dp-confirm="{% trans 'Move this post to trash?' %}">
                   {% csrf_token %}
-                  <button type="submit" class="text-xs text-text-subtle hover:text-primary" data-testid="post-trash">Trash</button>
+                  <button type="submit" class="text-xs text-text-subtle hover:text-primary" data-testid="post-trash">{% trans "Trash" %}</button>
                 </form>
               {% endif %}
             </td>
@@ -100,9 +101,9 @@
           {% url 'dashboard:post_create' as post_create_url %}
           <tr><td colspan="6" class="p-0">
             {% if perms.content.add_post %}
-              {% include "dashboard/_empty_state.html" with title="No posts yet" description="Write your first article to see it here." cta_url=post_create_url cta_label="New post" %}
+              {% include "dashboard/_empty_state.html" with title=_("No posts yet") description=_("Write your first article to see it here.") cta_url=post_create_url cta_label=_("New post") %}
             {% else %}
-              {% include "dashboard/_empty_state.html" with title="No posts found" description="Try a different search or status filter." %}
+              {% include "dashboard/_empty_state.html" with title=_("No posts found") description=_("Try a different search or status filter.") %}
             {% endif %}
           </td></tr>
         {% endfor %}

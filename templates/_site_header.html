@@ -7,6 +7,7 @@
   Primary links come from the managed "primary" menu when it exists; otherwise the
   built-in Services/Blog links show so a fresh install still has navigation.
 {% endcomment %}
+{% load i18n %}
 {% load menu_tags %}
 {% menu_items "primary" as primary_items %}
 <header
@@ -27,17 +28,17 @@
           {% endfor %}
         </ul>
       {% else %}
-        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'content:service_list' %}">Services</a>
-        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'content:post_list' %}">Blog</a>
+        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'content:service_list' %}">{% trans "Services" %}</a>
+        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'content:post_list' %}">{% trans "Blog" %}</a>
       {% endif %}
       <form method="get" action="{% url 'search:results' %}" role="search">
-        <label for="header-search" class="sr-only">Search</label>
+        <label for="header-search" class="sr-only">{% trans "Search" %}</label>
         <input
           id="header-search"
           type="search"
           name="q"
           value="{{ request.GET.q }}"
-          placeholder="Search…"
+          placeholder="{% trans 'Search…' %}"
           class="w-32 rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-text placeholder:text-text-subtle transition-[width] duration-200 focus-visible:w-44 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
         />
       </form>
@@ -55,16 +56,16 @@
         </div>
       {% endif %}
       {% if perms.accounts.access_admin %}
-        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'dashboard:home' %}">Dashboard</a>
+        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'dashboard:home' %}">{% trans "Dashboard" %}</a>
       {% endif %}
       {% if user.is_authenticated %}
-        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'accounts:profile' %}">Account</a>
+        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'accounts:profile' %}">{% trans "Account" %}</a>
         <form method="post" action="{% url 'account_logout' %}" class="inline">
           {% csrf_token %}
-          <button type="submit" class="font-medium text-text-muted transition-colors hover:text-text">Sign out</button>
+          <button type="submit" class="font-medium text-text-muted transition-colors hover:text-text">{% trans "Sign out" %}</button>
         </form>
       {% else %}
-        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'account_login' %}">Sign in</a>
+        <a class="font-medium text-text-muted transition-colors hover:text-text" href="{% url 'account_login' %}">{% trans "Sign in" %}</a>
       {% endif %}
     </nav>
 
@@ -75,7 +76,7 @@
       @click="open = true"
       :aria-expanded="open"
       aria-controls="mobile-nav"
-      aria-label="Open menu"
+      aria-label="{% trans 'Open menu' %}"
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
@@ -104,7 +105,7 @@
     >
       <div class="mb-4 flex items-center justify-between">
         <span class="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-text">{{ site.site_name }}</span>
-        <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" @click="open = false" aria-label="Close menu">
+        <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" @click="open = false" aria-label="{% trans 'Close menu' %}">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </div>
@@ -113,12 +114,12 @@
           {% include "_menu_node_mobile.html" with node=item depth=0 %}
         {% endfor %}
       {% else %}
-        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'content:service_list' %}">Services</a>
-        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'content:post_list' %}">Blog</a>
+        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'content:service_list' %}">{% trans "Services" %}</a>
+        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'content:post_list' %}">{% trans "Blog" %}</a>
       {% endif %}
       <form method="get" action="{% url 'search:results' %}" role="search" class="px-1 py-2">
-        <label for="mobile-search" class="sr-only">Search</label>
-        <input id="mobile-search" type="search" name="q" placeholder="Search…" class="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm text-text placeholder:text-text-subtle focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40" />
+        <label for="mobile-search" class="sr-only">{% trans "Search" %}</label>
+        <input id="mobile-search" type="search" name="q" placeholder="{% trans 'Search…' %}" class="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm text-text placeholder:text-text-subtle focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40" />
       </form>
       {% if i18n_alternates|length > 1 %}
         <div class="flex items-center gap-3 px-3 py-2" aria-label="Language">
@@ -128,16 +129,16 @@
         </div>
       {% endif %}
       {% if perms.accounts.access_admin %}
-        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'dashboard:home' %}">Dashboard</a>
+        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'dashboard:home' %}">{% trans "Dashboard" %}</a>
       {% endif %}
       {% if user.is_authenticated %}
-        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'accounts:profile' %}">Account</a>
+        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'accounts:profile' %}">{% trans "Account" %}</a>
         <form method="post" action="{% url 'account_logout' %}" class="px-1">
           {% csrf_token %}
-          <button type="submit" class="w-full rounded-md px-3 py-2 text-left font-medium text-text transition-colors hover:bg-surface-2">Sign out</button>
+          <button type="submit" class="w-full rounded-md px-3 py-2 text-left font-medium text-text transition-colors hover:bg-surface-2">{% trans "Sign out" %}</button>
         </form>
       {% else %}
-        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'account_login' %}">Sign in</a>
+        <a class="rounded-md px-3 py-2 font-medium text-text transition-colors hover:bg-surface-2" href="{% url 'account_login' %}">{% trans "Sign in" %}</a>
       {% endif %}
     </nav>
   </div>

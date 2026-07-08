@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <form method="post" enctype="multipart/form-data" class="dp-form max-w-lg space-y-5">
@@ -10,7 +11,7 @@
     {% include "dashboard/_field.html" with field=field %}
   {% endfor %}
   <button type="submit" class="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-    Save SEO settings
+    {% trans "Save SEO settings" %}
   </button>
 </form>
 {% endblock %}

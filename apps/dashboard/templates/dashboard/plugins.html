@@ -1,7 +1,8 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
-<p class="mb-6 text-sm text-ink/60">Enable or disable installed plugins. Changes take effect immediately.</p>
+<p class="mb-6 text-sm text-ink/60">{% trans "Enable or disable installed plugins. Changes take effect immediately." %}</p>
 
 <div class="overflow-hidden rounded-2xl border border-ink/10 bg-surface">
   {% for plugin in plugins %}
@@ -13,20 +14,20 @@
       </div>
       <div class="flex items-center gap-3">
         {% if plugin.enabled %}
-          <span class="rounded-full bg-success-bg px-3 py-1 text-xs font-medium text-success">Enabled</span>
+          <span class="rounded-full bg-success-bg px-3 py-1 text-xs font-medium text-success">{% trans "Enabled" %}</span>
         {% else %}
-          <span class="rounded-full bg-surface-2 px-3 py-1 text-xs font-medium text-text-subtle">Disabled</span>
+          <span class="rounded-full bg-surface-2 px-3 py-1 text-xs font-medium text-text-subtle">{% trans "Disabled" %}</span>
         {% endif %}
         <form method="post" action="{% url 'dashboard:plugin_toggle' plugin.info.slug %}">
           {% csrf_token %}
           <button type="submit" class="rounded-full border border-ink/15 px-4 py-1.5 text-sm font-medium text-ink/80 transition-colors hover:border-ink hover:text-ink">
-            {% if plugin.enabled %}Disable{% else %}Enable{% endif %}
+            {% if plugin.enabled %}{% trans "Disable" %}{% else %}{% trans "Enable" %}{% endif %}
           </button>
         </form>
       </div>
     </div>
   {% empty %}
-    <p class="px-5 py-8 text-center text-ink/50">No plugins installed.</p>
+    <p class="px-5 py-8 text-center text-ink/50">{% trans "No plugins installed." %}</p>
   {% endfor %}
 </div>
 {% endblock %}

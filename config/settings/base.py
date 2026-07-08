@@ -84,6 +84,10 @@ MIDDLEWARE = [
     # LocaleMiddleware activates the request language from the URL prefix
     # (i18n_patterns) / Accept-Language; must sit after sessions, before common.
     "django.middleware.locale.LocaleMiddleware",
+    # Re-applies the operator's cookie-selected UI language on the admin surfaces
+    # (/dashboard/, /library/), which live outside i18n_patterns and would
+    # otherwise be pinned to the default language by LocaleMiddleware.
+    "apps.core.middleware.AdminLocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -252,6 +256,7 @@ LANGUAGE_CODE = env("DJANGO_LANGUAGE_CODE", default="en")
 LANGUAGES = [
     ("en", "English"),
     ("de", "Deutsch"),
+    ("ru", "Russian"),
 ]
 
 LOCALE_PATHS = [BASE_DIR / "locale"]

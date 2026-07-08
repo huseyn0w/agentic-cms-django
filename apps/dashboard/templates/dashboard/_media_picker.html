@@ -3,10 +3,11 @@
   (i.e. the user may view media). An accessible Alpine modal of library thumbnails;
   picking one inserts an <img> into the active Trix editor via window.cmstackInsertImage.
 {% endcomment %}
+{% load i18n %}
 {% if media_images %}
   <div x-data="{ open: false }" class="mt-2">
     <button type="button" @click="open = true" class="dp-btn dp-btn-ghost text-sm">
-      Insert image from library
+      {% trans "Insert image from library" %}
     </button>
 
     <div x-show="open" x-cloak class="fixed inset-0 z-50" @keydown.escape.window="open = false">
@@ -15,14 +16,14 @@
         x-trap.noscroll="open"
         role="dialog"
         aria-modal="true"
-        aria-label="Media library"
+        aria-label="{% trans 'Media library' %}"
         class="absolute left-1/2 top-1/2 max-h-[80vh] w-[92%] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-surface p-6 shadow-lg"
       >
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-text">Insert image</h2>
+          <h2 class="text-lg font-semibold text-text">{% trans "Insert image" %}</h2>
           <button type="button" @click="open = false"
                   class="inline-flex h-9 w-9 items-center justify-center rounded-md text-text-muted hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label="Close">
+                  aria-label="{% trans 'Close' %}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
         </div>

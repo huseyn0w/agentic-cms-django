@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load i18n %}
 
 {% block content %}
 {% include "dashboard/_language_tabs.html" %}
@@ -16,7 +17,7 @@
       {% include "dashboard/_field.html" with field=form.summary %}
 
       <div>
-        <label for="{{ form.description.id_for_label }}">Description</label>
+        <label for="{{ form.description.id_for_label }}">{% trans "Description" %}</label>
         {{ form.description }}
         <trix-editor input="{{ form.description.id_for_label }}"></trix-editor>
         {% include "dashboard/_media_picker.html" %}
@@ -26,7 +27,7 @@
       {% include "dashboard/_field.html" with field=form.faq %}
 
       <details class="rounded-2xl border border-ink/10 bg-surface p-5" {% if form.meta_title.value or form.meta_description.value or form.canonical_url.value %}open{% endif %}>
-        <summary class="cursor-pointer text-sm font-semibold text-ink">SEO &amp; sharing</summary>
+        <summary class="cursor-pointer text-sm font-semibold text-ink">{% trans "SEO &amp; sharing" %}</summary>
         <div class="mt-4 space-y-5">
           {% include "dashboard/_field.html" with field=form.meta_title %}
           {% include "dashboard/_field.html" with field=form.meta_description %}
@@ -44,7 +45,7 @@
         {% include "dashboard/_field.html" with field=form.scheduled_at %}
         <button type="submit"
                 class="mt-4 w-full rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5">
-          Save service
+          {% trans "Save service" %}
         </button>
       </div>
       <div class="space-y-5 rounded-2xl border border-ink/10 bg-surface p-5">

@@ -1,0 +1,1564 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cmstack-django 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-06 23:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: cmstack <contact@elman.group>\n"
+"Language-Team: German <de@li.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps/accounts/admin.py:18 apps/accounts/admin.py:22
+msgid "Profile"
+msgstr "Profil"
+
+#: apps/accounts/models.py:25
+msgid "avatar"
+msgstr "Avatar"
+
+#: apps/accounts/models.py:26
+msgid "bio"
+msgstr "Biografie"
+
+#: apps/accounts/models.py:27
+msgid "website"
+msgstr "Website"
+
+#: apps/comments/models.py:9
+msgid "Pending"
+msgstr "Ausstehend"
+
+#: apps/comments/models.py:10
+msgid "Approved"
+msgstr "Genehmigt"
+
+#: apps/comments/models.py:11
+#: apps/dashboard/templates/dashboard/comment_list.html:38
+#: apps/dashboard/templates/dashboard/comment_list.html:77
+msgid "Spam"
+msgstr "Spam"
+
+#: apps/comments/models.py:32 apps/content/models.py:255
+msgid "post"
+msgstr "Beitrag"
+
+#: apps/comments/models.py:38
+msgid "in reply to"
+msgstr "als Antwort auf"
+
+#: apps/comments/models.py:47
+msgid "user"
+msgstr "Benutzer"
+
+#: apps/comments/models.py:53 apps/content/models.py:46
+#: apps/content/models.py:79 apps/menus/models.py:22
+msgid "name"
+msgstr "Name"
+
+#: apps/comments/models.py:54
+msgid "email"
+msgstr "E-Mail"
+
+#: apps/comments/models.py:55 apps/comments/models.py:64
+msgid "comment"
+msgstr "Kommentar"
+
+#: apps/comments/models.py:57 apps/content/models.py:243
+#: apps/content/models.py:351 apps/content/models.py:450
+msgid "status"
+msgstr "Status"
+
+#: apps/comments/models.py:59 apps/content/models.py:26
+#: apps/content/models.py:560 apps/media/models.py:44 apps/menus/models.py:29
+msgid "created at"
+msgstr "erstellt am"
+
+#: apps/comments/models.py:65
+msgid "comments"
+msgstr "Kommentare"
+
+#: apps/comments/services.py:74
+msgid "Comment approved."
+msgstr "Kommentar genehmigt."
+
+#: apps/comments/services.py:75
+msgid "Comment marked as spam."
+msgstr "Kommentar als Spam markiert."
+
+#: apps/comments/services.py:76
+msgid "Comment deleted."
+msgstr "Kommentar gelöscht."
+
+#: apps/content/models.py:27 apps/media/models.py:45
+msgid "updated at"
+msgstr "aktualisiert am"
+
+#: apps/content/models.py:34
+#: apps/dashboard/templates/dashboard/post_list.html:12
+msgid "Draft"
+msgstr "Entwurf"
+
+#: apps/content/models.py:35
+#: apps/dashboard/templates/dashboard/post_list.html:13
+msgid "Published"
+msgstr "Veröffentlicht"
+
+#: apps/content/models.py:47 apps/content/models.py:420
+msgid "description"
+msgstr "Beschreibung"
+
+#: apps/content/models.py:49 apps/content/models.py:81
+#: apps/content/models.py:228 apps/content/models.py:338
+#: apps/content/models.py:435 apps/menus/models.py:24
+msgid "slug"
+msgstr "Slug"
+
+#: apps/content/models.py:52 apps/content/models.py:356
+msgid "parent"
+msgstr "Übergeordnet"
+
+#: apps/content/models.py:62
+msgid "category"
+msgstr "Kategorie"
+
+#: apps/content/models.py:63 apps/content/models.py:248
+msgid "categories"
+msgstr "Kategorien"
+
+#: apps/content/models.py:86
+msgid "tag"
+msgstr "Schlagwort"
+
+#: apps/content/models.py:87 apps/content/models.py:250
+msgid "tags"
+msgstr "Schlagwörter"
+
+#: apps/content/models.py:170
+msgid "deleted at"
+msgstr "gelöscht am"
+
+#: apps/content/models.py:199
+msgid "scheduled for"
+msgstr "geplant für"
+
+#: apps/content/models.py:202
+msgid "Auto-publish at this time. Keep the status as Draft until then."
+msgstr ""
+"Zu diesem Zeitpunkt automatisch veröffentlichen. Bis dahin bleibt der Status "
+"„Entwurf“."
+
+#: apps/content/models.py:222 apps/content/models.py:333
+#: apps/content/models.py:413 apps/content/models.py:522
+#: apps/media/models.py:29
+msgid "title"
+msgstr "Titel"
+
+#: apps/content/models.py:223
+msgid "excerpt"
+msgstr "Auszug"
+
+#: apps/content/models.py:224 apps/content/models.py:334
+#: apps/content/models.py:523
+msgid "body"
+msgstr "Inhalt"
+
+#: apps/content/models.py:225 apps/content/models.py:335
+#: apps/content/models.py:432
+msgid "meta title"
+msgstr "Meta-Titel"
+
+#: apps/content/models.py:226 apps/content/models.py:336
+#: apps/content/models.py:433
+msgid "meta description"
+msgstr "Meta-Beschreibung"
+
+#: apps/content/models.py:229 apps/content/models.py:339
+#: apps/content/models.py:453
+msgid "canonical URL"
+msgstr "Kanonische URL"
+
+#: apps/content/models.py:230 apps/content/models.py:340
+#: apps/content/models.py:454
+msgid "hide from search engines"
+msgstr "Vor Suchmaschinen verbergen"
+
+#: apps/content/models.py:231 apps/content/models.py:341
+#: apps/content/models.py:455
+msgid "share image"
+msgstr "Vorschaubild"
+
+#: apps/content/models.py:234 apps/content/models.py:344
+#: apps/content/models.py:438 apps/content/models.py:526
+msgid "author"
+msgstr "Autor"
+
+#: apps/content/models.py:240
+msgid "featured image"
+msgstr "Beitragsbild"
+
+#: apps/content/models.py:245 apps/content/models.py:353
+#: apps/content/models.py:452
+msgid "published at"
+msgstr "veröffentlicht am"
+
+#: apps/content/models.py:256
+msgid "posts"
+msgstr "Beiträge"
+
+#: apps/content/models.py:349
+msgid "template"
+msgstr "Vorlage"
+
+#: apps/content/models.py:366
+msgid "page"
+msgstr "Seite"
+
+#: apps/content/models.py:367
+msgid "pages"
+msgstr "Seiten"
+
+#: apps/content/models.py:415
+msgid "summary"
+msgstr "Zusammenfassung"
+
+#: apps/content/models.py:418
+msgid "One or two plain sentences answering “what is this service?”."
+msgstr ""
+"Ein oder zwei einfache Sätze, die „Was ist diese Dienstleistung?“ "
+"beantworten."
+
+#: apps/content/models.py:422
+msgid "area served"
+msgstr "Einzugsgebiet"
+
+#: apps/content/models.py:425
+msgid "e.g. “United States” or “Berlin and surrounding areas”."
+msgstr "z. B. „Deutschland“ oder „Berlin und Umgebung“."
+
+#: apps/content/models.py:428
+msgid "FAQ"
+msgstr "FAQ"
+
+#: apps/content/models.py:430
+msgid ""
+"Q&A blocks. One per pair:\n"
+"Q: question\n"
+"A: answer"
+msgstr ""
+"Frage-Antwort-Blöcke. Einer pro Paar:\n"
+"Q: Frage\n"
+"A: Antwort"
+
+#: apps/content/models.py:444
+msgid "price"
+msgstr "Preis"
+
+#: apps/content/models.py:447
+msgid "Freeform, e.g. “From $499” or “€90/hour”."
+msgstr "Freitext, z. B. „Ab 499 $“ oder „90 €/Stunde“."
+
+#: apps/content/models.py:460
+msgid "service"
+msgstr "Dienstleistung"
+
+#: apps/content/models.py:461
+msgid "services"
+msgstr "Dienstleistungen"
+
+#: apps/content/models.py:521
+msgid "language"
+msgstr "Sprache"
+
+#: apps/content/models.py:563
+msgid "like"
+msgstr "Like"
+
+#: apps/content/models.py:564
+msgid "likes"
+msgstr "Likes"
+
+#: apps/core/models.py:13
+msgid "site name"
+msgstr "Website-Name"
+
+#: apps/core/models.py:14
+msgid "tagline"
+msgstr "Slogan"
+
+#: apps/core/models.py:15
+msgid "posts per page"
+msgstr "Beiträge pro Seite"
+
+#: apps/core/models.py:16
+msgid "active theme"
+msgstr "Aktives Theme"
+
+#: apps/core/models.py:18
+msgid "allow comments"
+msgstr "Kommentare erlauben"
+
+#: apps/core/models.py:19
+msgid "require login to comment"
+msgstr "Anmeldung zum Kommentieren erforderlich"
+
+#: apps/core/models.py:22 apps/core/models.py:23
+msgid "site settings"
+msgstr "Website-Einstellungen"
+
+#: apps/dashboard/forms.py:60 apps/dashboard/forms.py:100
+#: apps/dashboard/forms.py:136
+msgid "Leave blank to generate from the title."
+msgstr "Leer lassen, um aus dem Titel zu erzeugen."
+
+#: apps/dashboard/forms.py:61
+msgid "Overrides the page title in search results (≤70 chars)."
+msgstr "Überschreibt den Seitentitel in Suchergebnissen (≤70 Zeichen)."
+
+#: apps/dashboard/forms.py:62
+msgid "Shown in search results; falls back to the excerpt."
+msgstr "Wird in Suchergebnissen angezeigt; nutzt sonst den Auszug."
+
+#: apps/dashboard/forms.py:137
+msgid "One pair per block — a line starting “Q:” then a line starting “A:”."
+msgstr "Ein Paar pro Block — eine Zeile mit „Q:“ und dann eine Zeile mit „A:“."
+
+#: apps/dashboard/forms.py:152
+msgid "Used in templates, e.g. “primary” (header) or “footer”."
+msgstr "Wird in Vorlagen verwendet, z. B. „primary“ (Kopfzeile) oder „footer“."
+
+#: apps/dashboard/forms.py:163
+msgid "Nest this item under another item in this menu (any depth)."
+msgstr ""
+"Diesen Eintrag unter einem anderen Eintrag dieses Menüs verschachteln "
+"(beliebige Tiefe)."
+
+#: apps/dashboard/forms.py:164 apps/menus/models.py:70
+msgid "Leave blank to use the linked item's title."
+msgstr "Leer lassen, um den Titel des verknüpften Elements zu verwenden."
+
+#: apps/dashboard/forms.py:165
+msgid "Used only for the “Custom URL” link type."
+msgstr "Wird nur für den Linktyp „Benutzerdefinierte URL“ verwendet."
+
+#: apps/dashboard/forms.py:187
+msgid "— Top level —"
+msgstr "— Oberste Ebene —"
+
+#: apps/dashboard/forms.py:193
+msgid "Required for this link type."
+msgstr "Für diesen Linktyp erforderlich."
+
+#: apps/dashboard/forms.py:201
+msgid "An item can't be nested under itself or its children."
+msgstr ""
+"Ein Eintrag kann nicht unter sich selbst oder seinen untergeordneten "
+"Einträgen verschachtelt werden."
+
+#: apps/dashboard/forms.py:233
+#: apps/dashboard/templates/dashboard/user_form.html:10
+#: apps/dashboard/templates/dashboard/user_list.html:47
+msgid "Roles"
+msgstr "Rollen"
+
+#: apps/dashboard/forms.py:272
+msgid "Expected a Measurement ID like G-XXXXXXXXXX."
+msgstr "Erwartet wurde eine Mess-ID wie G-XXXXXXXXXX."
+
+#: apps/dashboard/forms.py:278
+msgid "Expected a container ID like GTM-XXXXXXX."
+msgstr "Erwartet wurde eine Container-ID wie GTM-XXXXXXX."
+
+#: apps/dashboard/forms.py:288
+#, python-format
+msgid "“%(url)s” must be a full http(s) URL."
+msgstr "„%(url)s“ muss eine vollständige http(s)-URL sein."
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:37
+msgid "Please confirm"
+msgstr "Bitte bestätigen"
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:40
+#: apps/dashboard/templates/dashboard/menu_form.html:15
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: apps/dashboard/templates/dashboard/_confirm_dialog.html:41
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: apps/dashboard/templates/dashboard/_language_tabs.html:21
+msgid "No translation yet"
+msgstr "Noch keine Übersetzung"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:10
+msgid "Insert image from library"
+msgstr "Bild aus Bibliothek einfügen"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:19
+msgid "Media library"
+msgstr "Medienbibliothek"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:23
+msgid "Insert image"
+msgstr "Bild einfügen"
+
+#: apps/dashboard/templates/dashboard/_media_picker.html:26
+msgid "Close"
+msgstr "Schließen"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:13
+msgid "Drag to reorder"
+msgstr "Zum Neuordnen ziehen"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:25
+msgid "Move up"
+msgstr "Nach oben"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:30
+msgid "Move down"
+msgstr "Nach unten"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:33
+msgid "Remove this item?"
+msgstr "Diesen Eintrag entfernen?"
+
+#: apps/dashboard/templates/dashboard/_menu_item_row.html:35
+#: apps/dashboard/templates/dashboard/category_list.html:24
+#: apps/dashboard/templates/dashboard/category_list.html:60
+#: apps/dashboard/templates/dashboard/comment_list.html:44
+#: apps/dashboard/templates/dashboard/comment_list.html:80
+#: apps/dashboard/templates/dashboard/menu_list.html:34
+#: apps/dashboard/templates/dashboard/service_list.html:36
+#: apps/dashboard/templates/dashboard/tag_list.html:24
+#: apps/dashboard/templates/dashboard/tag_list.html:59
+msgid "Delete"
+msgstr "Löschen"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:5
+#: apps/dashboard/templates/dashboard/_pagination.html:6
+msgid "Previous"
+msgstr "Zurück"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:7
+#, python-format
+msgid "Page %(number)s of %(total)s"
+msgstr "Seite %(number)s von %(total)s"
+
+#: apps/dashboard/templates/dashboard/_pagination.html:9
+#: apps/dashboard/templates/dashboard/_pagination.html:10
+msgid "Next"
+msgstr "Weiter"
+
+#: apps/dashboard/templates/dashboard/_toasts.html:32
+#: apps/dashboard/templates/dashboard/_toasts.html:62
+msgid "Dismiss notification"
+msgstr "Benachrichtigung schließen"
+
+#: apps/dashboard/templates/dashboard/category_list.html:8
+#: apps/dashboard/views.py:518
+msgid "New category"
+msgstr "Neue Kategorie"
+
+#: apps/dashboard/templates/dashboard/category_list.html:19
+#: apps/dashboard/templates/dashboard/comment_list.html:25
+#: apps/dashboard/templates/dashboard/page_list.html:25
+#: apps/dashboard/templates/dashboard/post_list.html:34
+#: apps/dashboard/templates/dashboard/tag_list.html:19
+#: apps/dashboard/templates/dashboard/user_list.html:15
+msgid "selected"
+msgstr "ausgewählt"
+
+#: apps/dashboard/templates/dashboard/category_list.html:20
+msgid "Delete the selected categories? This can’t be undone."
+msgstr ""
+"Ausgewählte Kategorien löschen? Dies kann nicht rückgängig gemacht werden."
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+#: apps/dashboard/templates/dashboard/menu_list.html:16
+#: apps/dashboard/templates/dashboard/tag_list.html:41
+msgid "Name"
+msgstr "Name"
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+msgid "Parent"
+msgstr "Übergeordnet"
+
+#: apps/dashboard/templates/dashboard/category_list.html:41
+#: apps/dashboard/templates/dashboard/home.html:10
+#: apps/dashboard/templates/dashboard/tag_list.html:41
+#: apps/dashboard/views.py:116 templates/dashboard/base.html:38
+msgid "Posts"
+msgstr "Beiträge"
+
+#: apps/dashboard/templates/dashboard/category_list.html:59
+msgid "Delete this category?"
+msgstr "Diese Kategorie löschen?"
+
+#: apps/dashboard/templates/dashboard/category_list.html:66
+msgid "No categories yet."
+msgstr "Noch keine Kategorien."
+
+#: apps/dashboard/templates/dashboard/comment_list.html:7
+msgid "All"
+msgstr "Alle"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:12
+#, python-format
+msgid "%(counter)s pending"
+msgstr "%(counter)s ausstehend"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:32
+#: apps/dashboard/templates/dashboard/comment_list.html:73
+msgid "Approve"
+msgstr "Genehmigen"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:40
+msgid "Delete the selected comments? This can’t be undone."
+msgstr ""
+"Ausgewählte Kommentare löschen? Dies kann nicht rückgängig gemacht werden."
+
+#: apps/dashboard/templates/dashboard/comment_list.html:67
+msgid "on"
+msgstr "zu"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:68
+#, python-format
+msgid "in reply to #%(pid)s"
+msgstr "als Antwort auf #%(pid)s"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:79
+msgid "Delete this comment?"
+msgstr "Diesen Kommentar löschen?"
+
+#: apps/dashboard/templates/dashboard/comment_list.html:85
+msgid "No comments."
+msgstr "Keine Kommentare."
+
+#: apps/dashboard/templates/dashboard/home.html:11 apps/dashboard/views.py:291
+#: templates/dashboard/base.html:39
+msgid "Pages"
+msgstr "Seiten"
+
+#: apps/dashboard/templates/dashboard/home.html:12
+#: templates/dashboard/base.html:43
+msgid "Media"
+msgstr "Medien"
+
+#: apps/dashboard/templates/dashboard/home.html:13 apps/dashboard/views.py:637
+#: templates/dashboard/base.html:45
+msgid "Users"
+msgstr "Benutzer"
+
+#: apps/dashboard/templates/dashboard/home.html:22
+msgid "Recent posts"
+msgstr "Neueste Beiträge"
+
+#: apps/dashboard/templates/dashboard/home.html:26
+#: apps/dashboard/templates/dashboard/post_list.html:21
+#: apps/dashboard/templates/dashboard/post_list.html:104
+#: apps/dashboard/views.py:158
+msgid "New post"
+msgstr "Neuer Beitrag"
+
+#: apps/dashboard/templates/dashboard/home.html:42
+msgid "No posts yet."
+msgstr "Noch keine Beiträge."
+
+#: apps/dashboard/templates/dashboard/menu_form.html:14
+#: apps/dashboard/templates/dashboard/taxonomy_form.html:15
+msgid "Save"
+msgstr "Speichern"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:6
+msgid "Menu:"
+msgstr "Menü:"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:7
+msgid "Back to menu"
+msgstr "Zurück zum Menü"
+
+#: apps/dashboard/templates/dashboard/menu_item_form.html:18
+msgid "Save item"
+msgstr "Eintrag speichern"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:8
+#: apps/dashboard/views.py:909
+msgid "New menu"
+msgstr "Neues Menü"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:17
+msgid "Slug"
+msgstr "Slug"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:18
+msgid "Items"
+msgstr "Einträge"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:32
+msgid "Delete this menu and its items?"
+msgstr "Dieses Menü und seine Einträge löschen?"
+
+#: apps/dashboard/templates/dashboard/menu_list.html:39
+msgid "No menus yet. Create “primary” for the header or “footer”."
+msgstr ""
+"Noch keine Menüs. Erstellen Sie „primary“ für die Kopfzeile oder „footer“."
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:11
+msgid "All menus"
+msgstr "Alle Menüs"
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:13
+msgid "Add item"
+msgstr "Eintrag hinzufügen"
+
+#: apps/dashboard/templates/dashboard/menu_manage.html:30
+msgid "No items yet. Add the first one."
+msgstr "Noch keine Einträge. Fügen Sie den ersten hinzu."
+
+#: apps/dashboard/templates/dashboard/page_form.html:17
+#: apps/dashboard/templates/dashboard/post_form.html:21
+#: apps/dashboard/templates/dashboard/post_form.html:23
+msgid "Content"
+msgstr "Inhalt"
+
+#: apps/dashboard/templates/dashboard/page_form.html:24
+#: apps/dashboard/templates/dashboard/post_form.html:30
+#: apps/dashboard/templates/dashboard/service_form.html:30
+msgid "SEO &amp; sharing"
+msgstr "SEO &amp; Teilen"
+
+#: apps/dashboard/templates/dashboard/page_form.html:40
+msgid "Save page"
+msgstr "Seite speichern"
+
+#: apps/dashboard/templates/dashboard/page_form.html:44
+#: apps/dashboard/templates/dashboard/post_form.html:52
+#: apps/dashboard/views.py:260 apps/dashboard/views.py:411
+msgid "Revision history"
+msgstr "Versionsverlauf"
+
+#: apps/dashboard/templates/dashboard/page_list.html:7
+#: apps/dashboard/templates/dashboard/page_list.html:72
+#: apps/dashboard/templates/dashboard/post_list.html:18
+#: apps/dashboard/templates/dashboard/post_list.html:95
+#: apps/dashboard/views.py:230 apps/dashboard/views.py:381
+msgid "Trash"
+msgstr "Papierkorb"
+
+#: apps/dashboard/templates/dashboard/page_list.html:12
+#: apps/dashboard/views.py:310
+msgid "New page"
+msgstr "Neue Seite"
+
+#: apps/dashboard/templates/dashboard/page_list.html:26
+msgid "Move the selected pages to trash?"
+msgstr "Ausgewählte Seiten in den Papierkorb verschieben?"
+
+#: apps/dashboard/templates/dashboard/page_list.html:30
+#: apps/dashboard/templates/dashboard/post_list.html:39
+msgid "Move to trash"
+msgstr "In den Papierkorb"
+
+#: apps/dashboard/templates/dashboard/page_list.html:47
+#: apps/dashboard/templates/dashboard/page_trash.html:14
+#: apps/dashboard/templates/dashboard/post_list.html:56
+#: apps/dashboard/templates/dashboard/post_trash.html:14
+#: apps/dashboard/templates/dashboard/revisions.html:44
+#: apps/dashboard/templates/dashboard/service_list.html:18
+msgid "Title"
+msgstr "Titel"
+
+#: apps/dashboard/templates/dashboard/page_list.html:48
+#: apps/dashboard/templates/dashboard/post_list.html:57
+#: apps/dashboard/templates/dashboard/service_list.html:19
+msgid "Status"
+msgstr "Status"
+
+#: apps/dashboard/templates/dashboard/page_list.html:49
+#: apps/dashboard/templates/dashboard/post_list.html:59
+#: apps/dashboard/templates/dashboard/service_list.html:20
+msgid "Updated"
+msgstr "Aktualisiert"
+
+#: apps/dashboard/templates/dashboard/page_list.html:70
+msgid "Move this page to trash?"
+msgstr "Diese Seite in den Papierkorb verschieben?"
+
+#: apps/dashboard/templates/dashboard/page_list.html:78
+msgid "No pages yet."
+msgstr "Noch keine Seiten."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:6
+msgid "Trashed pages can be restored or permanently deleted."
+msgstr ""
+"Gelöschte Seiten können wiederhergestellt oder endgültig gelöscht werden."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:7
+msgid "Back to pages"
+msgstr "Zurück zu den Seiten"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:15
+#: apps/dashboard/templates/dashboard/post_list.html:58
+#: apps/dashboard/templates/dashboard/post_trash.html:15
+msgid "Author"
+msgstr "Autor"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:16
+#: apps/dashboard/templates/dashboard/post_trash.html:16
+msgid "Trashed"
+msgstr "Gelöscht"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:30
+#: apps/dashboard/templates/dashboard/post_trash.html:30
+#: apps/dashboard/templates/dashboard/revisions.html:27
+msgid "Restore"
+msgstr "Wiederherstellen"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:33
+msgid "Permanently delete this page? This cannot be undone."
+msgstr ""
+"Diese Seite endgültig löschen? Dies kann nicht rückgängig gemacht werden."
+
+#: apps/dashboard/templates/dashboard/page_trash.html:35
+#: apps/dashboard/templates/dashboard/post_trash.html:35
+msgid "Delete permanently"
+msgstr "Endgültig löschen"
+
+#: apps/dashboard/templates/dashboard/page_trash.html:41
+#: apps/dashboard/templates/dashboard/post_trash.html:41
+msgid "Trash is empty."
+msgstr "Der Papierkorb ist leer."
+
+#: apps/dashboard/templates/dashboard/plugins.html:5
+msgid "Enable or disable installed plugins. Changes take effect immediately."
+msgstr ""
+"Installierte Plugins aktivieren oder deaktivieren. Änderungen wirken sofort."
+
+#: apps/dashboard/templates/dashboard/plugins.html:17
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: apps/dashboard/templates/dashboard/plugins.html:19
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#: apps/dashboard/templates/dashboard/plugins.html:24
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: apps/dashboard/templates/dashboard/plugins.html:24
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: apps/dashboard/templates/dashboard/plugins.html:30
+msgid "No plugins installed."
+msgstr "Keine Plugins installiert."
+
+#: apps/dashboard/templates/dashboard/post_form.html:48
+msgid "Save post"
+msgstr "Beitrag speichern"
+
+#: apps/dashboard/templates/dashboard/post_list.html:7
+msgid "Search posts…"
+msgstr "Beiträge suchen…"
+
+#: apps/dashboard/templates/dashboard/post_list.html:11
+msgid "All statuses"
+msgstr "Alle Status"
+
+#: apps/dashboard/templates/dashboard/post_list.html:35
+msgid "Move the selected posts to trash?"
+msgstr "Ausgewählte Beiträge in den Papierkorb verschieben?"
+
+#: apps/dashboard/templates/dashboard/post_list.html:80
+msgid "Scheduled"
+msgstr "Geplant"
+
+#: apps/dashboard/templates/dashboard/post_list.html:93
+msgid "Move this post to trash?"
+msgstr "Diesen Beitrag in den Papierkorb verschieben?"
+
+#: apps/dashboard/templates/dashboard/post_list.html:104
+msgid "No posts yet"
+msgstr "Noch keine Beiträge"
+
+#: apps/dashboard/templates/dashboard/post_list.html:104
+msgid "Write your first article to see it here."
+msgstr "Schreiben Sie Ihren ersten Artikel, um ihn hier zu sehen."
+
+#: apps/dashboard/templates/dashboard/post_list.html:106
+msgid "No posts found"
+msgstr "Keine Beiträge gefunden"
+
+#: apps/dashboard/templates/dashboard/post_list.html:106
+msgid "Try a different search or status filter."
+msgstr "Versuchen Sie eine andere Suche oder einen anderen Statusfilter."
+
+#: apps/dashboard/templates/dashboard/post_trash.html:6
+msgid "Trashed posts can be restored or permanently deleted."
+msgstr ""
+"Gelöschte Beiträge können wiederhergestellt oder endgültig gelöscht werden."
+
+#: apps/dashboard/templates/dashboard/post_trash.html:7
+msgid "Back to posts"
+msgstr "Zurück zu den Beiträgen"
+
+#: apps/dashboard/templates/dashboard/post_trash.html:33
+msgid "Permanently delete this post? This cannot be undone."
+msgstr ""
+"Diesen Beitrag endgültig löschen? Dies kann nicht rückgängig gemacht werden."
+
+#: apps/dashboard/templates/dashboard/revisions.html:7
+msgid "Back to editor"
+msgstr "Zurück zum Editor"
+
+#: apps/dashboard/templates/dashboard/revisions.html:25
+msgid "Restore this revision? Current content is snapshotted first."
+msgstr ""
+"Diese Version wiederherstellen? Der aktuelle Inhalt wird zuvor gesichert."
+
+#: apps/dashboard/templates/dashboard/revisions.html:32
+msgid "No revisions yet."
+msgstr "Noch keine Versionen."
+
+#: apps/dashboard/templates/dashboard/revisions.html:41
+msgid "Diff"
+msgstr "Unterschiede"
+
+#: apps/dashboard/templates/dashboard/revisions.html:41
+#, python-format
+msgid "— revision (%(lang)s) vs current"
+msgstr "— Version (%(lang)s) vs. aktuell"
+
+#: apps/dashboard/templates/dashboard/revisions.html:51
+msgid "(unchanged)"
+msgstr "(unverändert)"
+
+#: apps/dashboard/templates/dashboard/revisions.html:59
+msgid ""
+"Select a revision from the history to see what restoring it would change."
+msgstr ""
+"Wählen Sie eine Version aus dem Verlauf, um zu sehen, was ihre "
+"Wiederherstellung ändern würde."
+
+#: apps/dashboard/templates/dashboard/seo_settings.html:14
+msgid "Save SEO settings"
+msgstr "SEO-Einstellungen speichern"
+
+#: apps/dashboard/templates/dashboard/service_form.html:20
+msgid "Description"
+msgstr "Beschreibung"
+
+#: apps/dashboard/templates/dashboard/service_form.html:48
+msgid "Save service"
+msgstr "Dienstleistung speichern"
+
+#: apps/dashboard/templates/dashboard/service_list.html:9
+#: apps/dashboard/views.py:459
+msgid "New service"
+msgstr "Neue Dienstleistung"
+
+#: apps/dashboard/templates/dashboard/service_list.html:34
+msgid "Delete this service?"
+msgstr "Diese Dienstleistung löschen?"
+
+#: apps/dashboard/templates/dashboard/service_list.html:42
+msgid "No services yet."
+msgstr "Noch keine Dienstleistungen."
+
+#: apps/dashboard/templates/dashboard/settings.html:11
+msgid "Save settings"
+msgstr "Einstellungen speichern"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:8
+#: apps/dashboard/views.py:583
+msgid "New tag"
+msgstr "Neues Schlagwort"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:20
+msgid "Delete the selected tags? This can’t be undone."
+msgstr ""
+"Ausgewählte Schlagwörter löschen? Dies kann nicht rückgängig gemacht werden."
+
+#: apps/dashboard/templates/dashboard/tag_list.html:58
+msgid "Delete this tag?"
+msgstr "Dieses Schlagwort löschen?"
+
+#: apps/dashboard/templates/dashboard/tag_list.html:65
+msgid "No tags yet."
+msgstr "Noch keine Schlagwörter."
+
+#: apps/dashboard/templates/dashboard/themes.html:5
+msgid "Choose the theme used to render the public site."
+msgstr ""
+"Wählen Sie das Theme, mit dem die öffentliche Website dargestellt wird."
+
+#: apps/dashboard/templates/dashboard/themes.html:19
+#: apps/dashboard/templates/dashboard/user_form.html:21
+#: apps/dashboard/templates/dashboard/user_list.html:48
+msgid "Active"
+msgstr "Aktiv"
+
+#: apps/dashboard/templates/dashboard/themes.html:26
+#: apps/dashboard/templates/dashboard/user_list.html:27
+msgid "Activate"
+msgstr "Aktivieren"
+
+#: apps/dashboard/templates/dashboard/themes.html:32
+msgid "No themes found."
+msgstr "Keine Themes gefunden."
+
+#: apps/dashboard/templates/dashboard/user_form.html:7
+#, python-format
+msgid "Editing <span class=\"font-medium text-ink\">%(username)s</span>"
+msgstr ""
+"Bearbeiten von <span class=\"font-medium text-ink\">%(username)s</span>"
+
+#: apps/dashboard/templates/dashboard/user_form.html:25
+msgid "Save user"
+msgstr "Benutzer speichern"
+
+#: apps/dashboard/templates/dashboard/user_list.html:17
+msgid "Deactivate the selected users?"
+msgstr "Ausgewählte Benutzer deaktivieren?"
+
+#: apps/dashboard/templates/dashboard/user_list.html:21
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+#: apps/dashboard/templates/dashboard/user_list.html:45
+msgid "User"
+msgstr "Benutzer"
+
+#: apps/dashboard/templates/dashboard/user_list.html:46
+msgid "Email"
+msgstr "E-Mail"
+
+#: apps/dashboard/views.py:91 templates/_site_header.html:59
+#: templates/_site_header.html:132 templates/dashboard/base.html:4
+#: templates/dashboard/base.html:37 templates/dashboard/base.html:61
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: apps/dashboard/views.py:162
+msgid "Post created."
+msgstr "Beitrag erstellt."
+
+#: apps/dashboard/views.py:180
+msgid "Edit post"
+msgstr "Beitrag bearbeiten"
+
+#: apps/dashboard/views.py:183
+msgid "Post updated."
+msgstr "Beitrag aktualisiert."
+
+#: apps/dashboard/views.py:195
+msgid "Post moved to trash."
+msgstr "Beitrag in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:213
+#, python-format
+msgid "%(count)d post moved to trash."
+msgid_plural "%(count)d posts moved to trash."
+msgstr[0] "%(count)d Beitrag in den Papierkorb verschoben."
+msgstr[1] "%(count)d Beiträge in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:220
+msgid "No posts were trashed."
+msgstr "Keine Beiträge in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:242
+msgid "Post restored."
+msgstr "Beitrag wiederhergestellt."
+
+#: apps/dashboard/views.py:252
+msgid "Post permanently deleted."
+msgstr "Beitrag endgültig gelöscht."
+
+#: apps/dashboard/views.py:278 apps/dashboard/views.py:427
+msgid "Revision restored."
+msgstr "Version wiederhergestellt."
+
+#: apps/dashboard/views.py:314
+msgid "Page created."
+msgstr "Seite erstellt."
+
+#: apps/dashboard/views.py:331
+msgid "Edit page"
+msgstr "Seite bearbeiten"
+
+#: apps/dashboard/views.py:334
+msgid "Page updated."
+msgstr "Seite aktualisiert."
+
+#: apps/dashboard/views.py:346
+msgid "Page moved to trash."
+msgstr "Seite in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:364
+#, python-format
+msgid "%(count)d page moved to trash."
+msgid_plural "%(count)d pages moved to trash."
+msgstr[0] "%(count)d Seite in den Papierkorb verschoben."
+msgstr[1] "%(count)d Seiten in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:371
+msgid "No pages were trashed."
+msgstr "Keine Seiten in den Papierkorb verschoben."
+
+#: apps/dashboard/views.py:393
+msgid "Page restored."
+msgstr "Seite wiederhergestellt."
+
+#: apps/dashboard/views.py:403
+msgid "Page permanently deleted."
+msgstr "Seite endgültig gelöscht."
+
+#: apps/dashboard/views.py:440 templates/_site_footer.html:20
+#: templates/_site_header.html:31 templates/_site_header.html:117
+#: templates/dashboard/base.html:40
+msgid "Services"
+msgstr "Dienstleistungen"
+
+#: apps/dashboard/views.py:463
+msgid "Service created."
+msgstr "Dienstleistung erstellt."
+
+#: apps/dashboard/views.py:480
+msgid "Edit service"
+msgstr "Dienstleistung bearbeiten"
+
+#: apps/dashboard/views.py:483
+msgid "Service updated."
+msgstr "Dienstleistung aktualisiert."
+
+#: apps/dashboard/views.py:503 templates/dashboard/base.html:41
+msgid "Categories"
+msgstr "Kategorien"
+
+#: apps/dashboard/views.py:530
+msgid "Edit category"
+msgstr "Kategorie bearbeiten"
+
+#: apps/dashboard/views.py:554
+#, python-format
+msgid "%(count)d category deleted."
+msgid_plural "%(count)d categories deleted."
+msgstr[0] "%(count)d Kategorie gelöscht."
+msgstr[1] "%(count)d Kategorien gelöscht."
+
+#: apps/dashboard/views.py:561
+msgid "No categories were deleted."
+msgstr "Keine Kategorien gelöscht."
+
+#: apps/dashboard/views.py:570 templates/dashboard/base.html:42
+msgid "Tags"
+msgstr "Schlagwörter"
+
+#: apps/dashboard/views.py:593
+msgid "Edit tag"
+msgstr "Schlagwort bearbeiten"
+
+#: apps/dashboard/views.py:617
+#, python-format
+msgid "%(count)d tag deleted."
+msgid_plural "%(count)d tags deleted."
+msgstr[0] "%(count)d Schlagwort gelöscht."
+msgstr[1] "%(count)d Schlagwörter gelöscht."
+
+#: apps/dashboard/views.py:624
+msgid "No tags were deleted."
+msgstr "Keine Schlagwörter gelöscht."
+
+#: apps/dashboard/views.py:650
+msgid "Edit user"
+msgstr "Benutzer bearbeiten"
+
+#: apps/dashboard/views.py:659
+msgid "You can't edit your own roles here."
+msgstr "Sie können Ihre eigenen Rollen hier nicht bearbeiten."
+
+#: apps/dashboard/views.py:664
+msgid "User updated."
+msgstr "Benutzer aktualisiert."
+
+#: apps/dashboard/views.py:688
+#, python-format
+msgid "%(count)d user activated."
+msgid_plural "%(count)d users activated."
+msgstr[0] "%(count)d Benutzer aktiviert."
+msgstr[1] "%(count)d Benutzer aktiviert."
+
+#: apps/dashboard/views.py:694
+#, python-format
+msgid "%(count)d user deactivated."
+msgid_plural "%(count)d users deactivated."
+msgstr[0] "%(count)d Benutzer deaktiviert."
+msgstr[1] "%(count)d Benutzer deaktiviert."
+
+#: apps/dashboard/views.py:703
+msgid "No users were activated."
+msgstr "Keine Benutzer aktiviert."
+
+#: apps/dashboard/views.py:705
+msgid "No users were deactivated."
+msgstr "Keine Benutzer deaktiviert."
+
+#: apps/dashboard/views.py:718 templates/dashboard/base.html:47
+msgid "Appearance"
+msgstr "Darstellung"
+
+#: apps/dashboard/views.py:733
+#, python-format
+msgid "Theme “%(slug)s” activated."
+msgstr "Theme „%(slug)s“ aktiviert."
+
+#: apps/dashboard/views.py:735
+msgid "Unknown theme."
+msgstr "Unbekanntes Theme."
+
+#: apps/dashboard/views.py:746 templates/dashboard/base.html:48
+msgid "Plugins"
+msgstr "Plugins"
+
+#: apps/dashboard/views.py:764
+#, python-format
+msgid "Plugin “%(slug)s” enabled."
+msgstr "Plugin „%(slug)s“ aktiviert."
+
+#: apps/dashboard/views.py:766
+#, python-format
+msgid "Plugin “%(slug)s” disabled."
+msgstr "Plugin „%(slug)s“ deaktiviert."
+
+#: apps/dashboard/views.py:771
+msgid "Unknown plugin."
+msgstr "Unbekanntes Plugin."
+
+#: apps/dashboard/views.py:784 templates/dashboard/base.html:50
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: apps/dashboard/views.py:790
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert."
+
+#: apps/dashboard/views.py:800 templates/dashboard/base.html:49
+msgid "SEO"
+msgstr "SEO"
+
+#: apps/dashboard/views.py:806
+msgid "SEO settings saved."
+msgstr "SEO-Einstellungen gespeichert."
+
+#: apps/dashboard/views.py:819 templates/dashboard/base.html:44
+msgid "Comments"
+msgstr "Kommentare"
+
+#: apps/dashboard/views.py:859
+#, python-format
+msgid "%(count)d comment approved."
+msgid_plural "%(count)d comments approved."
+msgstr[0] "%(count)d Kommentar genehmigt."
+msgstr[1] "%(count)d Kommentare genehmigt."
+
+#: apps/dashboard/views.py:865
+#, python-format
+msgid "%(count)d comment marked as spam."
+msgid_plural "%(count)d comments marked as spam."
+msgstr[0] "%(count)d Kommentar als Spam markiert."
+msgstr[1] "%(count)d Kommentare als Spam markiert."
+
+#: apps/dashboard/views.py:871
+#, python-format
+msgid "%(count)d comment deleted."
+msgid_plural "%(count)d comments deleted."
+msgstr[0] "%(count)d Kommentar gelöscht."
+msgstr[1] "%(count)d Kommentare gelöscht."
+
+#: apps/dashboard/views.py:885
+msgid "No comments were updated."
+msgstr "Keine Kommentare aktualisiert."
+
+#: apps/dashboard/views.py:897 templates/dashboard/base.html:46
+msgid "Menus"
+msgstr "Menüs"
+
+#: apps/dashboard/views.py:912
+msgid "Menu created."
+msgstr "Menü erstellt."
+
+#: apps/dashboard/views.py:922
+msgid "Menu deleted."
+msgstr "Menü gelöscht."
+
+#: apps/dashboard/views.py:930
+msgid "Edit menu"
+msgstr "Menü bearbeiten"
+
+#: apps/dashboard/views.py:948
+msgid "Add menu item"
+msgstr "Menüeintrag hinzufügen"
+
+#: apps/dashboard/views.py:962
+msgid "Item added."
+msgstr "Eintrag hinzugefügt."
+
+#: apps/dashboard/views.py:977
+msgid "Edit menu item"
+msgstr "Menüeintrag bearbeiten"
+
+#: apps/dashboard/views.py:997
+msgid "Item updated."
+msgstr "Eintrag aktualisiert."
+
+#: apps/dashboard/views.py:1010
+msgid "Item removed."
+msgstr "Eintrag entfernt."
+
+#: apps/media/forms.py:34
+#, python-format
+msgid "File is too large (%(size)s). Maximum is %(max)s."
+msgstr "Datei ist zu groß (%(size)s). Maximum ist %(max)s."
+
+#: apps/media/forms.py:45
+msgid ""
+"Unsupported or unsafe file. Allowed: JPEG, PNG, GIF, WebP, PDF (SVG is not "
+"allowed)."
+msgstr ""
+"Nicht unterstützte oder unsichere Datei. Erlaubt: JPEG, PNG, GIF, WebP, PDF "
+"(SVG ist nicht erlaubt)."
+
+#: apps/media/models.py:25
+msgid "file"
+msgstr "Datei"
+
+#: apps/media/models.py:27
+msgid "thumbnail"
+msgstr "Miniaturansicht"
+
+#: apps/media/models.py:30
+msgid "alt text"
+msgstr "Alt-Text"
+
+#: apps/media/models.py:32
+msgid "MIME type"
+msgstr "MIME-Typ"
+
+#: apps/media/models.py:33
+msgid "file size"
+msgstr "Dateigröße"
+
+#: apps/media/models.py:34
+msgid "width"
+msgstr "Breite"
+
+#: apps/media/models.py:35
+msgid "height"
+msgstr "Höhe"
+
+#: apps/media/models.py:39
+msgid "uploaded by"
+msgstr "hochgeladen von"
+
+#: apps/media/models.py:48
+msgid "media asset"
+msgstr "Medienobjekt"
+
+#: apps/media/models.py:49
+msgid "media assets"
+msgstr "Medienobjekte"
+
+#: apps/menus/models.py:27
+msgid "Referenced in templates, e.g. “primary” or “footer”."
+msgstr "Wird in Vorlagen referenziert, z. B. „primary“ oder „footer“."
+
+#: apps/menus/models.py:32
+msgid "menu"
+msgstr "Menü"
+
+#: apps/menus/models.py:33
+msgid "menus"
+msgstr "Menüs"
+
+#: apps/menus/models.py:41
+msgid "Custom URL"
+msgstr "Benutzerdefinierte URL"
+
+#: apps/menus/models.py:42
+msgid "Post"
+msgstr "Beitrag"
+
+#: apps/menus/models.py:43
+msgid "Page"
+msgstr "Seite"
+
+#: apps/menus/models.py:44
+msgid "Category"
+msgstr "Kategorie"
+
+#: apps/menus/models.py:63
+msgid "Nest this item under a top-level item (one level deep)."
+msgstr ""
+"Diesen Eintrag unter einem Eintrag der obersten Ebene verschachteln (eine "
+"Ebene tief)."
+
+#: apps/menus/models.py:67
+msgid "label"
+msgstr "Bezeichnung"
+
+#: apps/menus/models.py:74
+msgid "links to"
+msgstr "verweist auf"
+
+#: apps/menus/models.py:76
+msgid "custom URL"
+msgstr "benutzerdefinierte URL"
+
+#: apps/menus/models.py:86
+msgid "position"
+msgstr "Position"
+
+#: apps/menus/models.py:91
+msgid "menu item"
+msgstr "Menüeintrag"
+
+#: apps/menus/models.py:92
+msgid "menu items"
+msgstr "Menüeinträge"
+
+#: apps/plugins/models.py:13
+msgid "app label"
+msgstr "App-Bezeichnung"
+
+#: apps/plugins/models.py:14
+msgid "enabled"
+msgstr "aktiviert"
+
+#: apps/plugins/models.py:17
+msgid "plugin"
+msgstr "Plugin"
+
+#: apps/plugins/models.py:18
+msgid "plugins"
+msgstr "Plugins"
+
+#: apps/seo/models.py:26
+msgid "Open Graph site name"
+msgstr "Open-Graph-Website-Name"
+
+#: apps/seo/models.py:29
+msgid "Defaults to the site name when blank."
+msgstr "Standardmäßig der Website-Name, wenn leer."
+
+#: apps/seo/models.py:32
+msgid "default share image"
+msgstr "Standard-Vorschaubild"
+
+#: apps/seo/models.py:36
+msgid "Used for Open Graph/Twitter when a page has no image of its own."
+msgstr ""
+"Wird für Open Graph/Twitter verwendet, wenn eine Seite kein eigenes Bild hat."
+
+#: apps/seo/models.py:39
+msgid "default meta description"
+msgstr "Standard-Meta-Beschreibung"
+
+#: apps/seo/models.py:42
+msgid "Fallback description for pages that don't set their own."
+msgstr "Ersatzbeschreibung für Seiten, die keine eigene festlegen."
+
+#: apps/seo/models.py:45
+msgid "Twitter handle"
+msgstr "Twitter-Handle"
+
+#: apps/seo/models.py:48
+msgid "e.g. @yourbrand — used for twitter:site."
+msgstr "z. B. @ihremarke — wird für twitter:site verwendet."
+
+#: apps/seo/models.py:53
+msgid "organization logo"
+msgstr "Organisationslogo"
+
+#: apps/seo/models.py:57
+msgid "Square-ish logo used in Organization structured data."
+msgstr "Quadratisches Logo für die strukturierten Organisationsdaten."
+
+#: apps/seo/models.py:60
+msgid "social profile URLs"
+msgstr "URLs sozialer Profile"
+
+#: apps/seo/models.py:62
+msgid "One URL per line (Twitter, LinkedIn, …) — emitted as schema.org sameAs."
+msgstr ""
+"Eine URL pro Zeile (Twitter, LinkedIn, …) — als schema.org sameAs ausgegeben."
+
+#: apps/seo/models.py:67
+msgid "Google Analytics ID"
+msgstr "Google-Analytics-ID"
+
+#: apps/seo/models.py:67
+msgid "e.g. G-XXXXXXXXXX"
+msgstr "z. B. G-XXXXXXXXXX"
+
+#: apps/seo/models.py:70
+msgid "Google Tag Manager ID"
+msgstr "Google-Tag-Manager-ID"
+
+#: apps/seo/models.py:70
+msgid "e.g. GTM-XXXXXXX"
+msgstr "z. B. GTM-XXXXXXX"
+
+#: apps/seo/models.py:73
+msgid "Google site verification"
+msgstr "Google-Site-Verifizierung"
+
+#: apps/seo/models.py:76
+msgid "Bing site verification"
+msgstr "Bing-Site-Verifizierung"
+
+#: apps/seo/models.py:81
+msgid "discourage search engines"
+msgstr "Suchmaschinen abweisen"
+
+#: apps/seo/models.py:83
+msgid "Adds a site-wide noindex,nofollow. Use for staging sites only."
+msgstr ""
+"Fügt ein websiteweites noindex,nofollow hinzu. Nur für Staging-Websites "
+"verwenden."
+
+#: apps/seo/models.py:86
+msgid "allow AI answer-engine crawlers"
+msgstr "KI-Antwortmaschinen-Crawler zulassen"
+
+#: apps/seo/models.py:89
+msgid ""
+"Let GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc. crawl the site "
+"(robots.txt). Turn off to ask them not to."
+msgstr ""
+"GPTBot, ClaudeBot, PerplexityBot, Google-Extended usw. die Website crawlen "
+"lassen (robots.txt). Zum Ablehnen ausschalten."
+
+#: apps/seo/models.py:95 apps/seo/models.py:96
+msgid "SEO settings"
+msgstr "SEO-Einstellungen"
+
+#: templates/429.html:4 templates/429.html:10
+msgid "Too many requests"
+msgstr "Zu viele Anfragen"
+
+#: templates/429.html:12
+msgid ""
+"You've made too many attempts in a short window. Please wait a little while "
+"and try again."
+msgstr ""
+"Sie haben in kurzer Zeit zu viele Versuche unternommen. Bitte warten Sie "
+"einen Moment und versuchen Sie es erneut."
+
+#: templates/429.html:18
+msgid "Back to home"
+msgstr "Zurück zur Startseite"
+
+#: templates/_breadcrumbs.html:10
+msgid "Home"
+msgstr "Startseite"
+
+#: templates/_site_footer.html:19 templates/_site_header.html:32
+#: templates/_site_header.html:118
+msgid "Blog"
+msgstr "Blog"
+
+#: templates/_site_footer.html:21
+msgid "Contact"
+msgstr "Kontakt"
+
+#: templates/_site_header.html:35 templates/_site_header.html:121
+msgid "Search"
+msgstr "Suchen"
+
+#: templates/_site_header.html:41 templates/_site_header.html:122
+msgid "Search…"
+msgstr "Suchen…"
+
+#: templates/_site_header.html:62 templates/_site_header.html:135
+msgid "Account"
+msgstr "Konto"
+
+#: templates/_site_header.html:65 templates/_site_header.html:138
+#: templates/dashboard/base.html:129
+msgid "Sign out"
+msgstr "Abmelden"
+
+#: templates/_site_header.html:68 templates/_site_header.html:141
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: templates/_site_header.html:79
+msgid "Open menu"
+msgstr "Menü öffnen"
+
+#: templates/_site_header.html:108
+msgid "Close menu"
+msgstr "Menü schließen"
+
+#: templates/base.html:6
+msgid "Cmstack-Django — a lighter, faster, SEO-first CMS"
+msgstr "Cmstack-Django — ein leichteres, schnelleres, SEO-orientiertes CMS"
+
+#: templates/base.html:9
+msgid ""
+"Cmstack-Django is an open-source CMS built on Django — lighter, faster, and "
+"SEO-first."
+msgstr ""
+"Cmstack-Django ist ein Open-Source-CMS auf Basis von Django — leichter, "
+"schneller und SEO-orientiert."
+
+#: templates/base.html:26
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
+#: templates/dashboard/base.html:4
+#, python-format
+msgid "%(name)s admin"
+msgstr "%(name)s-Verwaltung"
+
+#: templates/dashboard/base.html:58
+msgid "Toggle menu"
+msgstr "Menü umschalten"
+
+#: templates/dashboard/base.html:73 templates/dashboard/base.html:80
+msgid "Language"
+msgstr "Sprache"
+
+#: templates/dashboard/base.html:86
+msgid "Go"
+msgstr "Los"
+
+#: templates/dashboard/base.html:89
+msgid "Switch to light mode"
+msgstr "Zum hellen Modus wechseln"
+
+#: templates/dashboard/base.html:90
+msgid "Switch to dark mode"
+msgstr "Zum dunklen Modus wechseln"
+
+#: templates/dashboard/base.html:102 templates/dashboard/base.html:127
+msgid "View site ↗"
+msgstr "Website ansehen ↗"
+
+#: templates/dashboard/base.html:112
+msgid "Account menu"
+msgstr "Kontomenü"
+
+#: templates/dashboard/base.html:124
+msgid "Member"
+msgstr "Mitglied"

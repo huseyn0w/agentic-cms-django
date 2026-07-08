@@ -2,6 +2,7 @@
   The one public site footer. Shared by public_base.html and core/home.html.
   Keeps the plugin "public_footer" region available site-wide.
 {% endcomment %}
+{% load i18n %}
 {% load plugin_hooks menu_tags %}
 {% menu_items "footer" as footer_items %}
 <footer class="mx-auto w-full max-w-5xl px-6 py-12">
@@ -15,9 +16,9 @@
           {% include "_menu_node_footer.html" with node=item %}
         {% endfor %}
       {% else %}
-        <a class="transition-colors hover:text-text" href="{% url 'content:post_list' %}">Blog</a>
-        <a class="transition-colors hover:text-text" href="{% url 'content:service_list' %}">Services</a>
-        <a class="transition-colors hover:text-text" href="{% url 'core:contact' %}">Contact</a>
+        <a class="transition-colors hover:text-text" href="{% url 'content:post_list' %}">{% trans "Blog" %}</a>
+        <a class="transition-colors hover:text-text" href="{% url 'content:service_list' %}">{% trans "Services" %}</a>
+        <a class="transition-colors hover:text-text" href="{% url 'core:contact' %}">{% trans "Contact" %}</a>
       {% endif %}
     </nav>
   </div>
