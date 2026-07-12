@@ -4,10 +4,12 @@ This file guides Claude Code (CLI / VSCode extension) when working in this repos
 
 ## Project
 
-Cmstack-Django is an open-source CMS built on Python/Django. Goal: same
-core capabilities as a popular CMS, but lighter, faster, SEO-first, and easy to read,
-understand, and extend. It is a commercial/open project that will be demoed publicly,
-so code quality, security, and a clean demo matter.
+Agentic CMS for Django is an open-source, AI-first CMS built on Python/Django. It ships a
+built-in MCP server so an AI assistant (Claude Desktop, ChatGPT, any MCP client) can
+manage the whole site: content, media, roles, moderation, SEO, semantic search. Beyond
+that, goal: same core capabilities as a popular CMS, but lighter, faster, SEO-first, and
+easy to read, understand, and extend. It is a commercial/open project that will be demoed
+publicly, so code quality, security, and a clean demo matter.
 
 Reference implementation by the same author (Laravel, study for feature parity, not for
 code style): https://github.com/huseyn0w/Laravella-CMS

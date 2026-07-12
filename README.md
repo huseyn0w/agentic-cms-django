@@ -1,20 +1,28 @@
-# Cmstack-Django
+# Agentic CMS for Django
 
-An open-source CMS built on Python/Django — lighter, faster, SEO-first, and easy to
-read, understand, and extend. It ships its own admin panel, a swappable theme + plugin
-system, multilingual content, a first-class SEO/GEO layer, a public REST API, and an MCP
-server so you can manage the site from an AI assistant.
+**The CMS your AI runs.** Agentic CMS is an open-source, AI-first CMS you manage from your
+AI assistant. It ships a built-in MCP server, so Claude Desktop, ChatGPT, or any MCP
+client can handle content, media, roles, moderation, and SEO through a typed, permissioned
+interface, by chat instead of clicking through an admin panel: write and edit content,
+moderate comments, run semantic search, and give RAG-ready answers over your own content.
+It also ships its own admin panel, a swappable theme + plugin system,
+multilingual content, and a first-class SEO/GEO layer, for when you do want to click
+through a UI. It stays fast and native to its stack, and it's open source (GPL-3.0).
 
-> **Status:** feature-complete core. Content, media, the custom admin, themes, plugins,
-> multilingual (en/de), SEO/GEO (JSON-LD, sitemap, robots, `llms.txt`, Service pages),
-> comments, search, menus, soft-delete/trash, revision restore, scheduled publishing,
-> author pages, in-editor media picker, REST API + MCP — all built and tested. CI runs
-> ruff + black + mypy + pytest (with a PostgreSQL full-text-search job) + a Playwright
-> e2e job. Lighthouse ≥ 95 across performance / accessibility / best-practices / SEO.
+> **Status:** Ready. Content, media, the custom admin, themes, plugins, multilingual
+> (en/de), SEO/GEO (JSON-LD, sitemap, robots, `llms.txt`, Service pages), comments,
+> search, menus, soft-delete/trash, revision restore, scheduled publishing, author pages,
+> in-editor media picker, REST API + MCP — all built and tested. CI runs ruff + black +
+> mypy + pytest (with a PostgreSQL full-text-search job) + a Playwright e2e job.
+> Lighthouse ≥ 95 across performance / accessibility / best-practices / SEO.
 
-This is the Django implementation in a family of parallel CMS stacks that share two
-read-only specs: [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md) (capability parity across
-stacks) and [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md) (the shared visual language).
+This is the Django edition (Python 3.12, Django 5.1, PostgreSQL) in the Agentic CMS
+family, which runs on any stack. Landing page:
+[elman.group/agentic-cms](https://elman.group/agentic-cms/) · Main/family repo:
+[github.com/huseyn0w/agentic-cms](https://github.com/huseyn0w/agentic-cms). This repo
+also shares two read-only specs with its sibling stacks:
+[`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md) (capability parity across stacks) and
+[`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md) (the shared visual language).
 
 ## Stack
 
@@ -92,14 +100,14 @@ For live frontend reloads, run the Vite dev server and set `DJANGO_VITE_DEV_MODE
 cd frontend && npm run dev      # HMR on :5173
 ```
 
-> **Ports.** This repo lives beside sibling `cmstack-*` stacks. Host ports are
+> **Ports.** This repo lives beside sibling `agentic-cms-*` stacks. Host ports are
 > deduplicated so they can all run at once — this stack uses **web 8000 / postgres 5433**,
 > overridable via `WEB_PORT` / `DB_PORT` in `.env`. See [`../PORTS.md`](../PORTS.md) for the
 > cross-stack allocation.
 
 ## Architecture
 
-Cmstack-Django is idiomatic Django organized as focused apps (one app = one bounded
+Agentic CMS for Django is idiomatic Django organized as focused apps (one app = one bounded
 concern). Beyond that it enforces a strict, one-directional layering so views stay thin
 and business logic stays testable:
 
@@ -210,8 +218,10 @@ elsewhere. Managed header/footer navigation menus with a keyboard-accessible bui
 gated post writes (token + model-permission, owner-scoped, publish gated server-side),
 and `/health/` + `/health/ready/` probes. An **MCP** server at `POST /api/mcp/` exposes a
 13-tool registry (posts CRUD + publish, list endpoints, comment moderation, settings) that
-re-verifies each tool's permission server-side — so you can drive the CMS from Claude.
-Mint tokens with `python manage.py create_api_token <user>`.
+re-verifies each tool's permission server-side, so Claude Desktop, ChatGPT, or any MCP
+client can run the site by chat: write and edit content, moderate comments, and manage
+settings without touching the admin UI. Mint tokens with
+`python manage.py create_api_token <user>`.
 
 ## Commands
 

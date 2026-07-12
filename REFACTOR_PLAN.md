@@ -1,7 +1,7 @@
-# cmstack-django — Refactor Plan
+# agentic-cms-django — Refactor Plan
 
 > Master plan coordinating the architecture refactor, feature parity, unified UI, and
-> test work for `cmstack-django`. Grounded in a code-level audit (not the matrix prose).
+> test work for `agentic-cms-django`. Grounded in a code-level audit (not the matrix prose).
 > Canon: [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)
 > (read-only). Detailed per-phase TDD plans live under `docs/superpowers/plans/`.
 

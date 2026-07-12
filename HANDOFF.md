@@ -1,8 +1,8 @@
-# cmstack-django — HANDOFF
+# agentic-cms-django — HANDOFF
 
 _Last refresh: 2026-06-26 (original REFACTOR_PLAN scope — F1–F15, UI U1–U7, README,
 adversarial + completeness-critic — is COMPLETE, **and** the stricter Task-4 (E2E) criteria
-the user added in the updated master prompt (`../prompts/cmstack-django.md`) are now ALSO
+the user added in the updated master prompt (`../prompts/agentic-cms-django.md`) are now ALSO
 COMPLETE — see "DONE this session". No open required items remain; optional follow-ups are
 listed at the bottom.). Read with [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md),
 [`../FEATURE_MATRIX.md`](../FEATURE_MATRIX.md), [`../DESIGN_SYSTEM.md`](../DESIGN_SYSTEM.md)._
@@ -145,12 +145,12 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 ---
 
 ## Ready-to-paste continuation prompt (new window)
-> You are a senior Django engineer continuing the autonomous `cmstack-django` work under the
-> updated master prompt `../prompts/cmstack-django.md` (read it — operating rules, model
+> You are a senior Django engineer continuing the autonomous `agentic-cms-django` work under the
+> updated master prompt `../prompts/agentic-cms-django.md` (read it — operating rules, model
 > routing, the two hard architecture rules, and the Task-4 E2E requirements all live there).
 >
 > **First, orient — before any work:**
-> 1. `cd cmstack-django`; you are already on the branch `refactor/service-repository-layer`
+> 1. `cd agentic-cms-django`; you are already on the branch `refactor/service-repository-layer`
 >    (69 commits, PUSHED to `origin`, NOT on `main`). Commit there; push as needed.
 > 2. Read `HANDOFF.md` and `REFACTOR_PLAN.md` in full, then `../FEATURE_MATRIX.md` and
 >    `../DESIGN_SYSTEM.md` (read-only canon — never edit the two shared specs).
@@ -161,7 +161,7 @@ Layering enforced everywhere: `view → service → repository → manager/Query
 >    `cd frontend && npm run build`). Use `.venv/bin/python -m black`/`-m mypy` (the bare
 >    console scripts have a stale shebang). Expect **10 e2e passed**.
 >
-> **Operating rules (unchanged):** work autonomously inside `cmstack-django/`; respond to me in
+> **Operating rules (unchanged):** work autonomously inside `agentic-cms-django/`; respond to me in
 > **Russian**, keep all code/comments/commits/docs in **English**; Superpowers framework
 > (writing-plans / TDD / subagent-driven-development / requesting-code-review /
 > verification-before-completion); orchestrate via parallel subagents and adversarial
