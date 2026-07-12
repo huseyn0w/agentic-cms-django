@@ -1,7 +1,7 @@
 {% comment %}
   In-editor media picker (F11). Renders only when the view supplied `media_images`
   (i.e. the user may view media). An accessible Alpine modal of library thumbnails;
-  picking one inserts an <img> into the active Trix editor via window.cmstackInsertImage.
+  picking one inserts an <img> into the active Trix editor via window.agenticCmsInsertImage.
 {% endcomment %}
 {% load i18n %}
 {% if media_images %}
@@ -32,7 +32,7 @@
             <button type="button"
                     class="group overflow-hidden rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     title="{{ img.title|default:img.alt_text }}"
-                    @click="window.cmstackInsertImage('{{ img.file.url|escapejs }}', '{{ img.alt_text|escapejs }}'); open = false">
+                    @click="window.agenticCmsInsertImage('{{ img.file.url|escapejs }}', '{{ img.alt_text|escapejs }}'); open = false">
               <img src="{% if img.thumbnail %}{{ img.thumbnail.url }}{% else %}{{ img.file.url }}{% endif %}"
                    alt="{{ img.alt_text }}" loading="lazy" class="aspect-square w-full object-cover" />
             </button>

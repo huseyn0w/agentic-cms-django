@@ -1,5 +1,5 @@
 [project]
-name = "cmstack-django"
+name = "agentic-cms-django"
 version = "0.1.0"
 description = "An open-source,  CMS built on Python/Django — lighter, faster, SEO-first."
 readme = "README.md"

@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Media picker → Trix. The picker modal (dashboard/_media_picker.html) calls this
 // to drop a library image into the active editor. Output is sanitized server-side
 // (nh3 allows img src/alt), so inserting raw HTML here is safe.
-window.cmstackInsertImage = function (url, alt) {
+window.agenticCmsInsertImage = function (url, alt) {
   const editor = document.querySelector("trix-editor");
   if (!editor || !editor.editor) return;
   const safeAlt = (alt || "").replace(/"/g, "&quot;");

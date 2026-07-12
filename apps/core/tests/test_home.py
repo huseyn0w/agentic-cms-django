@@ -22,7 +22,7 @@ def test_home_uses_expected_template(client):
 @pytest.mark.django_db
 def test_home_renders_brand(client):
     response = client.get(reverse("core:home"))
-    assert b"Cmstack-Django" in response.content
+    assert b"AgenticCms-Django" in response.content
 
 
 @pytest.mark.django_db

@@ -1,9 +1,9 @@
 """Seed idempotent demo content so the public site has something to render.
 
-Mirrors the canonical demo set every cmstack stack seeds: 3 categories, 6
+Mirrors the canonical demo set every agentic-cms stack seeds: 3 categories, 6
 published posts (one per category mapping), and About + Contact pages — each
 written in ALL configured locales (en, de, ru). The trilingual copy lives in the
-sibling ``demo_content.json`` (framework-neutral, ``Cmstack`` as the product).
+sibling ``demo_content.json`` (framework-neutral, ``AgenticCms`` as the product).
 
 Safe to run repeatedly: everything is keyed by ``slug`` (shared, non-translated)
 and every locale's translation row is refreshed on each run, so re-running never

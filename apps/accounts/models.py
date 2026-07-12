@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 # parler manager django-stubs can't introspect (django-parler ships no stubs).
 class User(AbstractUser):  # type: ignore[django-manager-missing]
     """
-    Cmstack-Django user.
+    AgenticCms-Django user.
 
     Extends Django's ``AbstractUser`` (so username/email/password and the full
     auth/permission machinery come for free) with a small author profile.

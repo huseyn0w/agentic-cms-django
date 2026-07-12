@@ -1,4 +1,4 @@
-"""ASGI entrypoint for Cmstack-Django."""
+"""ASGI entrypoint for AgenticCms-Django."""
 
 import os
 

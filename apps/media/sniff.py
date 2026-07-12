@@ -4,7 +4,7 @@ The extension a browser sends is attacker-controlled, so it is NOT trusted for
 type decisions. This module inspects the file's actual bytes to determine its
 real type, then the form derives the STORED extension from that validated type —
 never from the user-supplied filename. This is the anti-polyglot guarantee ported
-from cmstack-ts's ``media.service.ts``: a file whose bytes are a valid GIF but
+from agentic-cms-ts's ``media.service.ts``: a file whose bytes are a valid GIF but
 which is named ``evil.php`` is stored as ``.gif`` and can never be served as
 executable/text-html content.
 

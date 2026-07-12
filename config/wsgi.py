@@ -1,4 +1,4 @@
-"""WSGI entrypoint for Cmstack-Django."""
+"""WSGI entrypoint for AgenticCms-Django."""
 
 import os
 

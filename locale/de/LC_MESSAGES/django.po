@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cmstack-django 1.0\n"
+"Project-Id-Version: agentic-cms-django 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 23:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: cmstack <contact@elman.group>\n"
+"Last-Translator: agentic-cms <contact@elman.group>\n"
 "Language-Team: German <de@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -1511,15 +1511,15 @@ msgid "Close menu"
 msgstr "Menü schließen"
 
 #: templates/base.html:6
-msgid "Cmstack-Django — a lighter, faster, SEO-first CMS"
-msgstr "Cmstack-Django — ein leichteres, schnelleres, SEO-orientiertes CMS"
+msgid "AgenticCms-Django — a lighter, faster, SEO-first CMS"
+msgstr "AgenticCms-Django — ein leichteres, schnelleres, SEO-orientiertes CMS"
 
 #: templates/base.html:9
 msgid ""
-"Cmstack-Django is an open-source CMS built on Django — lighter, faster, and "
+"AgenticCms-Django is an open-source CMS built on Django — lighter, faster, and "
 "SEO-first."
 msgstr ""
-"Cmstack-Django ist ein Open-Source-CMS auf Basis von Django — leichter, "
+"AgenticCms-Django ist ein Open-Source-CMS auf Basis von Django — leichter, "
 "schneller und SEO-orientiert."
 
 #: templates/base.html:26

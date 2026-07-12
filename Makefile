@@ -1,4 +1,4 @@
-# cmstack-django — local development helpers.
+# agentic-cms-django — local development helpers.
 #
 #   make dev     one command: build + start the stack (the entrypoint applies
 #                migrations automatically), create a local admin, then follow logs.
@@ -17,7 +17,7 @@ HOST_PORTS := 8000
 
 # Local-dev admin (override on the command line, e.g. `make superuser SU_PASS=…`).
 SU_USER  ?= admin
-SU_EMAIL ?= admin@cmstack.local
+SU_EMAIL ?= admin@agentic-cms.local
 SU_PASS  ?= admin12345
 
 .DEFAULT_GOAL := help

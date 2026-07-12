@@ -15,9 +15,9 @@ from .test import *  # noqa: F401,F403
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "cmstack_django"),
-        "USER": os.environ.get("POSTGRES_USER", "cmstack_django"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "cmstack_django"),
+        "NAME": os.environ.get("POSTGRES_DB", "agentic_cms_django"),
+        "USER": os.environ.get("POSTGRES_USER", "agentic_cms_django"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "agentic_cms_django"),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }

@@ -27,7 +27,7 @@ LOGIN_REQUIRED = "login_required"
 RATE_LIMITED = "rate_limited"
 
 # Per-IP comment-submit throttle. Canon is 8 submissions per 60s window, copied
-# from cmstack-ts's `@Throttle({ default: { limit: 8, ttl: 60_000 } })`. Backed by
+# from agentic-cms-ts's `@Throttle({ default: { limit: 8, ttl: 60_000 } })`. Backed by
 # Django's cache (the same mechanism allauth's ACCOUNT_RATE_LIMITS use); accurate
 # per-IP limits under multiple workers need a shared backend (Redis) — same caveat
 # as the auth limits, landing with the infra phase.

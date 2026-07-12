@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 def test_login_page_renders(client):
     response = client.get(reverse("account_login"))
     assert response.status_code == 200
-    assert b"Cmstack-Django" in response.content  # our styled auth layout is in use
+    assert b"AgenticCms-Django" in response.content  # our styled auth layout is in use
 
 
 def test_signup_page_renders(client):

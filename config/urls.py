@@ -1,4 +1,4 @@
-"""Root URL configuration for Cmstack-Django."""
+"""Root URL configuration for AgenticCms-Django."""
 
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
@@ -16,7 +16,7 @@ from apps.seo.sitemaps import sitemaps
 # and the language-switch endpoint. These keep stable, prefix-free URLs.
 urlpatterns = [
     # The custom panel at /dashboard/ is the primary admin. The Django admin is
-    # kept as a superuser-only fallback: it requires is_staff, which NO Cmstack-Django
+    # kept as a superuser-only fallback: it requires is_staff, which NO AgenticCms-Django
     # role grants, so dashboard users (Editors/Authors/etc.) cannot reach it.
     path("admin/", admin.site.urls),
     # django-allauth: login, signup, logout, password reset, social login.

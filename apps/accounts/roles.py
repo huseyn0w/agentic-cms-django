@@ -1,5 +1,5 @@
 """
-Default roles for Cmstack-Django.
+Default roles for AgenticCms-Django.
 
 Roles are plain Django ``Group`` objects; granular access is Django permissions.
 Each role lists permission codenames as ``"<app_label>.<codename>"``. The role

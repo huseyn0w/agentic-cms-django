@@ -1,6 +1,6 @@
 """Magic-byte upload validation + SVG/polyglot rejection (§7, §21).
 
-Target (copied from cmstack-ts's `media.service.ts`): validate the file BYTES,
+Target (copied from agentic-cms-ts's `media.service.ts`): validate the file BYTES,
 not the client-supplied extension/MIME; derive the stored extension from the
 validated MIME (anti-polyglot); reject SVG.
 """

@@ -61,22 +61,22 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: cmstack_django
-          POSTGRES_USER: cmstack_django
-          POSTGRES_PASSWORD: cmstack_django
+          POSTGRES_DB: agentic_cms_django
+          POSTGRES_USER: agentic_cms_django
+          POSTGRES_PASSWORD: agentic_cms_django
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U cmstack_django"
+          --health-cmd "pg_isready -U agentic_cms_django"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
     env:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: "5432"
-      POSTGRES_DB: cmstack_django
-      POSTGRES_USER: cmstack_django
-      POSTGRES_PASSWORD: cmstack_django
+      POSTGRES_DB: agentic_cms_django
+      POSTGRES_USER: agentic_cms_django
+      POSTGRES_PASSWORD: agentic_cms_django
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

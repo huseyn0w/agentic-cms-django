@@ -56,7 +56,7 @@ def call_tool(
 # writes stdout; this function turns one request dict into one response dict.
 # --------------------------------------------------------------------------- #
 # Minimal server identity returned by ``initialize``.
-SERVER_INFO = {"name": "cmstack-mcp", "version": "1.0.0"}
+SERVER_INFO = {"name": "agentic-cms-mcp", "version": "1.0.0"}
 PROTOCOL_VERSION = "2024-11-05"
 
 # JSON-RPC error codes (subset we use).

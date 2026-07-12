@@ -1,6 +1,6 @@
 """Per-IP rate limiting on comment submission (§3).
 
-Canon: 8 submissions per minute per client IP (copied from cmstack-ts). The 9th
+Canon: 8 submissions per minute per client IP (copied from agentic-cms-ts). The 9th
 request in the same minute is rejected with HTTP 429 and creates no comment.
 """
 
@@ -48,7 +48,7 @@ def test_ninth_submission_in_a_minute_is_rejected(client, post):
 
 
 def test_rate_limit_default_is_eight_per_minute():
-    # Canon value copied from cmstack-ts (8/min).
+    # Canon value copied from agentic-cms-ts (8/min).
     assert comment_services.COMMENT_RATE_LIMIT == 8
 
 

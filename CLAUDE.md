@@ -140,7 +140,7 @@ code style): https://github.com/huseyn0w/Laravella-CMS
     library images (`MediaRepository.images`) to a focus-trapped Alpine modal
     (`dashboard/_media_picker.html`) — shown only to users with
     `media.view_mediaasset`. Picking an image inserts `<img src alt>` into Trix via
-    `window.cmstackInsertImage` (`frontend/src/admin.js`); nh3 keeps `img` on save.
+    `window.agentic-cmsInsertImage` (`frontend/src/admin.js`); nh3 keeps `img` on save.
     **Swappable storage (F11):** `config.storages.build_storages(env)` builds Django
     `STORAGES` — local disk by default, or an S3-compatible bucket when
     `USE_S3_MEDIA=1` (`storages.backends.s3.S3Storage`; `endpoint_url` covers
